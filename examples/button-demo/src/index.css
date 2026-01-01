@@ -1,19 +1,18 @@
 * {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
 }
 
 body {
-  font-family: system-ui, -apple-system, sans-serif;
-  background: #0a0a0a;
-  color: #fafafa;
-  min-height: 100vh;
+	font-family: system-ui, -apple-system, sans-serif;
+	color: #fafafa;
+	min-height: 100vh;
 }
 
 #root {
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+	min-height: 100vh;
+	display: flex;
+	align-items: center;
+	justify-content: center;
 }
