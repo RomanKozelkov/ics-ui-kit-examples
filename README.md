@@ -7,23 +7,23 @@
 Каждый пример — самостоятельный проект в папке `examples/`. Открыть в CodeSandbox:
 
 ```
-https://codesandbox.io/p/sandbox/github/YOUR_USER/ics-ui-examples/tree/main/examples/EXAMPLE_NAME
+https://codesandbox.io/p/sandbox/github/RomanKozelkov/ics-ui-kit-examples/tree/master/examples/EXAMPLE_NAME
 ```
 
 Или клонировать локально:
 
 ```bash
-git clone https://github.com/YOUR_USER/ics-ui-examples.git
-cd ics-ui-examples/examples/button-demo
+git clone https://github.com/RomanKozelkov/ics-ui-kit-examples.git
+cd ics-ui-kit-examples/examples/button-demo
 npm install
 npm run dev
 ```
 
 ## Примеры
 
-| Пример | Описание |
-|--------|----------|
-| [button-demo](./examples/button-demo) | Базовый пример с кнопками |
+| Пример | Описание | CodeSandbox |
+|--------|----------|-------------|
+| [button-demo](./examples/button-demo) | Базовый пример с кнопками | [Открыть](https://codesandbox.io/p/sandbox/github/RomanKozelkov/ics-ui-kit-examples/tree/master/examples/button-demo) |
 
 ## Добавление нового примера
 
