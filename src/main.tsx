@@ -1,6 +1,8 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { RouterProvider } from 'react-router'
+import 'ics-ui-kit/styles.css'
+import 'ics-ui-kit/font-inter.css'
 import './index.css'
 import router from './router'
 
