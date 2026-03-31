@@ -1,7 +1,7 @@
 import {
 	Collapsible,
 	CollapsibleContent,
-	CollapsibleTrigger,
+	CollapsibleTrigger
 } from "ics-ui-kit/components/collapsible";
 import {
 	Sidebar,
@@ -17,7 +17,7 @@ import {
 	SidebarMenuSubButton,
 	SidebarMenuSubItem,
 	SidebarRail,
-	SidebarSeparator,
+	SidebarSeparator
 } from "ics-ui-kit/components/sidebar";
 import {
 	ChevronRight,
@@ -25,7 +25,7 @@ import {
 	LayoutDashboard,
 	LogIn,
 	Table,
-	UserPlus,
+	UserPlus
 } from "lucide-react";
 import { NavLink } from "react-router";
 
@@ -33,23 +33,23 @@ const examplePages = [
 	{
 		title: "Dashboard",
 		path: "/examples/dashboard",
-		icon: LayoutDashboard,
+		icon: LayoutDashboard
 	},
 	{
 		title: "Login Form",
 		path: "/examples/login-form",
-		icon: LogIn,
+		icon: LogIn
 	},
 	{
 		title: "Registration Form",
 		path: "/examples/registration-form",
-		icon: UserPlus,
+		icon: UserPlus
 	},
 	{
 		title: "Data Grid",
 		path: "/examples/data-grid",
-		icon: Table,
-	},
+		icon: Table
+	}
 ];
 
 export default function AppSidebar() {
