@@ -7,6 +7,8 @@ import {
 	HeadContent,
 	Scripts
 } from "@tanstack/react-router";
+import "ics-ui-kit/styles.css";
+// import "ics-ui-kit/font-inter.css";
 
 export const Route = createRootRoute({
 	head: () => ({

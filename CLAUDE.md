@@ -4,39 +4,38 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-Interactive showcase site for ICS UI Kit components — a gallery of example components with live previews and code viewing. Built with React 19, TypeScript, Vite, Tailwind CSS 4, and React Router 7.
+Interactive showcase site for ICS UI Kit components — a gallery of example components with live previews and code viewing. Built with React 19, TypeScript, TanStack Start (with TanStack Router), and Vite 8.
 
 Reference designs: shadcn/ui Blocks (file trees), Mantine UI (category pages), Radix Themes (theme switching), Tremor (complexity categories).
 
 ## Commands
 
-- `npm run dev` — Start Vite dev server with HMR
-- `npm run build` — Type-check (`tsc -b`) then bundle with Vite
-- `npm run lint` — ESLint across the project
-- `npm run preview` — Preview production build locally
+- `pnpm dev` — Start dev server (port 3000)
+- `pnpm build` — Build for production
 
-No test runner is configured yet.
+No test runner or linter is configured yet.
 
 ## Architecture
 
-**Routing** (`src/router.tsx`): Uses `createBrowserRouter` with a shared `Layout` wrapper. Three routes: `/` (HomePage), `/category/:slug` (CategoryPage), `/component/:slug` (ComponentPage).
+**Framework**: TanStack Start — full-stack React framework with SSR, file-based routing, and server functions (`createServerFn`).
 
-**Layout** (`src/components/Layout.tsx`): Sticky header with navigation, renders child routes via `<Outlet>`.
+**Vite config** (`vite.config.ts`): Uses `tanstackStart()` plugin followed by `@vitejs/plugin-react`.
 
-**Pages** (`src/pages/`): Currently placeholder components that read URL params. Will be fleshed out per the roadmap stages.
+**Routing** (`src/router.tsx`): Creates router via `createRouter` from `@tanstack/react-router` using auto-generated route tree (`src/routeTree.gen.ts`).
 
-**Examples** (`examples/`): Directory for component example source files. A prebuild script (not yet implemented) will scan this folder and generate `src/data/manifest.json` with metadata, file contents, and slugs.
+**Routes** (`src/routes/`): File-based routing convention:
+- `__root.tsx` — Root layout with `<html>`, `<head>`, `<body>` shell
+- `index.tsx` — Home page, loads component data via server function
 
-**Scripts** (`scripts/`): Intended for the prebuild manifest generator.
+**Data layer** (`data/`): Server-side utilities for reading component examples from disk:
+- `components.ts` — Scans `lib/` directory for component folders, reads source files and `attributes.json` metadata
+- `types.ts` — Shared type definitions
+
+**Component examples** (`lib/`): Each subfolder is a component example with `.tsx` source files and an `attributes.json` for metadata (category, changelog, etc.).
 
 ## Key Conventions
 
-- Tailwind CSS utilities applied directly to JSX elements (no CSS-in-JS, no separate CSS modules)
-- Strict TypeScript: `noUnusedLocals`, `noUnusedParameters`, `noFallthroughCasesInSwitch` enabled
-- ESLint flat config (v9) with typescript-eslint, react-hooks, and react-refresh plugins
-- Component categories use three complexity levels: Controls (Контролы), Blocks (Блоки), Pages (Страницы)
+- Package manager: **pnpm** (packageManager field in package.json)
+- Data fetching via TanStack Start server functions (`createServerFn`) called from route loaders
 - Slugs are derived from PascalCase component names (e.g., `ButtonDemo` → `button-demo`)
-
-## Roadmap Context
-
-The project follows staged implementation defined in `roadmap.md`. Stage 0 (scaffold) is complete. Upcoming stages: prebuild script → homepage → category page → component detail page → Shiki syntax highlighting → styling polish → deployment.
+- Component categories use three complexity levels: Controls (Контролы), Blocks (Блоки), Pages (Страницы)

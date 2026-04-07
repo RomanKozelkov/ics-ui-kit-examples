@@ -70,7 +70,7 @@ function getComponentCode(componentFolder: string, componentName: string) {
 }
 
 export function getAllComponents(): ComponentInfo[] {
-	const rootFolder = path.join("lib");
+	const rootFolder = path.join("src", "examples");
 	const paths = fs.readdirSync(rootFolder);
 
 	return paths
