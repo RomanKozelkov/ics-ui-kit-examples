@@ -1,12 +1,9 @@
 // src/routes/index.tsx
 
-import { createFileRoute, useRouter } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { createServerFn } from "@tanstack/react-start";
-import { getAllComponents } from "../data/components";
-import { Toggle } from "ics-ui-kit/components/toggle";
-import { Icon } from "ics-ui-kit/components/icon";
-import { Star } from "lucide-react";
 import { ComponentCanvas } from "../components/ComponentCanvas/ComponentCanvas";
+import { getAllComponents } from "../data/components";
 
 const getComponents = createServerFn({
 	method: "GET"
@@ -24,13 +21,15 @@ function Home() {
 	const state = Route.useLoaderData();
 
 	return (
-		<div className="p-4">
-			{state.map((component) => (
-				<ComponentCanvas key={component.slug} {...component} />
-			))}
-			<Toggle size="md" variant="outline">
-				<Icon icon={Star} />
-			</Toggle>
+		<div className="p-4 container mx-auto">
+			<h2>UI Kit Examples</h2>
+			<div className="flex flex-col gap-4">
+				{state.map((component) => (
+					<div key={component.slug}>
+						<ComponentCanvas {...component} />
+					</div>
+				))}
+			</div>
 		</div>
 	);
 }

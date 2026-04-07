@@ -8,8 +8,6 @@ interface ComponentPreviewProps {
 export function ComponentPreview({
 	children,
 	classNames
-	// canvas,
-	// withSpacing = false
 }: ComponentPreviewProps) {
 	return (
 		<div
