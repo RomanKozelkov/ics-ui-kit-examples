@@ -1,0 +1,8 @@
+{
+	"title": "Animated Tabs",
+	"category": "tabs",
+	"canvas": {
+		"center": true,
+		"maxWidth": 800
+	}
+}

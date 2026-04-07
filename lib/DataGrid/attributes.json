@@ -1,0 +1,8 @@
+{
+	"title": "Data Grid",
+	"category": "tables",
+	"canvas": {
+		"center": true,
+		"maxWidth": 1200
+	}
+}

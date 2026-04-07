@@ -1,0 +1,8 @@
+{
+	"title": "Primary Sales Dashboard",
+	"category": "dashboard",
+	"canvas": {
+		"center": true,
+		"maxWidth": 1200
+	}
+}
