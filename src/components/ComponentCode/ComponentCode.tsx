@@ -56,21 +56,26 @@ export function ComponentCode({ files }: ComponentCodeProps) {
 					language={current.language}
 				>
 					{({ style, tokens, getLineProps, getTokenProps }) => (
-						<pre
-							className="overflow-x-auto p-4 text-xs font-mono"
-							style={style}
+						<div
+							className="resize-y overflow-auto max-h-[400px] min-h-[80px]"
+							style={{ backgroundColor: style.backgroundColor }}
 						>
-							{tokens.map((line, i) => (
-								<div key={i} {...getLineProps({ line })}>
-									{line.map((token, key) => (
-										<span
-											key={key}
-											{...getTokenProps({ token })}
-										/>
-									))}
-								</div>
-							))}
-						</pre>
+							<pre
+								className="p-4 text-xs font-mono"
+								style={style}
+							>
+								{tokens.map((line, i) => (
+									<div key={i} {...getLineProps({ line })}>
+										{line.map((token, key) => (
+											<span
+												key={key}
+												{...getTokenProps({ token })}
+											/>
+										))}
+									</div>
+								))}
+							</pre>
+						</div>
 					)}
 				</Highlight>
 				<button

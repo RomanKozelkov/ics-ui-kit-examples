@@ -7,6 +7,7 @@ import {
 	HeadContent,
 	Scripts
 } from "@tanstack/react-router";
+import { TooltipProvider } from "ics-ui-kit/components/tooltip";
 import "ics-ui-kit/styles.css";
 // import "ics-ui-kit/font-inter.css";
 
@@ -31,7 +32,9 @@ export const Route = createRootRoute({
 function RootComponent() {
 	return (
 		<RootDocument>
-			<Outlet />
+			<TooltipProvider>
+				<Outlet />
+			</TooltipProvider>
 		</RootDocument>
 	);
 }

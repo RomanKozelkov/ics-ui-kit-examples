@@ -10,14 +10,17 @@ export function ComponentCanvas(props: UiComponent) {
 	const Component = UiComponents[props.component];
 
 	return (
-		<div>
+		<div className="flex flex-col gap-4" id={props.slug}>
 			<ComponentHeader
 				title={props.attributes.title}
+				slug={props.slug}
 				activeTab={tab}
 				onTabChange={setTab}
 			/>
 			{tab === "preview" ? (
-				<ComponentPreview classNames={props.attributes.canvas.classNames}>
+				<ComponentPreview
+					classNames={props.attributes.canvas.classNames}
+				>
 					<Component {...props.attributes.props} />
 				</ComponentPreview>
 			) : (
@@ -26,4 +29,3 @@ export function ComponentCanvas(props: UiComponent) {
 		</div>
 	);
 }
-
