@@ -6,9 +6,10 @@ import {
 	TooltipContent,
 	TooltipTrigger
 } from "ics-ui-kit/components/tooltip";
-import { ExternalLink, Pencil } from "lucide-react";
-import { GITHUB_REPO_URL } from "../../data/config";
+import { ExternalLink } from "lucide-react";
+import { GITHUB_REPO_URL, STACKBLITZ_URL } from "../../data/config";
 import { GithubIcon } from "../icons/GithubIcon";
+import { StackBlitzIcon } from "../icons/StackBlitzIcon";
 
 interface ComponentHeaderProps {
 	title: string;
@@ -85,9 +86,19 @@ export function ComponentHeader({
 				</Tooltip>
 				<Tooltip>
 					<TooltipTrigger asChild>
-						<IconButton icon={Pencil} size="sm" variant="outline" />
+						<a
+							href={`${STACKBLITZ_URL}?file=${encodeURIComponent(`src/examples/${component}/${component}.tsx`)}&initialPath=${encodeURIComponent(`/component/${slug}`)}`}
+							target="_blank"
+							rel="noopener noreferrer"
+						>
+							<IconButton
+								icon={StackBlitzIcon}
+								size="sm"
+								variant="outline"
+							/>
+						</a>
 					</TooltipTrigger>
-					<TooltipContent>Open in CodeSandbox</TooltipContent>
+					<TooltipContent>Open in StackBlitz</TooltipContent>
 				</Tooltip>
 			</div>
 		</div>
