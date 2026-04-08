@@ -1,19 +1,14 @@
 import { createFileRoute, notFound } from "@tanstack/react-router";
-import { createServerFn } from "@tanstack/react-start";
 import { PageComponentCanvas } from "../../components/PageComponentCanvas/PageComponentCanvas";
-import { getComponentBySlug } from "../../data/components";
-
-const getComponent = createServerFn({ method: "GET" }).handler(
-	({ data: slug }) => {
-		const component = getComponentBySlug(slug);
-		if (!component) throw notFound();
-		return component;
-	}
-);
+import { components } from "virtual:components";
 
 export const Route = createFileRoute("/component/$slug")({
 	component: ComponentPage,
-	loader: ({ params }) => getComponent({ data: params.slug })
+	loader: ({ params }) => {
+		const component = components.find((c) => c.slug === params.slug);
+		if (!component) throw notFound();
+		return component;
+	}
 });
 
 function ComponentPage() {
