@@ -1,4 +1,4 @@
-import { Button, IconButton } from "ics-ui-kit/components/button";
+import { IconButton } from "ics-ui-kit/components/button";
 import { Divider } from "ics-ui-kit/components/divider";
 import { Tabs, TabsList, TabsTrigger } from "ics-ui-kit/components/tabs";
 import {
@@ -6,12 +6,14 @@ import {
 	TooltipContent,
 	TooltipTrigger
 } from "ics-ui-kit/components/tooltip";
-import { Link } from "@tanstack/react-router";
-import { ArrowLeft, Code, ExternalLink, GitGraph, Pencil } from "lucide-react";
+import { ExternalLink, Pencil } from "lucide-react";
+import { GITHUB_REPO_URL } from "../../data/config";
+import { GithubIcon } from "../icons/GithubIcon";
 
 interface ComponentHeaderProps {
 	title: string;
 	slug: string;
+	component: string;
 	activeTab: "preview" | "code";
 	onTabChange: (tab: "preview" | "code") => void;
 }
@@ -19,6 +21,7 @@ interface ComponentHeaderProps {
 export function ComponentHeader({
 	title,
 	slug,
+	component,
 	activeTab,
 	onTabChange
 }: ComponentHeaderProps) {
@@ -66,9 +69,19 @@ export function ComponentHeader({
 				</Tooltip>
 				<Tooltip>
 					<TooltipTrigger asChild>
-						<IconButton icon={Code} size="sm" variant="outline" />
+						<a
+							href={`${GITHUB_REPO_URL}/tree/master/src/examples/${component}`}
+							target="_blank"
+							rel="noopener noreferrer"
+						>
+							<IconButton
+								icon={GithubIcon}
+								size="sm"
+								variant="outline"
+							/>
+						</a>
 					</TooltipTrigger>
-					<TooltipContent>View source</TooltipContent>
+					<TooltipContent>View source on GitHub</TooltipContent>
 				</Tooltip>
 				<Tooltip>
 					<TooltipTrigger asChild>

@@ -14,6 +14,7 @@ export function ComponentCanvas(props: UiComponent) {
 			<ComponentHeader
 				title={props.attributes.title}
 				slug={props.slug}
+				component={props.component}
 				activeTab={tab}
 				onTabChange={setTab}
 			/>
