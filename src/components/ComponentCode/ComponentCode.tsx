@@ -57,7 +57,7 @@ export function ComponentCode({ files }: ComponentCodeProps) {
 				>
 					{({ style, tokens, getLineProps, getTokenProps }) => (
 						<div
-							className="resize-y overflow-auto max-h-[400px] min-h-[80px]"
+							className="resize-y overflow-auto min-h-[80px]"
 							style={{ backgroundColor: style.backgroundColor }}
 						>
 							<pre

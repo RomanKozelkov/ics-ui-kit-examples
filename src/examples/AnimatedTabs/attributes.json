@@ -2,6 +2,6 @@
 	"title": "Animated Tabs",
 	"category": "tabs",
 	"canvas": {
-		"classNames": "flex justify-center items-center w-full p-4"
+		"classNames": "flex justify-center w-full p-4"
 	}
 }

@@ -143,3 +143,7 @@ export function getAllChangelogs() {
 		)
 	).filter((c) => c);
 }
+
+export function getComponentBySlug(slug: string): ComponentInfo | undefined {
+	return getAllComponents().find((c) => c.slug === slug);
+}

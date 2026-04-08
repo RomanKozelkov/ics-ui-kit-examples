@@ -28,7 +28,7 @@ function Home() {
 				<Icon icon={ToolCase} size="lg" className="mr-2" /> UI Kit
 				Examples
 			</h2>
-			<div className="flex flex-col gap-12">
+			<div className="flex flex-col gap-4">
 				{state.map((component) => (
 					<div key={component.slug}>
 						<ComponentCanvas {...component} />

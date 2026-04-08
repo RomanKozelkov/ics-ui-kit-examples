@@ -10,7 +10,7 @@ export function ComponentCanvas(props: UiComponent) {
 	const Component = UiComponents[props.component];
 
 	return (
-		<div className="flex flex-col gap-4" id={props.slug}>
+		<div className="flex flex-col gap-4 my-4" id={props.slug}>
 			<ComponentHeader
 				title={props.attributes.title}
 				slug={props.slug}
