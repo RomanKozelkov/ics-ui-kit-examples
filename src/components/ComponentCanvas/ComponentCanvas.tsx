@@ -20,7 +20,7 @@ export function ComponentCanvas(props: UiComponent) {
 			/>
 			{tab === "preview" ? (
 				<ComponentPreview
-					classNames={props.attributes.canvas.classNames}
+					classNames={props.attributes.canvas?.classNames}
 				>
 					<Component {...props.attributes.props} />
 				</ComponentPreview>

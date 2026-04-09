@@ -21,7 +21,7 @@ export function PageComponentCanvas(props: UiComponent) {
 				<div
 					className={cn(
 						"h-full w-full overflow-auto",
-						props.attributes.canvas.classNames
+						props.attributes.canvas?.classNames
 					)}
 				>
 					<Component {...props.attributes.props} />

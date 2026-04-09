@@ -55,7 +55,7 @@ export function ComponentHeader({
 				<Tooltip>
 					<TooltipTrigger asChild>
 						<a
-							href={`/component/${slug}`}
+							href={`${import.meta.env.BASE_URL}component/${slug}`}
 							target="_blank"
 							rel="noopener noreferrer"
 						>
