@@ -17,27 +17,29 @@ export function PageComponentCanvas(props: UiComponent) {
 		<div className="relative h-screen w-screen">
 			{/* Full-screen preview */}
 
-			{tab === "preview" && (
-				<div
-					className={cn(
-						"h-full w-full overflow-auto",
-						props.attributes.canvas?.classNames
-					)}
-				>
-					<Component {...props.attributes.props} />
-				</div>
-			)}
+			<div className="h-screen w-screen">
+				{tab === "preview" && (
+					<div
+						className={cn(
+							"h-full w-full overflow-auto",
+							props.attributes.canvas?.classNames
+						)}
+					>
+						<Component {...props.attributes.props} />
+					</div>
+				)}
 
-			{tab === "code" && (
-				<div className="max-h-[40vh] overflow-auto">
-					<ComponentCode files={props.code} />
-				</div>
-			)}
+				{tab === "code" && (
+					<div className="overflow-auto">
+						<ComponentCode files={props.code} />
+					</div>
+				)}
+			</div>
 
 			{!panelOpen && (
-				<div className="fixed bottom-0 left-0 py-2 px-2">
+				<div className="fixed bottom-0 left-0 py-2 px-2 z-[2147483647]">
 					<IconButton
-						variant="ghost"
+						variant="outline"
 						size="sm"
 						onClick={() => setPanelOpen(true)}
 						icon={PanelBottomOpen}
@@ -47,7 +49,7 @@ export function PageComponentCanvas(props: UiComponent) {
 
 			{/* Bottom panel */}
 			{panelOpen && (
-				<div className="py-2 px-2 fixed bottom-0 left-0 right-0 z-50 border-t border-secondary-border bg-background shadow-[0_-4px_16px_rgba(0,0,0,0.1)]">
+				<div className="py-2 px-2 fixed bottom-0 left-0 right-0 z-[2147483647] border-t border-secondary-border bg-background shadow-[0_-4px_16px_rgba(0,0,0,0.1)]">
 					<div className="flex items-center">
 						<div className="shrink-0">
 							<IconButton
