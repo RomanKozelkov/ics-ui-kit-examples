@@ -55,7 +55,7 @@ export function PageComponentCanvas(props: PageComponentCanvasProps) {
 			</div>
 
 			{!panelOpen && (
-				<div className="fixed bottom-0 left-0 py-2 px-2 z-[2147483647]">
+				<div className="fixed bottom-0 left-0 py-2 px-2 z-[2147483647] opacity-30 hover:opacity-100 transition-opacity duration-200">
 					<IconButton
 						variant="outline"
 						size="sm"
