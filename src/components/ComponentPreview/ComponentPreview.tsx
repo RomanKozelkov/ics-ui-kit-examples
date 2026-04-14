@@ -12,7 +12,7 @@ export function ComponentPreview({
 	return (
 		<div
 			className={cn(
-				"rounded-none p-0 border border-secondary-border bg-background",
+				"rounded-none p-0 border border-secondary-border bg-secondary-bg",
 				classNames
 			)}
 		>

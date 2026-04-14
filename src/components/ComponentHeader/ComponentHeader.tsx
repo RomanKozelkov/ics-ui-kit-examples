@@ -27,7 +27,7 @@ export function ComponentHeader({
 	onTabChange
 }: ComponentHeaderProps) {
 	return (
-		<div className="flex items-center py-2 bg-background h-8 gap-4 w-full">
+		<div className="flex items-center py-2 h-8 gap-4 w-full">
 			<Tabs
 				value={activeTab}
 				onValueChange={(v) => onTabChange(v as "preview" | "code")}

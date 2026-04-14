@@ -14,7 +14,7 @@ import { SidebarHeader } from "./SidebarHeader";
 
 export function SidebarNavigation() {
 	return (
-		<div className="h-full w-full">
+		<div className="h-full w-full bg-primary-bg">
 			<SidebarProvider
 				className="h-full w-full"
 				style={{ "--sidebar-width": "272px" } as React.CSSProperties}
