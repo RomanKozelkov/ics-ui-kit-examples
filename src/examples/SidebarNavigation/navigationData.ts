@@ -9,9 +9,13 @@ export const ROOT_ID = "__root";
 export const initialItems: Record<string, Item> = {
 	[ROOT_ID]: {
 		name: "Root",
-		children: ["great-design", "excellent-design", "good-design"]
+		children: ["command-palette", "group-title-2", "good-design"]
 	},
 
+	"command-palette": {
+		name: "Command Palette",
+		children: ["great-design"]
+	},
 	"great-design": {
 		name: "Great design is invisible",
 		children: ["invisible-means", "clarity", "examples"]
@@ -25,6 +29,10 @@ export const initialItems: Record<string, Item> = {
 	clarity: { name: "Clarity over Decoration" },
 	examples: { name: "Examples in Practice" },
 
+	"group-title-2": {
+		name: "Group title 2",
+		children: ["excellent-design"]
+	},
 	"excellent-design": {
 		name: "Excellent design",
 		badge: 5,
@@ -53,8 +61,10 @@ export const initialItems: Record<string, Item> = {
 };
 
 export const initialExpanded = [
+	"command-palette",
 	"great-design",
 	"invisible-means",
+	"group-title-2",
 	"excellent-design",
 	"design-at-scale",
 	"design-systems",

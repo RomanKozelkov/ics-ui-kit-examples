@@ -11,14 +11,11 @@ import { useTree } from "@headless-tree/react";
 import {
 	SidebarGroup,
 	SidebarGroupContent,
-	SidebarGroupLabel,
 	SidebarInsertionLine,
-	SidebarMenu,
-	SidebarMenuBadge,
-	SidebarMenuButton,
-	SidebarMenuItem
+	SidebarMenu
 } from "ics-ui-kit/components/sidebar";
-import { ChevronRight } from "lucide-react";
+import { NavigationTreeItem } from "./NavigationTreeItem";
+import { NavigationSectionLabel } from "./NavigationSectionLabel";
 import { useState } from "react";
 import {
 	ROOT_ID,
@@ -53,10 +50,8 @@ export function NavigationTree() {
 			keyboardDragAndDropFeature
 		],
 		getItemName: (item) => item.getItemData().name,
-		isItemFolder: (item) =>
-			(item.getItemData()?.children?.length ?? 0) > 0,
-		canDrag: (dragged) =>
-			dragged.every((i) => i.getItemMeta().level > 0),
+		isItemFolder: (item) => (item.getItemData()?.children?.length ?? 0) > 0,
+		canDrag: (dragged) => dragged.every((i) => i.getItemMeta().level > 0),
 		onDrop: createOnDropHandler<Item>((parent, newChildren) => {
 			setItems((prev) => ({
 				...prev,
@@ -90,56 +85,15 @@ export function NavigationTree() {
 				const groupData = group.getItemData();
 				return (
 					<SidebarGroup key={group.getId()}>
-						<SidebarGroupLabel>
-							<span className="flex-1">{groupData.name}</span>
-							{groupData.badge != null && (
-								<span className="ml-2 inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-amber-500 px-1.5 font-medium text-white text-xs">
-									{groupData.badge}
-								</span>
-							)}
-						</SidebarGroupLabel>
+						<NavigationSectionLabel data={groupData} />
 						<SidebarGroupContent>
-							<SidebarMenu>
-								{children.map((item) => {
-									const data = item.getItemData();
-									const depth =
-										item.getItemMeta().level - 1;
-									return (
-										<SidebarMenuItem key={item.getId()}>
-											<SidebarMenuButton
-												{...item.getProps()}
-												isActive={item.isSelected()}
-												tooltip={data.name}
-												className="group/nav"
-												style={{
-													paddingInlineStart:
-														8 + depth * INDENT
-												}}
-											>
-												{item.isFolder() ? (
-													<ChevronRight
-														className={
-															"size-4 shrink-0 text-muted-foreground transition-transform " +
-															(item.isExpanded()
-																? "rotate-90"
-																: "")
-														}
-													/>
-												) : (
-													<span className="size-4 shrink-0" />
-												)}
-												<span className="truncate">
-													{data.name}
-												</span>
-												{data.badge != null && (
-													<SidebarMenuBadge>
-														{data.badge}
-													</SidebarMenuBadge>
-												)}
-											</SidebarMenuButton>
-										</SidebarMenuItem>
-									);
-								})}
+							<SidebarMenu className="gap-0.5">
+								{children.map((item) => (
+									<NavigationTreeItem
+										key={item.getId()}
+										item={item}
+									/>
+								))}
 							</SidebarMenu>
 						</SidebarGroupContent>
 					</SidebarGroup>
