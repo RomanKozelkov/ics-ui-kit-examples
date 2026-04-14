@@ -1,7 +1,0 @@
-{
-	"title": "Animated Tabs",
-	"category": "tabs",
-	"canvas": {
-		"classNames": "flex justify-center w-full p-4"
-	}
-}

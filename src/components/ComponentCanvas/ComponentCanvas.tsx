@@ -1,13 +1,13 @@
 import { useState } from "react";
 import { UiComponent } from "../../data/types";
-import * as UiComponents from "../../examples";
 import { ComponentCode } from "../ComponentCode/ComponentCode";
 import { ComponentHeader } from "../ComponentHeader/ComponentHeader";
-import { ComponentPreview } from "../ComponentPreview/ComponentPreview";
+
+const DEFAULT_PREVIEW_HEIGHT = 640;
 
 export function ComponentCanvas(props: UiComponent) {
 	const [tab, setTab] = useState<"preview" | "code">("preview");
-	const Component = UiComponents[props.component];
+	const height = props.attributes.canvas?.height ?? DEFAULT_PREVIEW_HEIGHT;
 
 	return (
 		<div className="flex flex-col gap-4 my-4" id={props.slug}>
@@ -19,11 +19,12 @@ export function ComponentCanvas(props: UiComponent) {
 				onTabChange={setTab}
 			/>
 			{tab === "preview" ? (
-				<ComponentPreview
-					classNames={props.attributes.canvas?.classNames}
-				>
-					<Component {...props.attributes.props} />
-				</ComponentPreview>
+				<iframe
+					src={`/component/${props.slug}?embed=1`}
+					title={props.attributes.title}
+					className="w-full block border border-secondary-border bg-secondary-bg"
+					style={{ height }}
+				/>
 			) : (
 				<ComponentCode files={props.code} />
 			)}

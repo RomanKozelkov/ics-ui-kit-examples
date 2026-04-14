@@ -8,10 +8,28 @@ import { ComponentHeader } from "../ComponentHeader/ComponentHeader";
 import { cn } from "ics-ui-kit/lib/utils";
 import { Button, IconButton } from "ics-ui-kit/components/button";
 
-export function PageComponentCanvas(props: UiComponent) {
+type PageComponentCanvasProps = UiComponent & {
+	embed?: boolean;
+};
+
+export function PageComponentCanvas(props: PageComponentCanvasProps) {
 	const [tab, setTab] = useState<"preview" | "code">("preview");
 	const [panelOpen, setPanelOpen] = useState(true);
 	const Component = UiComponents[props.component];
+	const { embed } = props;
+
+	if (embed) {
+		return (
+			<div
+				className={cn(
+					"h-screen w-screen overflow-auto",
+					props.attributes.canvas?.classNames
+				)}
+			>
+				<Component {...props.attributes.props} />
+			</div>
+		);
+	}
 
 	return (
 		<div className="relative h-screen w-screen">

@@ -14,6 +14,7 @@ export interface CanvasAttributes {
 	category: string;
 	canvas: {
 		classNames?: string;
+		height?: number;
 	};
 	props?: Record<string, any>;
 }
