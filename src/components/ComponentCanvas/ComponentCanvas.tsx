@@ -20,7 +20,7 @@ export function ComponentCanvas(props: UiComponent) {
 			/>
 			{tab === "preview" ? (
 				<iframe
-					src={`/component/${props.slug}?embed=1`}
+					src={`${import.meta.env.BASE_URL}component/${props.slug}?embed=1`}
 					title={props.attributes.title}
 					className="w-full block border border-secondary-border bg-secondary-bg"
 					style={{ height }}
