@@ -34,7 +34,7 @@ export function PageComponentCanvas(props: PageComponentCanvasProps) {
 	}
 
 	return (
-		<div className="relative h-full w-full">
+		<div className={cn("relative h-full w-full", panelOpen ? "mb-12" : "")}>
 			{/* Full-screen preview */}
 
 			<div className="h-full w-full">
