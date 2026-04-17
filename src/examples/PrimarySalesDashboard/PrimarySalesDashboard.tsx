@@ -1,11 +1,11 @@
-import { useEffect, useState } from "react";
-import { api } from "./Api";
-import { Button, IconButton } from "ics-ui-kit/components/button";
-import { Filter, Settings } from "lucide-react";
-import { Toggle } from "ics-ui-kit/components/toggle";
-import { Icon } from "ics-ui-kit/components/icon";
 import { Collapsible, CollapsibleContent } from "ics-ui-kit/components/collapsible";
+import { Icon } from "ics-ui-kit/components/icon";
+import { Toggle } from "ics-ui-kit/components/toggle";
+import { Filter } from "lucide-react";
+import { useState } from "react";
 import { Filters } from "./Filters";
+import { GrowthDriversChart } from "./GrowthDriversChart";
+import { TrendChart } from "./TrendChart";
 
 export function PrimarySalesDashboard() {
 	const [filtersCollapsed, setFiltersCollapsed] = useState(false);
@@ -16,9 +16,9 @@ export function PrimarySalesDashboard() {
 				<div className="flex flex-col rounded-xl border border-secondary-border bg-secondary-bg p-4">
 					<div className="flex items-center">
 						<div className="flex items-center gap-4">
-							<h1 className="text-xl tracking-tight text-primary-fg">Primary Sales Dashboard</h1>
+							<h1 className="text-xl tracking-tight text-primary-fg">Primary Sales</h1>
 							<Toggle variant="outline" pressed={filtersCollapsed} onPressedChange={setFiltersCollapsed}>
-								<Icon icon={Filter} /> <span>Filters</span>
+								<Icon icon={Filter} /> <span>Фильтры</span>
 							</Toggle>
 						</div>
 					</div>
@@ -31,7 +31,22 @@ export function PrimarySalesDashboard() {
 					</div>
 				</div>
 
-				<div></div>
+				<div className="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-2">
+					<div className="rounded-xl border border-secondary-border bg-secondary-bg p-4">
+						<div className="mb-2">
+							<h2 className="text-base font-medium text-primary-fg">Тренд Primary Sales</h2>
+							<p className="text-xs text-secondary-fg">Помесячная динамика с YoY%</p>
+						</div>
+						<TrendChart />
+					</div>
+					<div className="rounded-xl border border-secondary-border bg-secondary-bg p-4">
+						<div className="mb-2">
+							<h2 className="text-base font-medium text-primary-fg">Драйверы роста / падения</h2>
+							<p className="text-xs text-secondary-fg">Вклад в изменение продаж (Contribution)</p>
+						</div>
+						<GrowthDriversChart />
+					</div>
+				</div>
 			</div>
 		</div>
 	);

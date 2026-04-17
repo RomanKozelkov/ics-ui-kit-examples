@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ArrowLeft, PanelBottomClose, PanelBottomOpen } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import { UiComponent } from "../../data/types";
@@ -7,16 +7,23 @@ import { ComponentCode } from "../ComponentCode/ComponentCode";
 import { ComponentHeader } from "../ComponentHeader/ComponentHeader";
 import { cn } from "ics-ui-kit/lib/utils";
 import { Button, IconButton } from "ics-ui-kit/components/button";
+import { useTheme } from "../../lib/useTheme";
 
 type PageComponentCanvasProps = UiComponent & {
 	embed?: boolean;
+	forcedTheme?: "light" | "dark";
 };
 
 export function PageComponentCanvas(props: PageComponentCanvasProps) {
 	const [tab, setTab] = useState<"preview" | "code">("preview");
 	const [panelOpen, setPanelOpen] = useState(true);
+	const [theme, setTheme] = useTheme();
 	const Component = UiComponents[props.component];
-	const { embed } = props;
+	const { embed, forcedTheme } = props;
+
+	useEffect(() => {
+		if (forcedTheme) setTheme(forcedTheme);
+	}, [forcedTheme, setTheme]);
 
 	if (embed) {
 		return (
@@ -95,6 +102,8 @@ export function PageComponentCanvas(props: PageComponentCanvasProps) {
 							component={props.component}
 							activeTab={tab}
 							onTabChange={setTab}
+							theme={theme}
+							onThemeChange={setTheme}
 						/>
 					</div>
 				</div>
