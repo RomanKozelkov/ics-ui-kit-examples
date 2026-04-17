@@ -10,11 +10,7 @@ type ComponentSearch = {
 export const Route = createFileRoute("/component/$slug")({
 	component: ComponentPage,
 	validateSearch: (search: Record<string, unknown>): ComponentSearch => ({
-		embed:
-			search.embed === true ||
-			search.embed === 1 ||
-			search.embed === "1" ||
-			search.embed === "true",
+		embed: search.embed === true || search.embed === 1 || search.embed === "1" || search.embed === "true",
 		theme: search.theme === "dark" ? "dark" : search.theme === "light" ? "light" : undefined
 	}),
 	loader: ({ params }) => {
@@ -33,7 +29,7 @@ function ComponentPage() {
 	}
 
 	return (
-		<div className="h-screen w-screen overflow-auto">
+		<div className="h-full w-full overflow-auto">
 			<PageComponentCanvas {...component} />
 		</div>
 	);

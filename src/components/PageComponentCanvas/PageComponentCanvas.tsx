@@ -27,29 +27,19 @@ export function PageComponentCanvas(props: PageComponentCanvasProps) {
 
 	if (embed) {
 		return (
-			<div
-				className={cn(
-					"h-screen w-screen overflow-auto",
-					props.attributes.canvas?.classNames
-				)}
-			>
+			<div className={cn("h-full w-full overflow-auto", props.attributes.canvas?.classNames)}>
 				<Component {...props.attributes.props} />
 			</div>
 		);
 	}
 
 	return (
-		<div className="relative h-screen w-screen">
+		<div className="relative h-full w-full">
 			{/* Full-screen preview */}
 
-			<div className="h-screen w-screen">
+			<div className="h-full w-full">
 				{tab === "preview" && (
-					<div
-						className={cn(
-							"h-full w-full overflow-auto",
-							props.attributes.canvas?.classNames
-						)}
-					>
+					<div className={cn("h-full w-full overflow-auto", props.attributes.canvas?.classNames)}>
 						<Component {...props.attributes.props} />
 					</div>
 				)}
@@ -62,19 +52,14 @@ export function PageComponentCanvas(props: PageComponentCanvasProps) {
 			</div>
 
 			{!panelOpen && (
-				<div className="fixed bottom-0 left-0 py-2 px-2 z-[2147483647] opacity-30 hover:opacity-100 transition-opacity duration-200">
-					<IconButton
-						variant="outline"
-						size="sm"
-						onClick={() => setPanelOpen(true)}
-						icon={PanelBottomOpen}
-					/>
+				<div className="fixed bottom-0 left-0 z-[2147483647] px-2 py-2 opacity-30 transition-opacity duration-200 hover:opacity-100">
+					<IconButton variant="outline" size="sm" onClick={() => setPanelOpen(true)} icon={PanelBottomOpen} />
 				</div>
 			)}
 
 			{/* Bottom panel */}
 			{panelOpen && (
-				<div className="py-2 px-2 fixed bottom-0 left-0 right-0 z-[2147483647] border-t border-secondary-border bg-primary-bg shadow-[0_-4px_16px_rgba(0,0,0,0.1)]">
+				<div className="fixed bottom-0 left-0 right-0 z-[2147483647] border-t border-secondary-border bg-primary-bg px-2 py-2 shadow-[0_-4px_16px_rgba(0,0,0,0.1)]">
 					<div className="flex items-center">
 						<div className="shrink-0">
 							<IconButton
@@ -86,12 +71,7 @@ export function PageComponentCanvas(props: PageComponentCanvasProps) {
 						</div>
 						<div className="shrink-0">
 							<Link to="/">
-								<Button
-									variant="ghost"
-									size="sm"
-									asChild
-									startIcon={ArrowLeft}
-								>
+								<Button variant="ghost" size="sm" asChild startIcon={ArrowLeft}>
 									Back to home
 								</Button>
 							</Link>

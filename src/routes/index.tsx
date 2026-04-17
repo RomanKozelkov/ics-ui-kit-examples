@@ -16,11 +16,10 @@ function Home() {
 	const state = Route.useLoaderData();
 
 	return (
-		<div className="bg-primary-bg h-screen w-screen overflow-auto">
-			<div className="p-4 container mx-auto">
-				<h2 className="text-2xl font-bold pb-4 flex items-center">
-					<Icon icon={ToolCase} size="lg" className="mr-2" /> UI Kit
-					Examples
+		<div className="h-full w-full overflow-auto bg-primary-bg">
+			<div className="container mx-auto p-4">
+				<h2 className="flex items-center pb-4 text-2xl font-bold">
+					<Icon icon={ToolCase} size="lg" className="mr-2" /> UI Kit Examples
 				</h2>
 				<div className="flex flex-col gap-4">
 					{state.map((component) => (
