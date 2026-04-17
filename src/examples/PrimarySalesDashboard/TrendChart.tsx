@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
 import ReactECharts from "echarts-for-react";
-import { getChartTheme, useThemeKey } from "./chartTheme";
 
 const MONTHS = ["Янв", "Фев", "Мар", "Апр", "Май", "Июн", "Июл", "Авг", "Сен", "Окт", "Ноя", "Дек"];
 
@@ -9,29 +8,41 @@ const PY = [180000, 215000, 255000, 270000, 280000, 285000, 295000, 300000, 2850
 
 const YOY = CY.map((v, i) => Number((((v - PY[i]) / PY[i]) * 100).toFixed(1)));
 
+const COLORS = {
+	text: "#6b7280",
+	textStrong: "#111827",
+	grid: "#e5e7eb",
+	info: "#3b82f6",
+	infoSoft: "rgba(59, 130, 246, 0.35)",
+	infoFade: "rgba(59, 130, 246, 0)",
+	muted: "#9ca3af",
+	success: "#10b981",
+	error: "#ef4444",
+	tooltipBg: "#111827",
+	tooltipFg: "#f9fafb"
+};
+
 export function TrendChart() {
 	const [mounted, setMounted] = useState(false);
-	const themeKey = useThemeKey();
 	useEffect(() => setMounted(true), []);
 
-	const option = useMemo(() => {
-		if (!mounted) return null;
-		const t = getChartTheme();
-		return {
+	const option = useMemo(
+		() => ({
 			backgroundColor: "transparent",
+			animation: false,
 			tooltip: {
 				trigger: "axis",
-				axisPointer: { type: "cross", label: { backgroundColor: t.tooltipBg } },
-				backgroundColor: t.tooltipBg,
-				borderColor: t.tooltipBorder,
-				textStyle: { color: t.tooltipFg }
+				axisPointer: { type: "cross" },
+				backgroundColor: COLORS.tooltipBg,
+				borderColor: COLORS.tooltipBg,
+				textStyle: { color: COLORS.tooltipFg }
 			},
 			legend: {
 				data: [
 					{ name: "CY (2025)", icon: "circle" },
 					{ name: "PY (2024)", icon: "circle" }
 				],
-				textStyle: { color: t.textPrimary },
+				textStyle: { color: COLORS.textStrong },
 				left: 0,
 				top: 0,
 				itemGap: 16
@@ -46,16 +57,16 @@ export function TrendChart() {
 					type: "category",
 					data: MONTHS,
 					gridIndex: 0,
-					axisLine: { lineStyle: { color: t.grid } },
-					axisLabel: { color: t.textSecondary },
+					axisLine: { lineStyle: { color: COLORS.grid } },
+					axisLabel: { color: COLORS.text },
 					axisTick: { show: false }
 				},
 				{
 					type: "category",
 					data: MONTHS,
 					gridIndex: 1,
-					axisLine: { lineStyle: { color: t.grid } },
-					axisLabel: { color: t.textSecondary },
+					axisLine: { lineStyle: { color: COLORS.grid } },
+					axisLabel: { color: COLORS.text },
 					axisTick: { show: false }
 				}
 			],
@@ -63,9 +74,9 @@ export function TrendChart() {
 				{
 					type: "value",
 					gridIndex: 0,
-					splitLine: { lineStyle: { color: t.gridSoft } },
+					splitLine: { lineStyle: { color: COLORS.grid } },
 					axisLabel: {
-						color: t.textSecondary,
+						color: COLORS.text,
 						formatter: (v: number) => v.toLocaleString("ru-RU")
 					},
 					min: 0,
@@ -77,7 +88,7 @@ export function TrendChart() {
 					gridIndex: 1,
 					splitLine: { show: false },
 					axisLabel: {
-						color: t.textSecondary,
+						color: COLORS.text,
 						formatter: (v: number) => `${v}%`
 					},
 					splitNumber: 2
@@ -91,8 +102,8 @@ export function TrendChart() {
 					symbol: "circle",
 					symbolSize: 6,
 					showSymbol: false,
-					lineStyle: { color: t.info, width: 2.5 },
-					itemStyle: { color: t.info },
+					lineStyle: { color: COLORS.info, width: 2.5 },
+					itemStyle: { color: COLORS.info },
 					areaStyle: {
 						color: {
 							type: "linear",
@@ -101,8 +112,8 @@ export function TrendChart() {
 							x2: 0,
 							y2: 1,
 							colorStops: [
-								{ offset: 0, color: t.infoSoft },
-								{ offset: 1, color: t.infoFade }
+								{ offset: 0, color: COLORS.infoSoft },
+								{ offset: 1, color: COLORS.infoFade }
 							]
 						}
 					},
@@ -113,8 +124,8 @@ export function TrendChart() {
 					type: "line",
 					smooth: true,
 					symbol: "none",
-					lineStyle: { color: t.textMuted, width: 1.5, type: "dashed" },
-					itemStyle: { color: t.textMuted },
+					lineStyle: { color: COLORS.muted, width: 1.5, type: "dashed" },
+					itemStyle: { color: COLORS.muted },
 					data: PY
 				},
 				{
@@ -124,24 +135,17 @@ export function TrendChart() {
 					yAxisIndex: 1,
 					barWidth: "55%",
 					itemStyle: {
-						color: (params: { value: number }) => (params.value >= 0 ? t.success : t.error),
+						color: (params: { value: number }) => (params.value >= 0 ? COLORS.success : COLORS.error),
 						borderRadius: [2, 2, 0, 0]
 					},
 					data: YOY
 				}
 			]
-		};
-	}, [mounted, themeKey]);
-
-	if (!mounted || !option) return <div className="h-[420px] w-full" />;
-
-	return (
-		<ReactECharts
-			key={themeKey}
-			option={option}
-			style={{ height: 420, width: "100%" }}
-			notMerge
-			lazyUpdate
-		/>
+		}),
+		[]
 	);
+
+	if (!mounted) return <div className="h-[420px] w-full" />;
+
+	return <ReactECharts option={option} style={{ height: 420, width: "100%" }} notMerge lazyUpdate />;
 }

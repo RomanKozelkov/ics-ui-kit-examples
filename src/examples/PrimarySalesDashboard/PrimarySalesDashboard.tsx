@@ -5,7 +5,10 @@ import { Filter } from "lucide-react";
 import { useState } from "react";
 import { Filters } from "./Filters";
 import { GrowthDriversChart } from "./GrowthDriversChart";
+import { PrimarySalesValueCard } from "./PrimarySalesValueCard";
+import { PrimarySalesUnitsCard } from "./PrimarySalesUnitsCard";
 import { TrendChart } from "./TrendChart";
+import { cn } from "ics-ui-kit/lib/utils";
 
 export function PrimarySalesDashboard() {
 	const [filtersCollapsed, setFiltersCollapsed] = useState(false);
@@ -24,11 +27,16 @@ export function PrimarySalesDashboard() {
 					</div>
 					<div>
 						<Collapsible open={filtersCollapsed} onOpenChange={setFiltersCollapsed}>
-							<CollapsibleContent className="mt-4">
+							<CollapsibleContent className="pt-4">
 								<Filters />
 							</CollapsibleContent>
 						</Collapsible>
 					</div>
+				</div>
+
+				<div className="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-2">
+					<PrimarySalesValueCard />
+					<PrimarySalesUnitsCard />
 				</div>
 
 				<div className="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-2">

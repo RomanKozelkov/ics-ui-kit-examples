@@ -1,7 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import ReactECharts from "echarts-for-react";
 import { ToggleGroup, ToggleGroupItem } from "ics-ui-kit/components/toggle-group";
-import { getChartTheme, useThemeKey } from "./chartTheme";
 
 type View = "products" | "distributors";
 
@@ -33,6 +32,9 @@ const DISTRIBUTORS: { name: string; value: number }[] = [
 	{ name: "Фармкомплект", value: -780000 }
 ];
 
+const SUCCESS = "#10b981";
+const ERROR = "#ef4444";
+
 function formatRub(v: number) {
 	const abs = Math.abs(v);
 	if (abs >= 1_000_000) return `${(v / 1_000_000).toFixed(1)}M ₽`;
@@ -43,81 +45,46 @@ function formatRub(v: number) {
 export function GrowthDriversChart() {
 	const [mounted, setMounted] = useState(false);
 	const [view, setView] = useState<View>("products");
-	const themeKey = useThemeKey();
 	useEffect(() => setMounted(true), []);
 
 	const option = useMemo(() => {
-		if (!mounted) return null;
-		const t = getChartTheme();
 		const data = view === "products" ? PRODUCTS : DISTRIBUTORS;
-		const sorted = [...data].sort((a, b) => b.value - a.value);
-		const categories = sorted.map((d) => d.name).reverse();
-		const values = sorted.map((d) => d.value).reverse();
+		const sorted = [...data].sort((a, b) => b.value - a.value).reverse();
+		const categories = sorted.map((d) => d.name);
+		const values = sorted.map((d) => d.value);
 
 		return {
-			backgroundColor: "transparent",
+			animation: false,
 			tooltip: {
-				trigger: "axis",
-				axisPointer: { type: "shadow" },
-				backgroundColor: t.tooltipBg,
-				borderColor: t.tooltipBorder,
-				textStyle: { color: t.tooltipFg },
-				formatter: (params: { name: string; value: number }[]) => {
-					const p = params[0];
-					return `${p.name}<br/><b>${formatRub(p.value)}</b>`;
-				}
+				trigger: "item",
+				formatter: (p: { name: string; value: number }) =>
+					`${p.name}<br/><b>${formatRub(p.value)}</b>`
 			},
-			legend: {
-				data: [
-					{ name: "Рост", icon: "circle" },
-					{ name: "Падение", icon: "circle" }
-				],
-				textStyle: { color: t.textPrimary },
-				left: 0,
-				top: 0,
-				itemGap: 16
-			},
-			grid: { left: 8, right: 24, top: 40, bottom: 28, containLabel: true },
+			grid: { left: 8, right: 24, top: 16, bottom: 28, containLabel: true },
 			xAxis: {
 				type: "value",
-				axisLine: { show: false },
-				axisTick: { show: false },
-				splitLine: { lineStyle: { color: t.gridSoft } },
-				axisLabel: {
-					color: t.textSecondary,
-					formatter: (v: number) => formatRub(v)
-				}
+				axisLabel: { formatter: (v: number) => formatRub(v) }
 			},
 			yAxis: {
 				type: "category",
 				data: categories,
-				axisLine: { show: false },
-				axisTick: { show: false },
-				axisLabel: {
-					color: t.textPrimary,
-					fontSize: 11,
-					width: 110,
-					overflow: "break"
-				}
+				axisLabel: { fontSize: 11, width: 110, overflow: "break" }
 			},
 			series: [
 				{
-					name: "Value",
 					type: "bar",
 					data: values.map((v) => ({
 						value: v,
 						itemStyle: {
-							color: v >= 0 ? t.success : t.error,
+							color: v >= 0 ? SUCCESS : ERROR,
 							borderRadius: v >= 0 ? [0, 4, 4, 0] : [4, 0, 0, 4]
 						}
 					})),
 					barWidth: "60%"
-				},
-				{ name: "Рост", type: "bar", data: [], itemStyle: { color: t.success } },
-				{ name: "Падение", type: "bar", data: [], itemStyle: { color: t.error } }
+				}
 			]
 		};
-	}, [mounted, view, themeKey]);
+	}, [view]);
 
 	return (
 		<div className="flex h-full flex-col">
@@ -133,14 +100,8 @@ export function GrowthDriversChart() {
 					<ToggleGroupItem value="distributors">Дистрибьюторы</ToggleGroupItem>
 				</ToggleGroup>
 			</div>
-			{mounted && option ? (
-				<ReactECharts
-					key={themeKey}
-					option={option}
-					style={{ height: 420, width: "100%" }}
-					notMerge
-					lazyUpdate
-				/>
+			{mounted ? (
+				<ReactECharts option={option} style={{ height: 420, width: "100%" }} notMerge lazyUpdate />
 			) : (
 				<div className="h-[420px] w-full" />
 			)}
