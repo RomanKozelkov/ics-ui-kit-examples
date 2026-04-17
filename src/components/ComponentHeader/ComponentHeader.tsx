@@ -6,7 +6,7 @@ import {
 	TooltipContent,
 	TooltipTrigger
 } from "ics-ui-kit/components/tooltip";
-import { ExternalLink } from "lucide-react";
+import { ExternalLink, Moon, Sun } from "lucide-react";
 import { GITHUB_REPO_URL, STACKBLITZ_URL } from "../../data/config";
 import { GithubIcon } from "../icons/GithubIcon";
 import { StackBlitzIcon } from "../icons/StackBlitzIcon";
@@ -17,6 +17,8 @@ interface ComponentHeaderProps {
 	component: string;
 	activeTab: "preview" | "code";
 	onTabChange: (tab: "preview" | "code") => void;
+	theme?: "light" | "dark";
+	onThemeChange?: (theme: "light" | "dark") => void;
 }
 
 export function ComponentHeader({
@@ -24,7 +26,9 @@ export function ComponentHeader({
 	slug,
 	component,
 	activeTab,
-	onTabChange
+	onTabChange,
+	theme,
+	onThemeChange
 }: ComponentHeaderProps) {
 	return (
 		<div className="flex items-center py-2 h-8 gap-4 w-full">
@@ -52,6 +56,21 @@ export function ComponentHeader({
 				{title}
 			</a>
 			<div className="ml-auto flex items-center gap-2">
+				{theme && onThemeChange && (
+					<Tooltip>
+						<TooltipTrigger asChild>
+							<IconButton
+								icon={theme === "dark" ? Sun : Moon}
+								size="sm"
+								variant="outline"
+								onClick={() => onThemeChange(theme === "dark" ? "light" : "dark")}
+							/>
+						</TooltipTrigger>
+						<TooltipContent>
+							{theme === "dark" ? "Switch to light" : "Switch to dark"}
+						</TooltipContent>
+					</Tooltip>
+				)}
 				<Tooltip>
 					<TooltipTrigger asChild>
 						<a

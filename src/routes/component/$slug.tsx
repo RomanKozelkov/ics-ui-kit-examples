@@ -4,16 +4,14 @@ import { components } from "virtual:components";
 
 type ComponentSearch = {
 	embed?: boolean;
+	theme?: "light" | "dark";
 };
 
 export const Route = createFileRoute("/component/$slug")({
 	component: ComponentPage,
 	validateSearch: (search: Record<string, unknown>): ComponentSearch => ({
-		embed:
-			search.embed === true ||
-			search.embed === 1 ||
-			search.embed === "1" ||
-			search.embed === "true"
+		embed: search.embed === true || search.embed === 1 || search.embed === "1" || search.embed === "true",
+		theme: search.theme === "dark" ? "dark" : search.theme === "light" ? "light" : undefined
 	}),
 	loader: ({ params }) => {
 		const component = components.find((c) => c.slug === params.slug);
@@ -24,14 +22,14 @@ export const Route = createFileRoute("/component/$slug")({
 
 function ComponentPage() {
 	const component = Route.useLoaderData();
-	const { embed } = Route.useSearch();
+	const { embed, theme } = Route.useSearch();
 
 	if (embed) {
-		return <PageComponentCanvas {...component} embed />;
+		return <PageComponentCanvas {...component} embed forcedTheme={theme} />;
 	}
 
 	return (
-		<div className="h-screen w-screen overflow-auto">
+		<div className="h-full w-full overflow-auto">
 			<PageComponentCanvas {...component} />
 		</div>
 	);

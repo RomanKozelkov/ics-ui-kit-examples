@@ -7,6 +7,7 @@ const DEFAULT_PREVIEW_HEIGHT = 640;
 
 export function ComponentCanvas(props: UiComponent) {
 	const [tab, setTab] = useState<"preview" | "code">("preview");
+	const [theme, setTheme] = useState<"light" | "dark">("light");
 	const height = props.attributes.canvas?.height ?? DEFAULT_PREVIEW_HEIGHT;
 
 	return (
@@ -17,10 +18,12 @@ export function ComponentCanvas(props: UiComponent) {
 				component={props.component}
 				activeTab={tab}
 				onTabChange={setTab}
+				theme={theme}
+				onThemeChange={setTheme}
 			/>
 			{tab === "preview" ? (
 				<iframe
-					src={`${import.meta.env.BASE_URL}component/${props.slug}?embed=1`}
+					src={`${import.meta.env.BASE_URL}component/${props.slug}?embed=1&theme=${theme}`}
 					title={props.attributes.title}
 					className="w-full block border border-secondary-border bg-secondary-bg"
 					style={{ height }}
