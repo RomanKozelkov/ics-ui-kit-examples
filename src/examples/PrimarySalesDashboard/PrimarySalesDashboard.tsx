@@ -1,7 +1,7 @@
 import { Collapsible, CollapsibleContent } from "ics-ui-kit/components/collapsible";
 import { Icon } from "ics-ui-kit/components/icon";
 import { Toggle } from "ics-ui-kit/components/toggle";
-import { Filter } from "lucide-react";
+import { ChevronDown, ChevronRight, ChevronUp, Filter } from "lucide-react";
 import { useState } from "react";
 import { Filters } from "./Filters";
 import { GrowthDriversChart } from "./ChartGrowthDrivers";
@@ -10,29 +10,37 @@ import { PrimarySalesUnitsCard } from "./CardUnits";
 import { TrendChart } from "./TrendChart";
 import { DataGridTopDistributors } from "./DataGridTopDistributors";
 import { DataGridTopBrands } from "./DataGridTopBrands";
+import { TriggerButton } from "ics-ui-kit/components/button";
+import { cn } from "ics-ui-kit/lib/utils";
 export function PrimarySalesDashboard() {
 	const [filtersCollapsed, setFiltersCollapsed] = useState(false);
 
 	return (
 		<div className="h-full w-full bg-primary-bg">
-			<div className="container mx-auto py-4">
-				<div className="flex flex-col rounded-xl border border-secondary-border bg-secondary-bg p-4">
-					<div className="flex items-center">
-						<div className="flex items-center gap-4">
-							<h1 className="text-xl tracking-tight text-primary-fg">Primary Sales</h1>
-							<Toggle variant="outline" pressed={filtersCollapsed} onPressedChange={setFiltersCollapsed}>
-								<Icon icon={Filter} /> <span>Фильтры</span>
-							</Toggle>
-						</div>
-					</div>
+			<div className="container mx-auto py-8">
+				<div className="mb-4 flex items-center">
 					<div>
-						<Collapsible open={filtersCollapsed} onOpenChange={setFiltersCollapsed}>
-							<CollapsibleContent className="pt-4">
-								<Filters />
-							</CollapsibleContent>
-						</Collapsible>
+						<h1 className="text-2xl font-semibold tracking-tight text-primary-fg">Primary Sales</h1>
+					</div>
+					<div className="ml-auto">
+						<TriggerButton
+							onClick={() => setFiltersCollapsed(!filtersCollapsed)}
+							startIcon={Filter}
+							className={cn(filtersCollapsed ? "bg-secondary-bg-hover shadow-none" : "")}
+						>
+							Фильтры
+							{filtersCollapsed ? <Icon icon={ChevronUp} /> : <Icon icon={ChevronDown} />}
+						</TriggerButton>
 					</div>
 				</div>
+
+				<Collapsible open={filtersCollapsed} onOpenChange={setFiltersCollapsed}>
+					<CollapsibleContent>
+						<div className="flex flex-col rounded-xl border border-secondary-border bg-secondary-bg p-4">
+							<Filters />
+						</div>
+					</CollapsibleContent>
+				</Collapsible>
 
 				<div className="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-2">
 					<PrimarySalesValueCard />

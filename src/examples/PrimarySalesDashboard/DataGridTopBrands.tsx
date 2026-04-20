@@ -1,11 +1,4 @@
-import {
-	Table,
-	TableHeader,
-	TableBody,
-	TableHead,
-	TableRow,
-	TableCell
-} from "ics-ui-kit/components/table";
+import { Table, TableHeader, TableBody, TableHead, TableRow, TableCell } from "ics-ui-kit/components/table";
 import { Icon } from "ics-ui-kit/components/icon";
 import { Pill, TrendingDown, TrendingUp } from "lucide-react";
 
@@ -70,7 +63,7 @@ export function DataGridTopBrands() {
 					<Icon icon={Pill} size="sm" />
 					<h2 className="text-base font-medium text-primary-fg">Топ Бренды</h2>
 				</div>
-				<a href="#" className="text-xs text-accent-fg hover:underline">
+				<a href="#" className="text-accent-fg text-xs hover:underline">
 					Подробнее ›
 				</a>
 			</div>
