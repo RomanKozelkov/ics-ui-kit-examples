@@ -3,22 +3,25 @@ import {
 	SelectContent,
 	SelectGroup,
 	SelectItem,
-	SelectLabel,
 	SelectTrigger,
 	SelectValue
 } from "ics-ui-kit/components/select";
+import { useFiltersStore } from "../../stores/useFiltersStore";
+import { FilterField } from "../components/FilterField";
 
 export function FilterYear() {
+	const year = useFiltersStore((s) => s.year);
+	const setYear = useFiltersStore((s) => s.setYear);
+
 	return (
-		<label className="flex flex-col gap-2 space-y-0">
-			<span className="text-sm font-medium leading-none text-primary-fg">Год анализа</span>
-			<Select defaultValue="2025">
+		<FilterField label="Год анализа">
+			<Select value={String(year)} onValueChange={(v) => setYear(Number(v))}>
 				<SelectTrigger>
 					<SelectValue />
 				</SelectTrigger>
 				<SelectContent>
 					<SelectGroup>
-						<SelectLabel>Год анализа</SelectLabel>
+						<SelectItem value="2021">2021</SelectItem>
 						<SelectItem value="2022">2022</SelectItem>
 						<SelectItem value="2023">2023</SelectItem>
 						<SelectItem value="2024">2024</SelectItem>
@@ -26,6 +29,6 @@ export function FilterYear() {
 					</SelectGroup>
 				</SelectContent>
 			</Select>
-		</label>
+		</FilterField>
 	);
 }

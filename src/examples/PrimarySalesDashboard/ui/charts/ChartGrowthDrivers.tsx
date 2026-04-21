@@ -1,36 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import ReactECharts from "echarts-for-react";
 import { ToggleGroup, ToggleGroupItem } from "ics-ui-kit/components/toggle-group";
-
-type View = "products" | "distributors";
-
-const PRODUCTS: { name: string; value: number }[] = [
-	{ name: "Амоксициллин 500мг", value: 2100000 },
-	{ name: "Ибупрофен 400мг", value: 1550000 },
-	{ name: "Омепразол 20мг", value: 1150000 },
-	{ name: "Цефтриаксон 1г", value: 980000 },
-	{ name: "Метформин 850мг", value: 820000 },
-	{ name: "Азитромицин 250мг", value: 680000 },
-	{ name: "Лозартан 50мг", value: 460000 },
-	{ name: "Нимесулид 100мг", value: -180000 },
-	{ name: "Диклофенак 75мг", value: -290000 },
-	{ name: "Кларитромицин 500мг", value: -360000 },
-	{ name: "Парацетамол 500мг", value: -440000 },
-	{ name: "Аторвастатин 20мг", value: -680000 }
-];
-
-const DISTRIBUTORS: { name: string; value: number }[] = [
-	{ name: "Протек", value: 1850000 },
-	{ name: "Катрен", value: 1320000 },
-	{ name: "Пульс", value: 910000 },
-	{ name: "ФК Гранд Капитал", value: 640000 },
-	{ name: "Р-Фарм", value: 480000 },
-	{ name: "Профитмед", value: 310000 },
-	{ name: "БСС", value: -220000 },
-	{ name: "Гален", value: -340000 },
-	{ name: "Морон", value: -520000 },
-	{ name: "Фармкомплект", value: -780000 }
-];
+import { useDriversChart, type DriversView as View } from "../../hooks/useDriversChart";
 
 const SUCCESS = "#10b981";
 const ERROR = "#ef4444";
@@ -47,18 +18,19 @@ export function GrowthDriversChart() {
 	const [view, setView] = useState<View>("products");
 	useEffect(() => setMounted(true), []);
 
+	const { data, isLoading } = useDriversChart(view);
+
 	const option = useMemo(() => {
-		const data = view === "products" ? PRODUCTS : DISTRIBUTORS;
-		const sorted = [...data].sort((a, b) => b.value - a.value).reverse();
+		const rows = data ?? [];
+		const sorted = [...rows].sort((a, b) => b.diff - a.diff).reverse();
 		const categories = sorted.map((d) => d.name);
-		const values = sorted.map((d) => d.value);
+		const values = sorted.map((d) => d.diff);
 
 		return {
 			animation: false,
 			tooltip: {
 				trigger: "item",
-				formatter: (p: { name: string; value: number }) =>
-					`${p.name}<br/><b>${formatRub(p.value)}</b>`
+				formatter: (p: { name: string; value: number }) => `${p.name}<br/><b>${formatRub(p.value)}</b>`
 			},
 			grid: { left: 8, right: 24, top: 16, bottom: 28, containLabel: true },
 			xAxis: {
@@ -84,7 +56,7 @@ export function GrowthDriversChart() {
 				}
 			]
 		};
-	}, [view]);
+	}, [data]);
 
 	return (
 		<div className="flex h-full flex-col">
@@ -101,7 +73,14 @@ export function GrowthDriversChart() {
 				</ToggleGroup>
 			</div>
 			{mounted ? (
-				<ReactECharts option={option} style={{ height: 420, width: "100%" }} notMerge lazyUpdate />
+				<div className="relative">
+					<ReactECharts option={option} style={{ height: 420, width: "100%" }} notMerge lazyUpdate />
+					{isLoading && !data ? (
+						<div className="absolute inset-0 flex items-center justify-center text-sm text-secondary-fg">
+							Загрузка…
+						</div>
+					) : null}
+				</div>
 			) : (
 				<div className="h-[420px] w-full" />
 			)}
