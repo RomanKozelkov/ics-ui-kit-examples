@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import ReactECharts from "echarts-for-react";
 import { ToggleGroup, ToggleGroupItem } from "ics-ui-kit/components/toggle-group";
-import { useDriversChart, type DriversView as View } from "../../hooks/useDriversChart";
+import { useDriversChartView, type DriversView as View } from "./useDriversData";
 
 const SUCCESS = "#10b981";
 const ERROR = "#ef4444";
@@ -18,7 +18,7 @@ export function GrowthDriversChart() {
 	const [view, setView] = useState<View>("products");
 	useEffect(() => setMounted(true), []);
 
-	const { data, isLoading } = useDriversChart(view);
+	const { data, isLoading } = useDriversChartView(view);
 
 	const option = useMemo(() => {
 		const rows = data ?? [];

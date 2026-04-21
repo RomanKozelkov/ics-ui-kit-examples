@@ -1,13 +1,15 @@
 import { Table, TableHeader, TableBody, TableHead, TableRow, TableCell } from "ics-ui-kit/components/table";
 import { Icon } from "ics-ui-kit/components/icon";
 import { Pill } from "lucide-react";
-import { useBrandsTable } from "../../hooks/useBrandsTable";
+import { useBrandsTableView } from "./useBrandsData";
+import { useMeasureLabel } from "./useDistributorsData";
 import { RankCell, YoyCell } from "./TableCells";
 
 const nf = new Intl.NumberFormat("ru-RU");
 
 export function DataGridTopBrands() {
-	const { data, isLoading } = useBrandsTable();
+	const { data, isLoading } = useBrandsTableView();
+	const measureLabel = useMeasureLabel();
 	const rows = data ?? [];
 
 	return (
@@ -26,7 +28,7 @@ export function DataGridTopBrands() {
 					<TableRow>
 						<TableHead className="w-[40px]">№</TableHead>
 						<TableHead>Бренд</TableHead>
-						<TableHead className="text-right">Sales</TableHead>
+						<TableHead className="text-right">{measureLabel}</TableHead>
 						<TableHead className="text-right">YOY%</TableHead>
 						<TableHead className="text-right">Share</TableHead>
 						<TableHead className="text-right">Rank</TableHead>

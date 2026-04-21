@@ -437,3 +437,319 @@ export async function fetchCards(input: CardsFetcherInput): Promise<CardsRaw> {
 
 	return { year: input.year, rows };
 }
+
+export type DistributorsRaw = {
+	year: number;
+	rows: Array<{ name: string; year: number; units: number; valueUsd: number; valueRub: number }>;
+};
+
+type DistributorsFetcherInput = Pick<FiltersState, "year" | "sourceType" | "bindType" | "period">;
+
+const COUNTERPARTY_COL: TabularColumnRef = {
+	column: { table: "Counterparty~Tabular", name: "Counterparty" }
+};
+
+function buildDistributorsRequest(input: DistributorsFetcherInput): TabularRequest {
+	const main: TabularFilter[] = [
+		{
+			op: "eq",
+			column: { table: "Source Type~Tabular", name: "Source Type" },
+			value: input.sourceType
+		},
+		{
+			op: "eq",
+			column: { table: "Bind Type~Tabular", name: "Bind Type" },
+			value: input.bindType
+		},
+		{
+			op: "in",
+			column: { table: "Calendar~Tabular", name: "Year" },
+			list: [input.year - 1, input.year]
+		}
+	];
+
+	const ranges = generatePeriodRanges(input.year, input.period);
+	if (ranges) {
+		main.push(buildPeriodIdsFilter(ranges));
+	}
+
+	return {
+		select: [
+			{ column: { table: "Primary Sales~Tabular", name: "Primary Sales, unit" } },
+			{ column: { table: "Primary Sales~Tabular", name: "Primary Sales, USD conversion" } },
+			{ column: { table: "Primary Sales~Tabular", name: "Primary Sales, INV RUB" } },
+			COUNTERPARTY_COL,
+			{ column: { table: "Calendar~Tabular", name: "Year" } }
+		],
+		take: 10000,
+		skip: 0,
+		filter: { op: "and", groups: main }
+	};
+}
+
+export async function fetchDistributorsData(input: DistributorsFetcherInput): Promise<DistributorsRaw> {
+	const body = buildDistributorsRequest(input);
+	const res = await fetch(`${API_URL}/tabular/fetch`, {
+		method: "POST",
+		headers: { "Content-Type": "application/json" },
+		credentials: "include",
+		body: JSON.stringify(body)
+	});
+	if (!res.ok) throw new Error(`API error: ${res.status}`);
+	const data = (await res.json()) as TabularResponse;
+
+	const rows = data.payload.rows.map((r) => ({
+		name: String(r[GROUP_FIELD.counterparty] ?? ""),
+		year: Number(r[YEAR_FIELD]),
+		units: Number(r[MEASURE_FIELD.unit] ?? 0),
+		valueUsd: Number(r[MEASURE_FIELD.usd] ?? 0),
+		valueRub: Number(r[MEASURE_FIELD.rub] ?? 0)
+	}));
+
+	return { year: input.year, rows };
+}
+
+export type BrandsRaw = {
+	year: number;
+	rows: Array<{ name: string; year: number; units: number; valueUsd: number; valueRub: number }>;
+};
+
+type BrandsFetcherInput = Pick<
+	FiltersState,
+	"year" | "sourceType" | "bindType" | "period" | "counterparties"
+>;
+
+const BRAND_COL: TabularColumnRef = {
+	column: { table: "Product~Tabular", name: "Product Brand" }
+};
+
+function buildBrandsRequest(input: BrandsFetcherInput): TabularRequest {
+	const main: TabularFilter[] = [
+		{
+			op: "eq",
+			column: { table: "Source Type~Tabular", name: "Source Type" },
+			value: input.sourceType
+		},
+		{
+			op: "eq",
+			column: { table: "Bind Type~Tabular", name: "Bind Type" },
+			value: input.bindType
+		},
+		{
+			op: "in",
+			column: { table: "Calendar~Tabular", name: "Year" },
+			list: [input.year - 1, input.year]
+		}
+	];
+
+	if (input.counterparties.length > 0) {
+		main.push({
+			op: "in",
+			column: { table: "Counterparty~Tabular", name: "Counterparty" },
+			list: input.counterparties.map((c) => c.value)
+		});
+	}
+
+	const ranges = generatePeriodRanges(input.year, input.period);
+	if (ranges) {
+		main.push(buildPeriodIdsFilter(ranges));
+	}
+
+	return {
+		select: [
+			{ column: { table: "Primary Sales~Tabular", name: "Primary Sales, unit" } },
+			{ column: { table: "Primary Sales~Tabular", name: "Primary Sales, USD conversion" } },
+			{ column: { table: "Primary Sales~Tabular", name: "Primary Sales, INV RUB" } },
+			BRAND_COL,
+			{ column: { table: "Calendar~Tabular", name: "Year" } }
+		],
+		take: 10000,
+		skip: 0,
+		filter: { op: "and", groups: main }
+	};
+}
+
+export async function fetchBrandsData(input: BrandsFetcherInput): Promise<BrandsRaw> {
+	const body = buildBrandsRequest(input);
+	const res = await fetch(`${API_URL}/tabular/fetch`, {
+		method: "POST",
+		headers: { "Content-Type": "application/json" },
+		credentials: "include",
+		body: JSON.stringify(body)
+	});
+	if (!res.ok) throw new Error(`API error: ${res.status}`);
+	const data = (await res.json()) as TabularResponse;
+
+	const rows = data.payload.rows.map((r) => ({
+		name: String(r[GROUP_FIELD.brand] ?? ""),
+		year: Number(r[YEAR_FIELD]),
+		units: Number(r[MEASURE_FIELD.unit] ?? 0),
+		valueUsd: Number(r[MEASURE_FIELD.usd] ?? 0),
+		valueRub: Number(r[MEASURE_FIELD.rub] ?? 0)
+	}));
+
+	return { year: input.year, rows };
+}
+
+export type TrendDataRaw = {
+	year: number;
+	rows: Array<{ month: string; year: number; units: number; valueUsd: number; valueRub: number }>;
+};
+
+type TrendFetcherInput = Pick<
+	FiltersState,
+	"year" | "sourceType" | "bindType" | "period" | "counterparties" | "brands"
+>;
+
+const MONTH_COL: TabularColumnRef = {
+	column: { table: "Calendar~Tabular", name: "Month" }
+};
+const MONTH_RESP_FIELD = "Calendar[Month]" as const;
+
+function buildTrendDataRequest(input: TrendFetcherInput): TabularRequest {
+	const main: TabularFilter[] = [
+		{
+			op: "eq",
+			column: { table: "Source Type~Tabular", name: "Source Type" },
+			value: input.sourceType
+		},
+		{
+			op: "eq",
+			column: { table: "Bind Type~Tabular", name: "Bind Type" },
+			value: input.bindType
+		},
+		{
+			op: "in",
+			column: { table: "Calendar~Tabular", name: "Year" },
+			list: [input.year - 1, input.year]
+		}
+	];
+
+	if (input.counterparties.length > 0) {
+		main.push({
+			op: "in",
+			column: { table: "Counterparty~Tabular", name: "Counterparty" },
+			list: input.counterparties.map((c) => c.value)
+		});
+	}
+	if (input.brands.length > 0) {
+		main.push({
+			op: "in",
+			column: { table: "Product~Tabular", name: "Product Brand" },
+			list: input.brands.map((b) => b.value)
+		});
+	}
+
+	const ranges = generatePeriodRanges(input.year, input.period);
+	if (ranges) {
+		main.push(buildPeriodIdsFilter(ranges));
+	}
+
+	return {
+		select: [
+			{ column: { table: "Primary Sales~Tabular", name: "Primary Sales, unit" } },
+			{ column: { table: "Primary Sales~Tabular", name: "Primary Sales, USD conversion" } },
+			{ column: { table: "Primary Sales~Tabular", name: "Primary Sales, INV RUB" } },
+			MONTH_COL,
+			{ column: { table: "Calendar~Tabular", name: "Year" } }
+		],
+		take: 1000,
+		skip: 0,
+		filter: { op: "and", groups: main }
+	};
+}
+
+export async function fetchTrendData(input: TrendFetcherInput): Promise<TrendDataRaw> {
+	const body = buildTrendDataRequest(input);
+	const res = await fetch(`${API_URL}/tabular/fetch`, {
+		method: "POST",
+		headers: { "Content-Type": "application/json" },
+		credentials: "include",
+		body: JSON.stringify(body)
+	});
+	if (!res.ok) throw new Error(`API error: ${res.status}`);
+	const data = (await res.json()) as TabularResponse;
+
+	const rows = data.payload.rows.map((r) => ({
+		month: String(r[MONTH_RESP_FIELD] ?? ""),
+		year: Number(r[YEAR_FIELD]),
+		units: Number(r[MEASURE_FIELD.unit] ?? 0),
+		valueUsd: Number(r[MEASURE_FIELD.usd] ?? 0),
+		valueRub: Number(r[MEASURE_FIELD.rub] ?? 0)
+	}));
+
+	return { year: input.year, rows };
+}
+
+type DistributorsByBrandInput = Pick<
+	FiltersState,
+	"year" | "sourceType" | "bindType" | "period" | "brands"
+>;
+
+function buildDistributorsByBrandRequest(input: DistributorsByBrandInput): TabularRequest {
+	const main: TabularFilter[] = [
+		{
+			op: "eq",
+			column: { table: "Source Type~Tabular", name: "Source Type" },
+			value: input.sourceType
+		},
+		{
+			op: "eq",
+			column: { table: "Bind Type~Tabular", name: "Bind Type" },
+			value: input.bindType
+		},
+		{
+			op: "in",
+			column: { table: "Calendar~Tabular", name: "Year" },
+			list: [input.year - 1, input.year]
+		}
+	];
+
+	if (input.brands.length > 0) {
+		main.push({
+			op: "in",
+			column: { table: "Product~Tabular", name: "Product Brand" },
+			list: input.brands.map((b) => b.value)
+		});
+	}
+
+	const ranges = generatePeriodRanges(input.year, input.period);
+	if (ranges) {
+		main.push(buildPeriodIdsFilter(ranges));
+	}
+
+	return {
+		select: [
+			{ column: { table: "Primary Sales~Tabular", name: "Primary Sales, unit" } },
+			{ column: { table: "Primary Sales~Tabular", name: "Primary Sales, USD conversion" } },
+			{ column: { table: "Primary Sales~Tabular", name: "Primary Sales, INV RUB" } },
+			COUNTERPARTY_COL,
+			{ column: { table: "Calendar~Tabular", name: "Year" } }
+		],
+		take: 10000,
+		skip: 0,
+		filter: { op: "and", groups: main }
+	};
+}
+
+export async function fetchDistributorsByBrandData(input: DistributorsByBrandInput): Promise<DistributorsRaw> {
+	const body = buildDistributorsByBrandRequest(input);
+	const res = await fetch(`${API_URL}/tabular/fetch`, {
+		method: "POST",
+		headers: { "Content-Type": "application/json" },
+		credentials: "include",
+		body: JSON.stringify(body)
+	});
+	if (!res.ok) throw new Error(`API error: ${res.status}`);
+	const data = (await res.json()) as TabularResponse;
+
+	const rows = data.payload.rows.map((r) => ({
+		name: String(r[GROUP_FIELD.counterparty] ?? ""),
+		year: Number(r[YEAR_FIELD]),
+		units: Number(r[MEASURE_FIELD.unit] ?? 0),
+		valueUsd: Number(r[MEASURE_FIELD.usd] ?? 0),
+		valueRub: Number(r[MEASURE_FIELD.rub] ?? 0)
+	}));
+
+	return { year: input.year, rows };
+}

@@ -1,13 +1,14 @@
 import { Table, TableHeader, TableBody, TableHead, TableRow, TableCell } from "ics-ui-kit/components/table";
 import { Icon } from "ics-ui-kit/components/icon";
 import { Building2 } from "lucide-react";
-import { useDistributorsTable } from "../../hooks/useDistributorsTable";
+import { useDistributorsTableView, useMeasureLabel } from "./useDistributorsData";
 import { RankCell, YoyCell } from "./TableCells";
 
 const nf = new Intl.NumberFormat("ru-RU");
 
 export function DataGridTopDistributors() {
-	const { data, isLoading } = useDistributorsTable();
+	const { data, isLoading } = useDistributorsTableView();
+	const measureLabel = useMeasureLabel();
 	const rows = data ?? [];
 
 	return (
@@ -26,7 +27,7 @@ export function DataGridTopDistributors() {
 					<TableRow>
 						<TableHead className="w-[40px]">№</TableHead>
 						<TableHead>Дистрибьютор</TableHead>
-						<TableHead className="text-right">Sales</TableHead>
+						<TableHead className="text-right">{measureLabel}</TableHead>
 						<TableHead className="text-right">YOY%</TableHead>
 						<TableHead className="text-right">Share</TableHead>
 						<TableHead className="text-right">Rank</TableHead>

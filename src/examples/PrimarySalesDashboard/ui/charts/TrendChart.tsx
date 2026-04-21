@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import ReactECharts from "echarts-for-react";
-import { useTrendChart } from "../../hooks/useTrendChart";
+import { useTrendChartView } from "./useTrendData";
 import { useFiltersStore } from "../../stores/useFiltersStore";
 
 const COLORS = {
@@ -22,7 +22,7 @@ export function TrendChart() {
 	useEffect(() => setMounted(true), []);
 
 	const year = useFiltersStore((s) => s.year);
-	const { data, isLoading } = useTrendChart();
+	const { data, isLoading } = useTrendChartView();
 
 	const option = useMemo(() => {
 		const months = data?.months ?? [];
