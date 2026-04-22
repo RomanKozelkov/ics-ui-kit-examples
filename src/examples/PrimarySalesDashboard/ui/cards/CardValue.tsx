@@ -31,7 +31,7 @@ export function PrimarySalesValueCard() {
 	const positive = (data?.yoy ?? 0) >= 0;
 
 	return (
-		<Card className="gap-4 py-6">
+		<Card className="gap-4 p-4 px-5 !shadow-none">
 			<MetricCardHeader
 				description={`Primary Sales, ${symbol}`}
 				title={data ? cf.format(data.current ?? 0) : null}

@@ -1,8 +1,6 @@
-import { Table, TableHeader, TableBody, TableHead, TableRow, TableCell } from "ics-ui-kit/components/table";
-import { Icon } from "ics-ui-kit/components/icon";
-import { Building2 } from "lucide-react";
-import { useDistributorsTableView, useMeasureLabel } from "./useDistributorsData";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "ics-ui-kit/components/table";
 import { RankCell, YoyCell } from "./TableCells";
+import { useDistributorsTableView, useMeasureLabel } from "./useDistributorsData";
 
 const nf = new Intl.NumberFormat("ru-RU");
 
@@ -12,15 +10,11 @@ export function DataGridTopDistributors() {
 	const rows = data ?? [];
 
 	return (
-		<div className="rounded-xl border border-secondary-border bg-secondary-bg p-4">
+		<div className="rounded-xl border border-secondary-border bg-secondary-bg p-4 px-5">
 			<div className="mb-3 flex items-center justify-between">
 				<div className="flex items-center gap-2">
-					<Icon icon={Building2} size="sm" />
 					<h2 className="text-base font-medium text-primary-fg">Топ Дистрибьюторы</h2>
 				</div>
-				<a href="#" className="text-accent-fg text-xs hover:underline">
-					Подробнее ›
-				</a>
 			</div>
 			<Table>
 				<TableHeader>

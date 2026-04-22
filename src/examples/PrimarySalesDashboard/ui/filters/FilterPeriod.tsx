@@ -3,7 +3,6 @@ import {
 	SelectContent,
 	SelectGroup,
 	SelectItem,
-	SelectItemText,
 	SelectTrigger,
 	SelectValue
 } from "ics-ui-kit/components/select";

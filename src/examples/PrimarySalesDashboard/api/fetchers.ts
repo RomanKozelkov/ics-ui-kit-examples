@@ -514,10 +514,7 @@ export type BrandsRaw = {
 	rows: Array<{ name: string; year: number; units: number; valueUsd: number; valueRub: number }>;
 };
 
-type BrandsFetcherInput = Pick<
-	FiltersState,
-	"year" | "sourceType" | "bindType" | "period" | "counterparties"
->;
+type BrandsFetcherInput = Pick<FiltersState, "year" | "sourceType" | "bindType" | "period" | "counterparties">;
 
 const BRAND_COL: TabularColumnRef = {
 	column: { table: "Product~Tabular", name: "Product Brand" }
@@ -681,10 +678,7 @@ export async function fetchTrendData(input: TrendFetcherInput): Promise<TrendDat
 	return { year: input.year, rows };
 }
 
-type DistributorsByBrandInput = Pick<
-	FiltersState,
-	"year" | "sourceType" | "bindType" | "period" | "brands"
->;
+type DistributorsByBrandInput = Pick<FiltersState, "year" | "sourceType" | "bindType" | "period" | "brands">;
 
 function buildDistributorsByBrandRequest(input: DistributorsByBrandInput): TabularRequest {
 	const main: TabularFilter[] = [
