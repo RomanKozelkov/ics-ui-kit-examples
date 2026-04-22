@@ -1,66 +1,88 @@
-import { Collapsible, CollapsibleContent } from "ics-ui-kit/components/collapsible";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { TriggerButton } from "ics-ui-kit/components/button";
 import { Icon } from "ics-ui-kit/components/icon";
-import { Toggle } from "ics-ui-kit/components/toggle";
-import { Filter } from "lucide-react";
+import { Popover, PopoverContent, PopoverTrigger } from "ics-ui-kit/components/popover";
+import { cn } from "ics-ui-kit/lib/utils";
+import { ChevronDown, ChevronUp, Filter } from "lucide-react";
 import { useState } from "react";
-import { Filters } from "./Filters";
-import { GrowthDriversChart } from "./ChartGrowthDrivers";
-import { PrimarySalesValueCard } from "./CardValue";
-import { PrimarySalesUnitsCard } from "./CardUnits";
-import { TrendChart } from "./TrendChart";
-import { DataGridTopDistributors } from "./DataGridTopDistributors";
-import { DataGridTopBrands } from "./DataGridTopBrands";
+import { PrimarySalesUnitsCard } from "./ui/cards/CardUnits";
+import { PrimarySalesValueCard } from "./ui/cards/CardValue";
+import { GrowthDriversChart } from "./ui/charts/ChartGrowthDrivers";
+import { DataGridTopBrands } from "./ui/datagrids/DataGridTopBrands";
+import { DataGridTopDistributors } from "./ui/datagrids/DataGridTopDistributors";
+import { Filters } from "./ui/filters/Filters";
+import { TrendChart } from "./ui/charts/TrendChart";
+import { DashboardHeader } from "./ui/components/DashboardHeader";
+
 export function PrimarySalesDashboard() {
+	const [queryClient] = useState(
+		() =>
+			new QueryClient({
+				defaultOptions: {
+					queries: {
+						staleTime: 60_000,
+						refetchOnWindowFocus: false
+					}
+				}
+			})
+	);
+
 	const [filtersCollapsed, setFiltersCollapsed] = useState(false);
 
 	return (
-		<div className="h-full w-full bg-primary-bg">
-			<div className="container mx-auto py-4">
-				<div className="flex flex-col rounded-xl border border-secondary-border bg-secondary-bg p-4">
-					<div className="flex items-center">
-						<div className="flex items-center gap-4">
-							<h1 className="text-xl tracking-tight text-primary-fg">Primary Sales</h1>
-							<Toggle variant="outline" pressed={filtersCollapsed} onPressedChange={setFiltersCollapsed}>
-								<Icon icon={Filter} /> <span>Фильтры</span>
-							</Toggle>
+		<QueryClientProvider client={queryClient}>
+			<div className="h-full w-full bg-primary-bg">
+				<div className="container mx-auto py-8">
+					<div className="mb-4 flex items-center">
+						<div>
+							<DashboardHeader>Primary Sales</DashboardHeader>
+						</div>
+						<div className="ml-auto">
+							<Popover open={filtersCollapsed} onOpenChange={setFiltersCollapsed}>
+								<PopoverTrigger asChild>
+									<TriggerButton
+										startIcon={Filter}
+										className={cn(filtersCollapsed ? "bg-secondary-bg-hover shadow-none" : "")}
+									>
+										Фильтры
+										{filtersCollapsed ? <Icon icon={ChevronUp} /> : <Icon icon={ChevronDown} />}
+									</TriggerButton>
+								</PopoverTrigger>
+								<PopoverContent align="end" className="min-w-max">
+									<Filters />
+								</PopoverContent>
+							</Popover>
 						</div>
 					</div>
-					<div>
-						<Collapsible open={filtersCollapsed} onOpenChange={setFiltersCollapsed}>
-							<CollapsibleContent className="pt-4">
-								<Filters />
-							</CollapsibleContent>
-						</Collapsible>
+
+					<div className="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-2">
+						<PrimarySalesValueCard />
+						<PrimarySalesUnitsCard />
 					</div>
-				</div>
 
-				<div className="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-2">
-					<PrimarySalesValueCard />
-					<PrimarySalesUnitsCard />
-				</div>
-
-				<div className="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-2">
-					<div className="rounded-xl border border-secondary-border bg-secondary-bg p-4">
-						<div className="mb-2">
-							<h2 className="text-base font-medium text-primary-fg">Тренд Primary Sales</h2>
-							<p className="text-xs text-secondary-fg">Помесячная динамика с YoY%</p>
+					<div className="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-2">
+						<div className="rounded-xl border border-secondary-border bg-secondary-bg p-4 px-5">
+							<div className="mb-2">
+								<h2 className="text-base font-medium text-primary-fg">Тренд Primary Sales</h2>
+								<p className="text-xs text-secondary-fg">Помесячная динамика с YoY%</p>
+							</div>
+							<TrendChart />
 						</div>
-						<TrendChart />
-					</div>
-					<div className="rounded-xl border border-secondary-border bg-secondary-bg p-4">
-						<div className="mb-2">
-							<h2 className="text-base font-medium text-primary-fg">Драйверы роста / падения</h2>
-							<p className="text-xs text-secondary-fg">Вклад в изменение продаж (Contribution)</p>
+						<div className="rounded-xl border border-secondary-border bg-secondary-bg p-4 px-5">
+							<div className="mb-2">
+								<h2 className="text-base font-medium text-primary-fg">Драйверы роста / падения</h2>
+								<p className="text-xs text-secondary-fg">Вклад в изменение продаж (Contribution)</p>
+							</div>
+							<GrowthDriversChart />
 						</div>
-						<GrowthDriversChart />
 					</div>
-				</div>
 
-				<div className="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-2">
-					<DataGridTopDistributors />
-					<DataGridTopBrands />
+					<div className="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-2">
+						<DataGridTopDistributors />
+						<DataGridTopBrands />
+					</div>
 				</div>
 			</div>
-		</div>
+		</QueryClientProvider>
 	);
 }

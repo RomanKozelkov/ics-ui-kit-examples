@@ -1,12 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import ReactECharts from "echarts-for-react";
-
-const MONTHS = ["Янв", "Фев", "Мар", "Апр", "Май", "Июн", "Июл", "Авг", "Сен", "Окт", "Ноя", "Дек"];
-
-const CY = [175000, 205000, 235000, 290000, 315000, 325000, 330000, 335000, 305000, 245000, 165000, 135000];
-const PY = [180000, 215000, 255000, 270000, 280000, 285000, 295000, 300000, 285000, 230000, 170000, 145000];
-
-const YOY = CY.map((v, i) => Number((((v - PY[i]) / PY[i]) * 100).toFixed(1)));
+import { useTrendChartView } from "./useTrendData";
+import { useFiltersStore } from "../../stores/useFiltersStore";
 
 const COLORS = {
 	text: "#6b7280",
@@ -26,8 +21,16 @@ export function TrendChart() {
 	const [mounted, setMounted] = useState(false);
 	useEffect(() => setMounted(true), []);
 
-	const option = useMemo(
-		() => ({
+	const year = useFiltersStore((s) => s.year);
+	const { data, isLoading } = useTrendChartView();
+
+	const option = useMemo(() => {
+		const months = data?.months ?? [];
+		const cy = data?.cy ?? [];
+		const py = data?.py ?? [];
+		const yoy = data?.yoy ?? [];
+
+		return {
 			backgroundColor: "transparent",
 			animation: false,
 			tooltip: {
@@ -39,8 +42,8 @@ export function TrendChart() {
 			},
 			legend: {
 				data: [
-					{ name: "CY (2025)", icon: "circle" },
-					{ name: "PY (2024)", icon: "circle" }
+					{ name: `CY (${year})`, icon: "circle" },
+					{ name: `PY (${year - 1})`, icon: "circle" }
 				],
 				textStyle: { color: COLORS.textStrong },
 				left: 0,
@@ -55,7 +58,7 @@ export function TrendChart() {
 			xAxis: [
 				{
 					type: "category",
-					data: MONTHS,
+					data: months,
 					gridIndex: 0,
 					axisLine: { lineStyle: { color: COLORS.grid } },
 					axisLabel: { color: COLORS.text },
@@ -63,7 +66,7 @@ export function TrendChart() {
 				},
 				{
 					type: "category",
-					data: MONTHS,
+					data: months,
 					gridIndex: 1,
 					axisLine: { lineStyle: { color: COLORS.grid } },
 					axisLabel: { color: COLORS.text },
@@ -79,9 +82,7 @@ export function TrendChart() {
 						color: COLORS.text,
 						formatter: (v: number) => v.toLocaleString("ru-RU")
 					},
-					min: 0,
-					max: 340000,
-					interval: 85000
+					scale: true
 				},
 				{
 					type: "value",
@@ -96,7 +97,7 @@ export function TrendChart() {
 			],
 			series: [
 				{
-					name: "CY (2025)",
+					name: `CY (${year})`,
 					type: "line",
 					smooth: true,
 					symbol: "circle",
@@ -117,16 +118,16 @@ export function TrendChart() {
 							]
 						}
 					},
-					data: CY
+					data: cy
 				},
 				{
-					name: "PY (2024)",
+					name: `PY (${year - 1})`,
 					type: "line",
 					smooth: true,
 					symbol: "none",
 					lineStyle: { color: COLORS.muted, width: 1.5, type: "dashed" },
 					itemStyle: { color: COLORS.muted },
-					data: PY
+					data: py
 				},
 				{
 					name: "YoY %",
@@ -138,14 +139,22 @@ export function TrendChart() {
 						color: (params: { value: number }) => (params.value >= 0 ? COLORS.success : COLORS.error),
 						borderRadius: [2, 2, 0, 0]
 					},
-					data: YOY
+					data: yoy
 				}
 			]
-		}),
-		[]
-	);
+		};
+	}, [data, year]);
 
 	if (!mounted) return <div className="h-[420px] w-full" />;
 
-	return <ReactECharts option={option} style={{ height: 420, width: "100%" }} notMerge lazyUpdate />;
+	return (
+		<div className="relative">
+			<ReactECharts option={option} style={{ height: 420, width: "100%" }} notMerge lazyUpdate />
+			{isLoading && !data ? (
+				<div className="absolute inset-0 flex items-center justify-center text-sm text-secondary-fg">
+					Загрузка…
+				</div>
+			) : null}
+		</div>
+	);
 }

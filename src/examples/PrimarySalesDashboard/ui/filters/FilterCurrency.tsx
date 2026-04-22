@@ -7,23 +7,26 @@ import {
 	SelectTrigger,
 	SelectValue
 } from "ics-ui-kit/components/select";
+import { useFiltersStore, type Currency } from "../../stores/useFiltersStore";
+import { FilterField } from "../components/FilterField";
 
 export function FilterCurrency() {
+	const currency = useFiltersStore((s) => s.currency);
+	const setCurrency = useFiltersStore((s) => s.setCurrency);
+
 	return (
-		<label className="flex flex-col gap-2 space-y-0">
-			<span className="text-sm font-medium leading-none text-primary-fg">Валюта</span>
-			<Select defaultValue="RUB">
+		<FilterField label="Валюта">
+			<Select value={currency} onValueChange={(v) => setCurrency(v as Currency)}>
 				<SelectTrigger>
 					<SelectValue />
 				</SelectTrigger>
 				<SelectContent>
 					<SelectGroup>
-						<SelectLabel>Валюта</SelectLabel>
 						<SelectItem value="RUB">RUB</SelectItem>
 						<SelectItem value="USD">USD</SelectItem>
 					</SelectGroup>
 				</SelectContent>
 			</Select>
-		</label>
+		</FilterField>
 	);
 }
