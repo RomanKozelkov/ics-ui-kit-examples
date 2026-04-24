@@ -6,7 +6,7 @@ export type Currency = "RUB" | "USD";
 // FY — полный год, YTD — с начала года, QTD — с начала квартала, MTD — с начала месяца
 export type Period = "FY" | "YTD" | "QTD" | "MTD";
 export type SourceType = "MDLP" | "Sales";
-export type BindType = "History" | "Current";
+export type BindType = "History";
 
 export type Option = { value: string; label: string };
 

@@ -7,7 +7,7 @@ import { aggregateRanking, pickMeasureField, type RankingRow } from "./aggregate
 
 export type BrandRow = RankingRow;
 
-export function useBrandsData() {
+export function useTopBrandsData() {
 	const input = useFiltersStore(
 		useShallow((s) => ({
 			year: s.year,
@@ -19,7 +19,7 @@ export function useBrandsData() {
 	);
 
 	return useQuery({
-		queryKey: primarySalesKeys.brandsData(input),
+		queryKey: primarySalesKeys.topBrandsData(input),
 		queryFn: () => fetchBrandsData(input)
 	});
 }
@@ -27,7 +27,7 @@ export function useBrandsData() {
 export function useBrandsTableView(): { data: BrandRow[] | undefined; isLoading: boolean } {
 	const metric = useFiltersStore((s) => s.metric);
 	const currency = useFiltersStore((s) => s.currency);
-	const { data, isLoading } = useBrandsData();
+	const { data, isLoading } = useTopBrandsData();
 	if (!data) return { data: undefined, isLoading };
 	return { data: aggregateRanking(data.rows, data.year, pickMeasureField(metric, currency)), isLoading };
 }

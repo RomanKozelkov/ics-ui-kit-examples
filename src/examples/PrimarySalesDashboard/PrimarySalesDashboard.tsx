@@ -8,11 +8,11 @@ import { useState } from "react";
 import { PrimarySalesUnitsCard } from "./ui/cards/CardUnits";
 import { PrimarySalesValueCard } from "./ui/cards/CardValue";
 import { GrowthDriversChart } from "./ui/charts/ChartGrowthDrivers";
+import { TrendChart } from "./ui/charts/TrendChart";
+import { DashboardHeader } from "./ui/components/DashboardHeader";
 import { DataGridTopBrands } from "./ui/datagrids/DataGridTopBrands";
 import { DataGridTopDistributors } from "./ui/datagrids/DataGridTopDistributors";
 import { Filters } from "./ui/filters/Filters";
-import { TrendChart } from "./ui/charts/TrendChart";
-import { DashboardHeader } from "./ui/components/DashboardHeader";
 
 export function PrimarySalesDashboard() {
 	const [queryClient] = useState(
@@ -20,8 +20,7 @@ export function PrimarySalesDashboard() {
 			new QueryClient({
 				defaultOptions: {
 					queries: {
-						staleTime: 60_000,
-						refetchOnWindowFocus: false
+						staleTime: 60_000
 					}
 				}
 			})
@@ -48,7 +47,11 @@ export function PrimarySalesDashboard() {
 										{filtersCollapsed ? <Icon icon={ChevronUp} /> : <Icon icon={ChevronDown} />}
 									</TriggerButton>
 								</PopoverTrigger>
-								<PopoverContent align="end" className="min-w-max">
+								<PopoverContent
+									align="end"
+									collisionPadding={16}
+									className="max-h-[var(--radix-popover-content-available-height)] w-[24rem] overflow-y-auto"
+								>
 									<Filters />
 								</PopoverContent>
 							</Popover>
@@ -68,13 +71,7 @@ export function PrimarySalesDashboard() {
 							</div>
 							<TrendChart />
 						</div>
-						<div className="rounded-xl border border-secondary-border bg-secondary-bg p-4 px-5">
-							<div className="mb-2">
-								<h2 className="text-base font-medium text-primary-fg">Драйверы роста / падения</h2>
-								<p className="text-xs text-secondary-fg">Вклад в изменение продаж (Contribution)</p>
-							</div>
-							<GrowthDriversChart />
-						</div>
+						<GrowthDriversChart />
 					</div>
 
 					<div className="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-2">

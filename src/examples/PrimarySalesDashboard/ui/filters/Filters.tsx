@@ -8,7 +8,7 @@ import { FilterSource } from "./FilterSource";
 
 export function Filters() {
 	return (
-		<div className="flex w-[30rem] flex-col gap-4">
+		<div className="flex w-full flex-col gap-4">
 			<FilterDistr />
 			<FilterBrand />
 			<FilterYear />

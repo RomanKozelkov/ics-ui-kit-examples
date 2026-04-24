@@ -1,8 +1,9 @@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "ics-ui-kit/components/table";
 import { RankCell, YoyCell } from "./TableCells";
 import { useDistributorsTableView, useMeasureLabel } from "./useDistributorsData";
+import { getNumberFormatter } from "../../utils/getNumberFormatter";
 
-const nf = new Intl.NumberFormat("ru-RU");
+const nf = getNumberFormatter("ru-RU");
 
 export function DataGridTopDistributors() {
 	const { data, isLoading } = useDistributorsTableView();
@@ -11,10 +12,8 @@ export function DataGridTopDistributors() {
 
 	return (
 		<div className="rounded-xl border border-secondary-border bg-secondary-bg p-4 px-5">
-			<div className="mb-3 flex items-center justify-between">
-				<div className="flex items-center gap-2">
-					<h2 className="text-base font-medium text-primary-fg">Топ Дистрибьюторы</h2>
-				</div>
+			<div className="mb-2">
+				<h2 className="text-base font-medium text-primary-fg">Топ Дистрибьюторы</h2>
 			</div>
 			<Table>
 				<TableHeader>

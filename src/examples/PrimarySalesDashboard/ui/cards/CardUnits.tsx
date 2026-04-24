@@ -1,41 +1,25 @@
-import { Card } from "ics-ui-kit/components/card";
-import { Badge } from "ics-ui-kit/components/badge";
-import { TrendingDown, TrendingUp } from "lucide-react";
-import { useUnitsCard } from "./useCardsData";
 import { useFiltersStore } from "../../stores/useFiltersStore";
-import { MetricCardHeader } from "../components/MetricCardHeader";
-import { MetricCardFooter } from "../components/MetricCardFooter";
+import { getNumberFormatter } from "../../utils/getNumberFormatter";
+import { MetricCard } from "../components/MetricCard";
+import { useUnitsCard } from "./useCardsData";
 
-const nf = new Intl.NumberFormat("ru-RU");
+const nf = getNumberFormatter("ru-RU");
 
 export function PrimarySalesUnitsCard() {
 	const year = useFiltersStore((s) => s.year);
 	const { data, isLoading } = useUnitsCard();
-	const loading = isLoading || !data;
-	const positive = (data?.yoy ?? 0) >= 0;
+
+	const value = data ? nf.format(data.current ?? 0) : null;
+	const percentage = data?.yoy;
+	const previousValue = data ? `PY (${year - 1}): ${nf.format(data.previous ?? 0)}` : null;
 
 	return (
-		<Card className="gap-4 p-4 px-5 !shadow-none">
-			<MetricCardHeader
-				description="Primary Sales, Units"
-				title={data ? nf.format(data.current ?? 0) : null}
-				action={
-					data?.yoy != null && (
-						<Badge
-							status={positive ? "success" : "error"}
-							size="sm"
-							startIcon={positive ? TrendingUp : TrendingDown}
-						>
-							{positive ? "+" : ""}
-							{data.yoy.toFixed(1)}%
-						</Badge>
-					)
-				}
-				isLoading={loading}
-			/>
-			<MetricCardFooter isLoading={loading}>
-				PY ({year - 1}): <span className="text-primary-fg">{nf.format(data?.previous ?? 0)}</span>
-			</MetricCardFooter>
-		</Card>
+		<MetricCard
+			title="Primary Sales, Units"
+			value={value}
+			percentage={percentage}
+			previousValue={previousValue}
+			isLoading={isLoading}
+		/>
 	);
 }

@@ -57,9 +57,8 @@ export function useDriversData(view: DriversView) {
 	return useQuery({
 		queryKey: isDistributors
 			? primarySalesKeys.distributorsByBrandData(distributorsInput)
-			: primarySalesKeys.brandsData(brandsInput),
-		queryFn: () =>
-			isDistributors ? fetchDistributorsByBrandData(distributorsInput) : fetchBrandsData(brandsInput)
+			: primarySalesKeys.topBrandsData(brandsInput),
+		queryFn: () => (isDistributors ? fetchDistributorsByBrandData(distributorsInput) : fetchBrandsData(brandsInput))
 	});
 }
 

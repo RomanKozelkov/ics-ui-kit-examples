@@ -7,7 +7,7 @@ import { aggregateRanking, pickMeasureField, type RankingRow } from "./aggregate
 
 export type DistributorRow = RankingRow;
 
-export function useDistributorsData() {
+export function useTopDistributorsData() {
 	const input = useFiltersStore(
 		useShallow((s) => ({
 			year: s.year,
@@ -18,7 +18,7 @@ export function useDistributorsData() {
 	);
 
 	return useQuery({
-		queryKey: primarySalesKeys.distributorsData(input),
+		queryKey: primarySalesKeys.topDistributorsData(input),
 		queryFn: () => fetchDistributorsData(input)
 	});
 }
@@ -26,7 +26,7 @@ export function useDistributorsData() {
 export function useDistributorsTableView(): { data: DistributorRow[] | undefined; isLoading: boolean } {
 	const metric = useFiltersStore((s) => s.metric);
 	const currency = useFiltersStore((s) => s.currency);
-	const { data, isLoading } = useDistributorsData();
+	const { data, isLoading } = useTopDistributorsData();
 	if (!data) return { data: undefined, isLoading };
 	return { data: aggregateRanking(data.rows, data.year, pickMeasureField(metric, currency)), isLoading };
 }

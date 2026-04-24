@@ -1,5 +1,6 @@
 import type { FiltersState } from "../stores/useFiltersStore";
 
+//TODO: Объединить типы в keys, в fetchers, в store
 type CardsKeyInput = Pick<FiltersState, "year" | "sourceType" | "bindType" | "period">;
 
 type TableKeyInput = Pick<
@@ -7,21 +8,20 @@ type TableKeyInput = Pick<
 	"year" | "metric" | "currency" | "sourceType" | "bindType" | "period" | "counterparties" | "brands"
 >;
 
+type TopDistrKeyInput = Pick<FiltersState, "year" | "sourceType" | "bindType" | "period">;
+type TopBrandsKeyInput = Pick<FiltersState, "year" | "sourceType" | "bindType" | "period" | "counterparties">;
+
 const sortIds = (opts: FiltersState["counterparties"]) => [...opts].map((o) => o.value).sort();
 
 export const primarySalesKeys = {
-	all: ["primarySales"] as const,
-	cards: (f: CardsKeyInput) =>
-		[
-			"primarySales",
-			"cards",
-			{
-				year: f.year,
-				sourceType: f.sourceType,
-				bindType: f.bindType,
-				period: f.period
-			}
-		] as const,
+	distributors: (search: string) => ["primarySales", "filters", "distributors", search.trim().toLowerCase()] as const,
+	brands: (search: string) => ["primarySales", "filters", "brands", search.trim().toLowerCase()] as const,
+	cards: (f: CardsKeyInput) => ["primarySales", "cards", { ...f }] as const,
+	topDistributorsData: (f: TopDistrKeyInput) => ["primarySales", "grids", "topDistributors", { ...f }] as const,
+	topBrandsData: (f: TopBrandsKeyInput) =>
+		["primarySales", "brands", { ...f, counterparties: sortIds(f.counterparties) }] as const,
+
+	//////////////////
 	distributorsTable: (f: TableKeyInput) =>
 		[
 			"primarySales",
@@ -68,29 +68,6 @@ export const primarySalesKeys = {
 				brands: sortIds(f.brands)
 			}
 		] as const,
-	distributorsData: (f: CardsKeyInput) =>
-		[
-			"primarySales",
-			"distributors",
-			{
-				year: f.year,
-				sourceType: f.sourceType,
-				bindType: f.bindType,
-				period: f.period
-			}
-		] as const,
-	brandsData: (f: CardsKeyInput & Pick<FiltersState, "counterparties">) =>
-		[
-			"primarySales",
-			"brands",
-			{
-				year: f.year,
-				sourceType: f.sourceType,
-				bindType: f.bindType,
-				period: f.period,
-				counterparties: sortIds(f.counterparties)
-			}
-		] as const,
 	distributorsByBrandData: (f: CardsKeyInput & Pick<FiltersState, "brands">) =>
 		[
 			"primarySales",
@@ -115,9 +92,5 @@ export const primarySalesKeys = {
 				counterparties: sortIds(f.counterparties),
 				brands: sortIds(f.brands)
 			}
-		] as const,
-	// #region === READY FOR USE ===
-	distributors: (search: string) => ["primarySales", "filters", "distributors", search.trim().toLowerCase()] as const,
-	brands: (search: string) => ["primarySales", "options", "brands", search.trim().toLowerCase()] as const
-	// #endregion
+		] as const
 };

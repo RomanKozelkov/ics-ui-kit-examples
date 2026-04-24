@@ -2,6 +2,14 @@ import { useEffect, useMemo, useState } from "react";
 import ReactECharts from "echarts-for-react";
 import { useTrendChartView } from "./useTrendData";
 import { useFiltersStore } from "../../stores/useFiltersStore";
+import { getNumberFormatter } from "../../utils/getNumberFormatter";
+
+const compactFormatter = getNumberFormatter("en-US", { notation: "compact", compactDisplay: "short" });
+const yoyFormatter = getNumberFormatter("en-US", {
+	notation: "compact",
+	signDisplay: "auto",
+	maximumFractionDigits: 1
+});
 
 const COLORS = {
 	text: "#6b7280",
@@ -80,7 +88,7 @@ export function TrendChart() {
 					splitLine: { lineStyle: { color: COLORS.grid } },
 					axisLabel: {
 						color: COLORS.text,
-						formatter: (v: number) => v.toLocaleString("ru-RU")
+						formatter: (v: number) => compactFormatter.format(v)
 					},
 					scale: true
 				},
@@ -90,7 +98,7 @@ export function TrendChart() {
 					splitLine: { show: false },
 					axisLabel: {
 						color: COLORS.text,
-						formatter: (v: number) => `${v}%`
+						formatter: (v: number) => `${yoyFormatter.format(v)}%`
 					},
 					splitNumber: 2
 				}

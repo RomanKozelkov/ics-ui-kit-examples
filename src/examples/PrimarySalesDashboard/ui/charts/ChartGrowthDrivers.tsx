@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import ReactECharts from "echarts-for-react";
 import { ToggleGroup, ToggleGroupItem } from "ics-ui-kit/components/toggle-group";
+import { Divider } from "ics-ui-kit/components/divider";
 import { useDriversChartView, type DriversView as View } from "./useDriversData";
 
 const SUCCESS = "#10b981";
@@ -59,31 +60,45 @@ export function GrowthDriversChart() {
 	}, [data]);
 
 	return (
-		<div className="flex h-full flex-col">
-			<div className="mb-2 flex items-center justify-end">
-				<ToggleGroup
-					type="single"
-					value={view}
-					onValueChange={(v) => v && setView(v as View)}
-					variant="outline"
-					size="sm"
-				>
-					<ToggleGroupItem value="products">Продукты</ToggleGroupItem>
-					<ToggleGroupItem value="distributors">Дистрибьюторы</ToggleGroupItem>
-				</ToggleGroup>
-			</div>
-			{mounted ? (
-				<div className="relative">
-					<ReactECharts option={option} style={{ height: 420, width: "100%" }} notMerge lazyUpdate />
-					{isLoading && !data ? (
-						<div className="absolute inset-0 flex items-center justify-center text-sm text-secondary-fg">
-							Загрузка…
-						</div>
-					) : null}
+		<div className="rounded-xl border border-secondary-border bg-secondary-bg p-4 px-5">
+			<div className="mb-2 flex items-center justify-between">
+				<div>
+					<h2 className="text-base font-medium text-primary-fg">Драйверы роста / падения</h2>
+					<p className="text-xs text-secondary-fg">Вклад в изменение продаж (Contribution)</p>
 				</div>
-			) : (
-				<div className="h-[420px] w-full" />
-			)}
+				<div>
+					<ToggleGroup
+						className="gap-0 rounded-lg border border-secondary-border shadow-soft-sm"
+						type="single"
+						value={view}
+						onValueChange={(v) => v && setView(v as View)}
+						variant="ghost"
+						size="sm"
+					>
+						<ToggleGroupItem className="rounded-none rounded-l-md" value="products">
+							Продукты
+						</ToggleGroupItem>
+						<Divider className="h-8" orientation="vertical" />
+						<ToggleGroupItem className="rounded-none rounded-r-md" value="distributors">
+							Дистрибьюторы
+						</ToggleGroupItem>
+					</ToggleGroup>
+				</div>
+			</div>
+			<div className="flex h-full flex-col">
+				{mounted ? (
+					<div className="relative">
+						<ReactECharts option={option} style={{ height: 420, width: "100%" }} notMerge lazyUpdate />
+						{isLoading && !data ? (
+							<div className="absolute inset-0 flex items-center justify-center text-sm text-secondary-fg">
+								Загрузка…
+							</div>
+						) : null}
+					</div>
+				) : (
+					<div className="h-[420px] w-full" />
+				)}
+			</div>
 		</div>
 	);
 }
