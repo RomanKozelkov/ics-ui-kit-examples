@@ -17,5 +17,3 @@ export function GramaxIcon({ className }: { className?: string }) {
 		</svg>
 	);
 }
-
-// test commit
