@@ -13,7 +13,7 @@ export const initialItems: Record<string, Item> = {
 	},
 
 	"command-palette": {
-		name: "Command Palette",
+		name: "Great design",
 		children: ["great-design"]
 	},
 	"great-design": {
@@ -30,7 +30,7 @@ export const initialItems: Record<string, Item> = {
 	examples: { name: "Examples in Practice" },
 
 	"group-title-2": {
-		name: "Group title 2",
+		name: "Excellent design",
 		children: ["excellent-design"]
 	},
 	"excellent-design": {
