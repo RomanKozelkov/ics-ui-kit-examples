@@ -53,28 +53,23 @@ export function NavigationTree() {
 	});
 
 	const visible = tree.getItems();
-	const groups: {
-		group: ItemInstance<Item>;
-		children: ItemInstance<Item>[];
-	}[] = [];
+	const groups: { group: ItemInstance<Item> }[] = [];
 	for (const item of visible) {
 		if (item.getItemMeta().level === 0) {
-			groups.push({ group: item, children: [] });
-		} else {
-			groups.at(-1)?.children.push(item);
+			groups.push({ group: item });
 		}
 	}
 
 	return (
 		<div {...tree.getContainerProps("Sidebar navigation")} className="relative flex flex-col gap-3">
-			{groups.map(({ group, children }) => {
+			{groups.map(({ group }) => {
 				const groupData = group.getItemData();
 				return (
 					<SidebarGroup key={group.getId()} className="py-0">
 						<NavigationSectionLabel data={groupData} />
 						<SidebarGroupContent>
 							<SidebarMenu className="gap-0.5">
-								{children.map((item) => (
+								{group.getChildren().map((item) => (
 									<NavigationTreeItem key={item.getId()} item={item} />
 								))}
 							</SidebarMenu>
