@@ -10,7 +10,8 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "ics-ui-kit/
 import { TextOverflowTooltip } from "ics-ui-kit/components/overflow-tooltip";
 import type { Item } from "./navigationData";
 import { NavigationItemCounter } from "./NavigationItemCounter";
-import type { ReactNode } from "react";
+import type { ComponentPropsWithoutRef, ReactNode } from "react";
+import { cn } from "ics-ui-kit/lib/utils";
 import { NavigationTreeItemActions } from "./NavigationTreeItemActions";
 
 interface NavigationTreeItemProps {
@@ -48,7 +49,6 @@ function NavigationTreeFolderRow({
 }) {
 	const collapsible = (
 		<Collapsible
-			className="group/sidebar-menu"
 			open={item.isExpanded()}
 			onOpenChange={(open) => {
 				if (open) {
@@ -78,7 +78,8 @@ function SideMenuItemContent({
 	isNested,
 	item,
 	data,
-	showChevron = false
+	showChevron = false,
+	...props
 }: {
 	isNested: boolean;
 	item: ItemInstance<Item>;
@@ -91,7 +92,7 @@ function SideMenuItemContent({
 	) as React.ForwardRefExoticComponent<any>;
 
 	return (
-		<ItemWrapper>
+		<ItemWrapper className="group/menu-folder" {...props}>
 			<ButtonComponent
 				{...item.getProps()}
 				isActive={item.isSelected()}

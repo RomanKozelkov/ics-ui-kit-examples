@@ -16,7 +16,7 @@ export function NavigationTreeItemActions({ showChevron = false }: { showChevron
 					<Icon
 						icon={ChevronRight}
 						size="sm"
-						className="shrink-0 text-muted transition-transform group-data-[state=open]/sidebar-menu:rotate-90"
+						className="shrink-0 text-muted transition-transform group-data-[state=open]/menu-folder:rotate-90"
 					/>
 				</span>
 			)}
