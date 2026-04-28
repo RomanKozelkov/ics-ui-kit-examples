@@ -11,10 +11,11 @@ import { MainContent } from "./MainContent";
 import { NavigationTree } from "./NavigationTree";
 import { SidebarFooter as SidebarFooterContent } from "./SidebarFooter";
 import { SidebarHeader } from "./SidebarHeader";
+import "./theme.css";
 
 export function SidebarNavigation() {
 	return (
-		<div className="h-full w-full bg-primary-bg">
+		<div className="gramax h-full w-full bg-primary-bg">
 			<SidebarProvider className="h-full w-full" style={{ "--sidebar-width": "300px" } as React.CSSProperties}>
 				<Sidebar
 					side="left"
