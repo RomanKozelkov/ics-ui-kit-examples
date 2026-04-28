@@ -1,13 +1,11 @@
 import type { ItemInstance } from "@headless-tree/core";
-import {
-	SidebarMenuBadge,
-	SidebarMenuButton,
-	SidebarMenuItem
-} from "ics-ui-kit/components/sidebar";
+import { SidebarMenuButton, SidebarMenuItem } from "ics-ui-kit/components/sidebar";
 import { TextOverflowTooltip } from "ics-ui-kit/components/overflow-tooltip";
 import { ChevronRight, MoreHorizontal } from "lucide-react";
 import type { Item } from "./navigationData";
 import { NavigationItemCounter } from "./NavigationItemCounter";
+import { Icon } from "ics-ui-kit/components/icon";
+import { cn } from "ics-ui-kit/lib/utils";
 
 const INDENT = 24;
 
@@ -24,30 +22,29 @@ export function NavigationTreeItem({ item }: NavigationTreeItemProps) {
 			<SidebarMenuButton
 				{...item.getProps()}
 				isActive={item.isSelected()}
-				className="group/nav py-1.5 data-[active=true]:font-medium"
+				className="group/nav h-7 py-1.5 data-[active=true]:font-medium"
 				style={{
 					paddingInlineStart: 8 + depth * INDENT
 				}}
 			>
 				<TextOverflowTooltip>{data.name}</TextOverflowTooltip>
-				{data.badge != null && (
-					<NavigationItemCounter>{data.badge}</NavigationItemCounter>
-				)}
-				<span className="ml-auto hidden items-center gap-1 group-hover/nav:flex">
+				{data.badge != null && <NavigationItemCounter>{data.badge}</NavigationItemCounter>}
+				<span className="ml-auto flex items-center gap-1">
 					<button
 						type="button"
-						className="flex size-5 items-center justify-center rounded text-muted-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
+						className="hover:bg-sidebar-accent hover:text-sidebar-accent-foreground hidden size-5 items-center justify-center rounded text-muted-foreground group-hover/nav:flex group-data-[active=true]/nav:flex"
 						onClick={(e) => e.stopPropagation()}
 					>
-						<MoreHorizontal className="size-3.5" />
+						<Icon icon={MoreHorizontal} className="size-3.5" />
 					</button>
 					{item.isFolder() && (
-						<ChevronRight
-							className={
-								"size-4 shrink-0 text-muted-foreground transition-transform " +
-								(item.isExpanded() ? "rotate-90" : "")
-							}
-						/>
+						<span className="flex size-4 items-center justify-center text-muted-foreground hover:text-primary-fg">
+							<Icon
+								icon={ChevronRight}
+								size="sm"
+								className={cn("shrink-0 transition-transform", item.isExpanded() ? "rotate-90" : "")}
+							/>
+						</span>
 					)}
 				</span>
 			</SidebarMenuButton>

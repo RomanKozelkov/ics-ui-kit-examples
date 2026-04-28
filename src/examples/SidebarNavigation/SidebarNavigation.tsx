@@ -15,15 +15,12 @@ import { SidebarHeader } from "./SidebarHeader";
 export function SidebarNavigation() {
 	return (
 		<div className="h-full w-full bg-primary-bg">
-			<SidebarProvider
-				className="h-full w-full"
-				style={{ "--sidebar-width": "272px" } as React.CSSProperties}
-			>
+			<SidebarProvider className="h-full w-full" style={{ "--sidebar-width": "300px" } as React.CSSProperties}>
 				<Sidebar
 					side="left"
 					variant="sidebar"
 					collapsible="offcanvas"
-					className="pt-2 pl-2 group-data-[side=left]:border-none"
+					className="pl-2 pt-2 group-data-[side=left]:border-none"
 				>
 					<SidebarHeader />
 					<SidebarContent className="mt-4">
