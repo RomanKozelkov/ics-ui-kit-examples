@@ -1,3 +1,12 @@
+.sidebar-nav-floating {
+	margin-top: 4.25rem !important;
+	height: calc(100% - 4.25rem) !important;
+}
+
+.sidebar-nav-floating-open {
+	left: 0 !important;
+}
+
 html:not(.dark) .gramax {
     /** Base **/
     --primary-accent: 0 0% 9%;

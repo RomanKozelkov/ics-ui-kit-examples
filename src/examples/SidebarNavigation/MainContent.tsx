@@ -4,6 +4,9 @@ import { IconButton } from "ics-ui-kit/components/button";
 import { Search } from "lucide-react";
 import { Divider } from "ics-ui-kit/components/divider";
 import { BreadcrumbListComponent } from "./BreadcrumbListComponent";
+import { SIDEBAR_TRIGGER_ATTR } from "./useSidebarFloating";
+
+const sidebarTriggerFloatingProps = { [SIDEBAR_TRIGGER_ATTR]: true };
 
 export function MainContent() {
 	const { state } = useSidebar();
@@ -32,7 +35,7 @@ export function MainContent() {
 							className="shrink-0 p-1.5"
 							iconClassName="size-4"
 						/>
-						<SidebarTrigger className="size-7 h-auto p-1.5" />
+						<SidebarTrigger className="size-7 h-auto p-1.5" {...sidebarTriggerFloatingProps} />
 					</div>
 
 					<div className={cn("w-full rounded-t-xl bg-secondary-bg py-2.5 pl-14 pr-4")}>
