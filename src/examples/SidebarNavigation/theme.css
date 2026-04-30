@@ -1,4 +1,4 @@
-.gramax {
+html:not(.dark) .gramax {
     /** Base **/
     --primary-accent: 0 0% 9%;
     --primary-accent-hover: 0 0% 15%;
