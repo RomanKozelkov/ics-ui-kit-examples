@@ -8,12 +8,14 @@ import {
 } from "ics-ui-kit/components/sidebar";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "ics-ui-kit/components/collapsible";
 import { TextOverflowTooltip } from "ics-ui-kit/components/overflow-tooltip";
+import { cn } from "ics-ui-kit/lib/utils";
 import type { Item } from "./navigationData";
 import { NavigationItemCounter } from "./NavigationItemCounter";
 import type { ReactNode } from "react";
 import { NavigationTreeItemActions } from "./NavigationTreeItemActions";
 import { Icon } from "ics-ui-kit/components/icon";
 import { ChevronRight } from "lucide-react";
+import { getItemProps } from "./utils/getItemProps";
 
 interface NavigationTreeItemProps {
 	item: ItemInstance<Item>;
@@ -69,7 +71,10 @@ function NavigationTreeFolderRow({
 							<Icon
 								icon={ChevronRight}
 								size="sm"
-								className="shrink-0 stroke-[2.5] text-muted transition-transform group-hover/actions:text-primary-fg group-data-[state=open]/menu-folder:rotate-90"
+								className={cn(
+									"shrink-0 stroke-[2.5] text-muted transition-transform group-hover/actions:text-primary-fg",
+									item.isExpanded() && "rotate-90"
+								)}
 							/>
 						</span>
 					</CollapsibleTrigger>
@@ -106,9 +111,9 @@ function SideMenuItemContent({
 	) as React.ForwardRefExoticComponent<any>;
 
 	return (
-		<ItemWrapper className="group/menu-folder hover:cursor-pointer" {...props}>
+		<ItemWrapper className="hover:cursor-pointer" {...props}>
 			<ButtonComponent
-				{...item.getProps()}
+				{...getItemProps(item, item.getProps())}
 				isActive={item.isSelected()}
 				className="group/nav h-7 py-1.5 hover:font-medium data-[active=true]:font-medium"
 			>
