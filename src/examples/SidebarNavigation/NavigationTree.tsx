@@ -61,7 +61,7 @@ export function NavigationTree() {
 	}
 
 	return (
-		<div {...tree.getContainerProps("Sidebar navigation")} className="relative flex flex-col gap-3">
+		<div {...tree.getContainerProps("Sidebar navigation")} className="relative mt-4 flex flex-col gap-3">
 			{groups.map(({ group }) => {
 				const groupData = group.getItemData();
 				return (

@@ -24,7 +24,7 @@ export function SidebarNavigation() {
 					className="pl-2 pt-2 group-data-[side=left]:border-none"
 				>
 					<SidebarHeader />
-					<SidebarContent className="mt-4">
+					<SidebarContent>
 						<NavigationTree />
 					</SidebarContent>
 					<SidebarSeparator />

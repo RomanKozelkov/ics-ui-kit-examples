@@ -10,8 +10,7 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "ics-ui-kit/
 import { TextOverflowTooltip } from "ics-ui-kit/components/overflow-tooltip";
 import type { Item } from "./navigationData";
 import { NavigationItemCounter } from "./NavigationItemCounter";
-import type { ComponentPropsWithoutRef, ReactNode } from "react";
-import { cn } from "ics-ui-kit/lib/utils";
+import type { ReactNode } from "react";
 import { NavigationTreeItemActions } from "./NavigationTreeItemActions";
 
 interface NavigationTreeItemProps {
@@ -92,11 +91,11 @@ function SideMenuItemContent({
 	) as React.ForwardRefExoticComponent<any>;
 
 	return (
-		<ItemWrapper className="group/menu-folder" {...props}>
+		<ItemWrapper className="group/menu-folder hover:cursor-pointer" {...props}>
 			<ButtonComponent
 				{...item.getProps()}
 				isActive={item.isSelected()}
-				className="group/nav h-7 py-1.5 data-[active=true]:font-medium"
+				className="group/nav h-7 py-1.5 hover:font-medium data-[active=true]:font-medium"
 			>
 				<TextOverflowTooltip>{data.name}</TextOverflowTooltip>
 				{data.badge != null && <NavigationItemCounter>{data.badge}</NavigationItemCounter>}
