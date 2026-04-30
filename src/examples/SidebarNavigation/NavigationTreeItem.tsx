@@ -8,10 +8,14 @@ import {
 } from "ics-ui-kit/components/sidebar";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "ics-ui-kit/components/collapsible";
 import { TextOverflowTooltip } from "ics-ui-kit/components/overflow-tooltip";
+import { cn } from "ics-ui-kit/lib/utils";
 import type { Item } from "./navigationData";
 import { NavigationItemCounter } from "./NavigationItemCounter";
 import type { ReactNode } from "react";
 import { NavigationTreeItemActions } from "./NavigationTreeItemActions";
+import { Icon } from "ics-ui-kit/components/icon";
+import { ChevronRight } from "lucide-react";
+import { getItemProps } from "./utils/getItemProps";
 
 interface NavigationTreeItemProps {
 	item: ItemInstance<Item>;
@@ -57,9 +61,25 @@ function NavigationTreeFolderRow({
 				}
 			}}
 		>
-			<CollapsibleTrigger asChild>
-				<SideMenuItemContent isNested={nested} item={item} data={data} showChevron={item.isFolder()} />
-			</CollapsibleTrigger>
+			<SideMenuItemContent
+				isNested={nested}
+				item={item}
+				data={data}
+				trigger={
+					<CollapsibleTrigger asChild>
+						<span className="group/actions flex size-4 items-center justify-center text-muted-foreground">
+							<Icon
+								icon={ChevronRight}
+								size="sm"
+								className={cn(
+									"shrink-0 stroke-[2.5] text-muted transition-transform group-hover/actions:text-primary-fg",
+									item.isExpanded() && "rotate-90"
+								)}
+							/>
+						</span>
+					</CollapsibleTrigger>
+				}
+			/>
 			<CollapsibleContent>
 				<SidebarMenuSub className="border-none">{children}</SidebarMenuSub>
 			</CollapsibleContent>
@@ -77,13 +97,13 @@ function SideMenuItemContent({
 	isNested,
 	item,
 	data,
-	showChevron = false,
+	trigger,
 	...props
 }: {
 	isNested: boolean;
 	item: ItemInstance<Item>;
 	data: Item;
-	showChevron?: boolean;
+	trigger?: ReactNode;
 }) {
 	const ItemWrapper = (isNested ? SidebarMenuSubItem : SidebarMenuItem) as React.ForwardRefExoticComponent<any>;
 	const ButtonComponent = (
@@ -91,15 +111,15 @@ function SideMenuItemContent({
 	) as React.ForwardRefExoticComponent<any>;
 
 	return (
-		<ItemWrapper className="group/menu-folder hover:cursor-pointer" {...props}>
+		<ItemWrapper className="hover:cursor-pointer" {...props}>
 			<ButtonComponent
-				{...item.getProps()}
+				{...getItemProps(item, item.getProps())}
 				isActive={item.isSelected()}
 				className="group/nav h-7 py-1.5 hover:font-medium data-[active=true]:font-medium"
 			>
 				<TextOverflowTooltip>{data.name}</TextOverflowTooltip>
 				{data.badge != null && <NavigationItemCounter>{data.badge}</NavigationItemCounter>}
-				<NavigationTreeItemActions showChevron={showChevron} />
+				<NavigationTreeItemActions trigger={trigger} />
 			</ButtonComponent>
 		</ItemWrapper>
 	);
