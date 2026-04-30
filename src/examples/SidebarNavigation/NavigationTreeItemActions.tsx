@@ -1,7 +1,8 @@
+import type { ReactNode } from "react";
 import { Icon } from "ics-ui-kit/components/icon";
-import { ChevronRight, MoreHorizontal } from "lucide-react";
+import { MoreHorizontal } from "lucide-react";
 
-export function NavigationTreeItemActions({ showChevron = false }: { showChevron?: boolean }) {
+export function NavigationTreeItemActions({ trigger }: { trigger?: ReactNode }) {
 	return (
 		<span className="ml-auto flex items-center gap-1">
 			<button
@@ -11,15 +12,7 @@ export function NavigationTreeItemActions({ showChevron = false }: { showChevron
 			>
 				<Icon icon={MoreHorizontal} className="size-3.5 group-hover/actions:text-primary-fg" />
 			</button>
-			{showChevron && (
-				<span className="group/actions flex size-4 items-center justify-center text-muted-foreground">
-					<Icon
-						icon={ChevronRight}
-						size="sm"
-						className="shrink-0 stroke-[2.5] text-muted transition-transform group-hover/actions:text-primary-fg group-data-[state=open]/menu-folder:rotate-90"
-					/>
-				</span>
-			)}
+			{trigger}
 		</span>
 	);
 }
