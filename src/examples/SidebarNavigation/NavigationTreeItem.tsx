@@ -12,6 +12,8 @@ import type { Item } from "./navigationData";
 import { NavigationItemCounter } from "./NavigationItemCounter";
 import type { ReactNode } from "react";
 import { NavigationTreeItemActions } from "./NavigationTreeItemActions";
+import { Icon } from "ics-ui-kit/components/icon";
+import { ChevronRight } from "lucide-react";
 
 interface NavigationTreeItemProps {
 	item: ItemInstance<Item>;
@@ -57,9 +59,22 @@ function NavigationTreeFolderRow({
 				}
 			}}
 		>
-			<CollapsibleTrigger asChild>
-				<SideMenuItemContent isNested={nested} item={item} data={data} showChevron={item.isFolder()} />
-			</CollapsibleTrigger>
+			<SideMenuItemContent
+				isNested={nested}
+				item={item}
+				data={data}
+				trigger={
+					<CollapsibleTrigger asChild>
+						<span className="group/actions flex size-4 items-center justify-center text-muted-foreground">
+							<Icon
+								icon={ChevronRight}
+								size="sm"
+								className="shrink-0 stroke-[2.5] text-muted transition-transform group-hover/actions:text-primary-fg group-data-[state=open]/menu-folder:rotate-90"
+							/>
+						</span>
+					</CollapsibleTrigger>
+				}
+			/>
 			<CollapsibleContent>
 				<SidebarMenuSub className="border-none">{children}</SidebarMenuSub>
 			</CollapsibleContent>
@@ -77,13 +92,13 @@ function SideMenuItemContent({
 	isNested,
 	item,
 	data,
-	showChevron = false,
+	trigger,
 	...props
 }: {
 	isNested: boolean;
 	item: ItemInstance<Item>;
 	data: Item;
-	showChevron?: boolean;
+	trigger?: ReactNode;
 }) {
 	const ItemWrapper = (isNested ? SidebarMenuSubItem : SidebarMenuItem) as React.ForwardRefExoticComponent<any>;
 	const ButtonComponent = (
@@ -99,7 +114,7 @@ function SideMenuItemContent({
 			>
 				<TextOverflowTooltip>{data.name}</TextOverflowTooltip>
 				{data.badge != null && <NavigationItemCounter>{data.badge}</NavigationItemCounter>}
-				<NavigationTreeItemActions showChevron={showChevron} />
+				<NavigationTreeItemActions trigger={trigger} />
 			</ButtonComponent>
 		</ItemWrapper>
 	);
