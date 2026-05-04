@@ -66,7 +66,7 @@ function NavigationTreeFolderRow({
 	onSelect: (id: string) => void;
 	children: ReactNode;
 }) {
-	const collapsible = (
+	return (
 		<Collapsible open={open} onOpenChange={onOpenChange}>
 			<SideMenuItemContent
 				id={id}
@@ -94,10 +94,4 @@ function NavigationTreeFolderRow({
 			</CollapsibleContent>
 		</Collapsible>
 	);
-
-	if (isNested) {
-		return <SidebarMenuSubItem>{collapsible}</SidebarMenuSubItem>;
-	}
-
-	return <SidebarMenuItem>{collapsible}</SidebarMenuItem>;
 }
