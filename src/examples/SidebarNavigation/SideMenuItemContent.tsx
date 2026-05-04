@@ -31,6 +31,7 @@ export function SideMenuItemContent({
 
 	const { onClick: _treeRowClick, ...treeRest } = item.getProps();
 	const tree = item.getTree();
+	const isDragSource = Boolean(tree.getState().dnd?.draggedItems?.some((d) => d.getId() === item.getId()));
 
 	return (
 		<ItemWrapper className="hover:cursor-pointer" {...props}>
@@ -39,7 +40,8 @@ export function SideMenuItemContent({
 				isActive={item.isSelected()}
 				className={cn(
 					"group/nav h-7 py-1.5 hover:font-medium data-[active=true]:font-medium",
-					item.isFolder() && item.isDragTarget() && "bg-secondary-bg-hover"
+					item.isFolder() && item.isDragTarget() && "bg-secondary-bg-hover",
+					isDragSource && "!bg-transparent opacity-50"
 				)}
 				onClick={() => tree.setSelectedItems([item.getId()])}
 			>
