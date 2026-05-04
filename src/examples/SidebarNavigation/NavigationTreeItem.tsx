@@ -1,79 +1,61 @@
+import type { ItemInstance } from "@headless-tree/core";
 import { SidebarMenuSub } from "ics-ui-kit/components/sidebar";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "ics-ui-kit/components/collapsible";
 import type { Item } from "./navigationData";
 import type { ReactNode } from "react";
+import { SideMenuItemContent } from "./SideMenuItemContent";
 import { Icon } from "ics-ui-kit/components/icon";
 import { ChevronRight } from "lucide-react";
 import { cn } from "ics-ui-kit/lib/utils";
-import { useNavigationTreeStore } from "./navigationTreeStore";
-import { SideMenuItemContent } from "./SideMenuItemContent";
 
 interface NavigationTreeItemProps {
-	id: string;
-	level: number;
+	item: ItemInstance<Item>;
 }
 
-export function NavigationTreeItem({ id, level }: NavigationTreeItemProps) {
-	const data = useNavigationTreeStore((s) => s.items[id]);
-	const open = useNavigationTreeStore((s) => s.expanded.has(id));
-	const isSelected = useNavigationTreeStore((s) => s.selectedId === id);
-	const toggleExpanded = useNavigationTreeStore((s) => s.toggleExpanded);
-	const select = useNavigationTreeStore((s) => s.select);
+export function NavigationTreeItem({ item }: NavigationTreeItemProps) {
+	const data = item.getItemData();
+	const level = item.getItemMeta().level;
+	const nested = level > 1;
 
-	if (!data) return null;
-
-	const childIds = data.children ?? [];
-	const isFolder = childIds.length > 0;
-	const isNested = level > 1;
-
-	if (isFolder) {
+	if (item.isFolder()) {
 		return (
-			<NavigationTreeFolderRow
-				id={id}
-				data={data}
-				isNested={isNested}
-				open={open}
-				onOpenChange={(next) => toggleExpanded(id, next)}
-				isSelected={isSelected}
-				onSelect={select}
-			>
-				{childIds.map((childId) => (
-					<NavigationTreeItem key={childId} id={childId} level={level + 1} />
+			<NavigationTreeFolderRow item={item} data={data} nested={nested}>
+				{item.getChildren().map((child) => (
+					<NavigationTreeItem key={child.getId()} item={child} />
 				))}
 			</NavigationTreeFolderRow>
 		);
 	}
 
-	return <SideMenuItemContent id={id} isNested={isNested} data={data} isSelected={isSelected} onSelect={select} />;
+	return <SideMenuItemContent isNested={nested} item={item} data={data} />;
 }
 
 function NavigationTreeFolderRow({
-	id,
+	item,
 	data,
-	isNested,
-	open,
-	onOpenChange,
-	isSelected,
-	onSelect,
+	nested,
 	children
 }: {
-	id: string;
+	item: ItemInstance<Item>;
 	data: Item;
-	isNested: boolean;
-	open: boolean;
-	onOpenChange: (open: boolean) => void;
-	isSelected: boolean;
-	onSelect: (id: string) => void;
+	nested: boolean;
 	children: ReactNode;
 }) {
 	return (
-		<Collapsible open={open} onOpenChange={onOpenChange}>
+		<Collapsible
+			open={item.isExpanded()}
+			onOpenChange={(open) => {
+				if (open) {
+					item.expand();
+				} else {
+					item.collapse();
+				}
+			}}
+		>
 			<SideMenuItemContent
-				id={id}
-				isNested={isNested}
+				isNested={nested}
+				item={item}
 				data={data}
-				isSelected={isSelected}
-				onSelect={onSelect}
 				trigger={
 					<CollapsibleTrigger asChild>
 						<span className="group/actions flex size-4 items-center justify-center text-muted-foreground">
@@ -82,7 +64,7 @@ function NavigationTreeFolderRow({
 								size="sm"
 								className={cn(
 									"shrink-0 stroke-[2.5] text-muted transition-transform group-hover/actions:text-primary-fg",
-									open && "rotate-90"
+									item.isExpanded() && "rotate-90"
 								)}
 							/>
 						</span>
