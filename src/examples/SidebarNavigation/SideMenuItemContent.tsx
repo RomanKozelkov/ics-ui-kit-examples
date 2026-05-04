@@ -6,6 +6,7 @@ import {
 	SidebarMenuSubButton,
 	SidebarMenuSubItem
 } from "ics-ui-kit/components/sidebar";
+import { cn } from "ics-ui-kit/lib/utils";
 import { TextOverflowTooltip } from "ics-ui-kit/components/overflow-tooltip";
 import { NavigationItemCounter } from "./NavigationItemCounter";
 import { NavigationTreeItemActions } from "./NavigationTreeItemActions";
@@ -36,7 +37,10 @@ export function SideMenuItemContent({
 			<ButtonComponent
 				{...treeRest}
 				isActive={item.isSelected()}
-				className="group/nav h-7 py-1.5 hover:font-medium data-[active=true]:font-medium"
+				className={cn(
+					"group/nav h-7 py-1.5 hover:font-medium data-[active=true]:font-medium",
+					item.isFolder() && item.isDragTarget() && "bg-secondary-bg-hover"
+				)}
 				onClick={() => tree.setSelectedItems([item.getId()])}
 			>
 				<TextOverflowTooltip>{data.name}</TextOverflowTooltip>
