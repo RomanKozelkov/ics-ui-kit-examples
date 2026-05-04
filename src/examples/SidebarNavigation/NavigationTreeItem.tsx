@@ -1,106 +1,103 @@
-import type { ItemInstance } from "@headless-tree/core";
-import {
-	SidebarMenuButton,
-	SidebarMenuItem,
-	SidebarMenuSub,
-	SidebarMenuSubButton,
-	SidebarMenuSubItem
-} from "ics-ui-kit/components/sidebar";
+import { SidebarMenuItem, SidebarMenuSub, SidebarMenuSubItem } from "ics-ui-kit/components/sidebar";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "ics-ui-kit/components/collapsible";
-import { TextOverflowTooltip } from "ics-ui-kit/components/overflow-tooltip";
 import type { Item } from "./navigationData";
-import { NavigationItemCounter } from "./NavigationItemCounter";
 import type { ReactNode } from "react";
-import { NavigationTreeItemActions } from "./NavigationTreeItemActions";
+import { Icon } from "ics-ui-kit/components/icon";
+import { ChevronRight } from "lucide-react";
+import { cn } from "ics-ui-kit/lib/utils";
+import { useNavigationTreeStore } from "./navigationTreeStore";
+import { SideMenuItemContent } from "./SideMenuItemContent";
 
 interface NavigationTreeItemProps {
-	item: ItemInstance<Item>;
+	id: string;
+	level: number;
 }
 
-export function NavigationTreeItem({ item }: NavigationTreeItemProps) {
-	const data = item.getItemData();
-	const level = item.getItemMeta().level;
-	const nested = level > 1;
+export function NavigationTreeItem({ id, level }: NavigationTreeItemProps) {
+	const data = useNavigationTreeStore((s) => s.items[id]);
+	const open = useNavigationTreeStore((s) => s.expanded.has(id));
+	const isSelected = useNavigationTreeStore((s) => s.selectedId === id);
+	const toggleExpanded = useNavigationTreeStore((s) => s.toggleExpanded);
+	const select = useNavigationTreeStore((s) => s.select);
 
-	if (item.isFolder()) {
+	if (!data) return null;
+
+	const childIds = data.children ?? [];
+	const isFolder = childIds.length > 0;
+	const isNested = level > 1;
+
+	if (isFolder) {
 		return (
-			<NavigationTreeFolderRow item={item} data={data} nested={nested}>
-				{item.getChildren().map((child) => (
-					<NavigationTreeItem key={child.getId()} item={child} />
+			<NavigationTreeFolderRow
+				id={id}
+				data={data}
+				isNested={isNested}
+				open={open}
+				onOpenChange={(next) => toggleExpanded(id, next)}
+				isSelected={isSelected}
+				onSelect={select}
+			>
+				{childIds.map((childId) => (
+					<NavigationTreeItem key={childId} id={childId} level={level + 1} />
 				))}
 			</NavigationTreeFolderRow>
 		);
 	}
 
-	return <SideMenuItemContent isNested={nested} item={item} data={data} />;
+	return <SideMenuItemContent id={id} isNested={isNested} data={data} isSelected={isSelected} onSelect={select} />;
 }
 
 function NavigationTreeFolderRow({
-	item,
+	id,
 	data,
-	nested,
+	isNested,
+	open,
+	onOpenChange,
+	isSelected,
+	onSelect,
 	children
 }: {
-	item: ItemInstance<Item>;
+	id: string;
 	data: Item;
-	nested: boolean;
+	isNested: boolean;
+	open: boolean;
+	onOpenChange: (open: boolean) => void;
+	isSelected: boolean;
+	onSelect: (id: string) => void;
 	children: ReactNode;
 }) {
 	const collapsible = (
-		<Collapsible
-			open={item.isExpanded()}
-			onOpenChange={(open) => {
-				if (open) {
-					item.expand();
-				} else {
-					item.collapse();
+		<Collapsible open={open} onOpenChange={onOpenChange}>
+			<SideMenuItemContent
+				id={id}
+				isNested={isNested}
+				data={data}
+				isSelected={isSelected}
+				onSelect={onSelect}
+				trigger={
+					<CollapsibleTrigger asChild>
+						<span className="group/actions flex size-4 items-center justify-center text-muted-foreground">
+							<Icon
+								icon={ChevronRight}
+								size="sm"
+								className={cn(
+									"shrink-0 stroke-[2.5] text-muted transition-transform group-hover/actions:text-primary-fg",
+									open && "rotate-90"
+								)}
+							/>
+						</span>
+					</CollapsibleTrigger>
 				}
-			}}
-		>
-			<CollapsibleTrigger asChild>
-				<SideMenuItemContent isNested={nested} item={item} data={data} showChevron={item.isFolder()} />
-			</CollapsibleTrigger>
+			/>
 			<CollapsibleContent>
 				<SidebarMenuSub className="border-none">{children}</SidebarMenuSub>
 			</CollapsibleContent>
 		</Collapsible>
 	);
 
-	if (nested) {
+	if (isNested) {
 		return <SidebarMenuSubItem>{collapsible}</SidebarMenuSubItem>;
 	}
 
 	return <SidebarMenuItem>{collapsible}</SidebarMenuItem>;
-}
-
-function SideMenuItemContent({
-	isNested,
-	item,
-	data,
-	showChevron = false,
-	...props
-}: {
-	isNested: boolean;
-	item: ItemInstance<Item>;
-	data: Item;
-	showChevron?: boolean;
-}) {
-	const ItemWrapper = (isNested ? SidebarMenuSubItem : SidebarMenuItem) as React.ForwardRefExoticComponent<any>;
-	const ButtonComponent = (
-		isNested ? SidebarMenuSubButton : SidebarMenuButton
-	) as React.ForwardRefExoticComponent<any>;
-
-	return (
-		<ItemWrapper className="group/menu-folder hover:cursor-pointer" {...props}>
-			<ButtonComponent
-				{...item.getProps()}
-				isActive={item.isSelected()}
-				className="group/nav h-7 py-1.5 hover:font-medium data-[active=true]:font-medium"
-			>
-				<TextOverflowTooltip>{data.name}</TextOverflowTooltip>
-				{data.badge != null && <NavigationItemCounter>{data.badge}</NavigationItemCounter>}
-				<NavigationTreeItemActions showChevron={showChevron} />
-			</ButtonComponent>
-		</ItemWrapper>
-	);
 }
