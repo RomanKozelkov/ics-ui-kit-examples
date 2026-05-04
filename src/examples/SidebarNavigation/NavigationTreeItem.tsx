@@ -1,4 +1,4 @@
-import { SidebarMenuItem, SidebarMenuSub, SidebarMenuSubItem } from "ics-ui-kit/components/sidebar";
+import { SidebarMenuSub } from "ics-ui-kit/components/sidebar";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "ics-ui-kit/components/collapsible";
 import type { Item } from "./navigationData";
 import type { ReactNode } from "react";
