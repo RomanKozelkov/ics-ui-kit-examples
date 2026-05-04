@@ -48,7 +48,6 @@ export function MainContent() {
 						<SidebarTrigger className="h-auto p-1.5" />
 						<Divider orientation="vertical" className="h-4 shrink-0" />
 						<BreadcrumbListComponent />
-						<IconButton icon={Search} size="sm" variant="ghost" className="shrink-0 p-2" />
 					</div>
 				</div>
 			)}

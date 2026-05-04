@@ -61,7 +61,6 @@ function NavigationTreeFolderRow({
 						<span className="group/actions flex size-4 items-center justify-center text-muted-foreground">
 							<Icon
 								icon={ChevronRight}
-								size="sm"
 								className={cn(
 									"shrink-0 stroke-[2.5] text-muted transition-transform group-hover/actions:text-primary-fg",
 									item.isExpanded() && "rotate-90"

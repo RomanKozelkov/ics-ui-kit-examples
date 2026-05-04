@@ -71,7 +71,7 @@ export function NavigationTree() {
 			{groups.map(({ group }) => {
 				const groupData = group.getItemData();
 				return (
-					<SidebarGroup key={group.getId()} className="py-0">
+					<SidebarGroup key={group.getId()} className="py-0 pr-4">
 						<NavigationSectionLabel data={groupData} />
 						<SidebarGroupContent>
 							<SidebarMenu className="gap-0.5">
