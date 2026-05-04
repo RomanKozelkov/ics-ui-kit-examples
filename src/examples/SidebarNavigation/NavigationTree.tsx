@@ -8,16 +8,17 @@ import {
 	type ItemInstance
 } from "@headless-tree/core";
 import { useTree } from "@headless-tree/react";
-import { SidebarGroup, SidebarGroupContent, SidebarInsertionLine, SidebarMenu } from "ics-ui-kit/components/sidebar";
+import { SidebarGroup, SidebarGroupContent, SidebarMenu } from "ics-ui-kit/components/sidebar";
 import { NavigationTreeItem } from "./NavigationTreeItem";
 import { NavigationSectionLabel } from "./NavigationSectionLabel";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { ROOT_ID, initialExpanded, initialItems, initialSelected, type Item } from "./navigationData";
 
 const INDENT = 16;
 
 export function NavigationTree() {
 	const [items, setItems] = useState(initialItems);
+	const dragPreviewRef = useRef<HTMLDivElement | null>(null);
 
 	const tree = useTree<Item>({
 		rootItemId: ROOT_ID,
@@ -41,6 +42,11 @@ export function NavigationTree() {
 		getItemName: (item) => item.getItemData().name,
 		isItemFolder: (item) => (item.getItemData()?.children?.length ?? 0) > 0,
 		canDrag: (dragged) => dragged.every((i) => i.getItemMeta().level > 0),
+		setDragImage: (draggedItems) => {
+			const el = dragPreviewRef.current!;
+			el.textContent = draggedItems.map((i) => i.getItemName()).join(", ");
+			return { imgElement: el, xOffset: 80, yOffset: 14 };
+		},
 		onDrop: createOnDropHandler<Item>((parent, newChildren) => {
 			setItems((prev) => ({
 				...prev,
@@ -77,7 +83,12 @@ export function NavigationTree() {
 					</SidebarGroup>
 				);
 			})}
-			<SidebarInsertionLine style={tree.getDragLineStyle()} />
+
+			<div
+				ref={dragPreviewRef}
+				className="fixed left-0 top-0 z-[9999] h-7 w-auto min-w-40 rounded-md bg-secondary-bg p-1.5 pl-2 text-sm leading-none text-primary-fg opacity-85 shadow-soft-md"
+				style={{ transform: "translate(-100vw, -100vh)" }}
+			/>
 		</div>
 	);
 }
