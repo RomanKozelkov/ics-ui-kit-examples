@@ -3,6 +3,9 @@ import { NavigationTreeItem } from "./NavigationTreeItem";
 import { NavigationSectionLabel } from "./NavigationSectionLabel";
 import { ROOT_ID } from "./navigationData";
 import { useNavigationTreeStore } from "./navigationTreeStore";
+import { Layers2, Layers3 } from "lucide-react";
+
+const groupIcons = [Layers3, Layers2, Layers3];
 
 export function NavigationTree() {
 	const items = useNavigationTreeStore((s) => s.items);
@@ -10,14 +13,14 @@ export function NavigationTree() {
 
 	return (
 		<div className="relative mt-4 flex flex-col gap-3">
-			{groupIds.map((groupId) => {
+			{groupIds.map((groupId, index) => {
 				const groupData = items[groupId];
 				if (!groupData) return null;
 
 				const childIds = groupData.children ?? [];
 				return (
 					<SidebarGroup key={groupId} className="py-0 pr-4">
-						<NavigationSectionLabel data={groupData} />
+						<NavigationSectionLabel data={groupData} icon={groupIcons[index]} />
 						<SidebarGroupContent>
 							<SidebarMenu className="gap-0.5 pb-0.5">
 								{childIds.map((childId) => (
