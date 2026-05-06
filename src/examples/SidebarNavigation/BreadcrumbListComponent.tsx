@@ -9,12 +9,14 @@ import {
 
 export function BreadcrumbListComponent() {
 	return (
-		<Breadcrumb className="min-w-0">
+		<Breadcrumb className="min-w-0 pl-2">
 			<BreadcrumbList>
 				<BreadcrumbItem>
 					<BreadcrumbLink href="#">Great design is invisible</BreadcrumbLink>
 				</BreadcrumbItem>
-				<BreadcrumbSeparator />
+				<BreadcrumbSeparator>
+					<span className="text-base text-muted">/</span>
+				</BreadcrumbSeparator>
 				<BreadcrumbItem>
 					<BreadcrumbPage>What "Invisible" Means</BreadcrumbPage>
 				</BreadcrumbItem>

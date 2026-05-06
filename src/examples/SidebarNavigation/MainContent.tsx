@@ -15,7 +15,7 @@ export function MainContent() {
 	return (
 		<div
 			className={cn(
-				"relative flex h-full min-h-0 w-full flex-col bg-primary-bg p-2",
+				"relative flex h-full min-h-0 w-full flex-col bg-primary-bg p-2 pr-0",
 				isCollapsed && "bg-secondary-bg p-0 pl-72"
 			)}
 		>
@@ -43,7 +43,7 @@ export function MainContent() {
 					</div>
 				</>
 			) : (
-				<div className="w-full rounded-t-2xl border border-secondary-border bg-secondary-bg py-2.5 pl-4 pr-2">
+				<div className="w-full rounded-t-2xl rounded-tr-none border border-secondary-border bg-secondary-bg py-2.5 pl-4 pr-2">
 					<div className="flex items-center gap-2">
 						<SidebarTrigger className="h-auto p-1.5" />
 						<Divider orientation="vertical" className="h-4 shrink-0" />
