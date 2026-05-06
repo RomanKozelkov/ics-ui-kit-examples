@@ -43,7 +43,7 @@ export function MainContent() {
 					</div>
 				</>
 			) : (
-				<div className="w-full rounded-t-2xl rounded-tr-none border border-secondary-border bg-secondary-bg py-2.5 pl-4 pr-2">
+				<div className="h-14 w-full rounded-t-2xl rounded-tr-none border border-secondary-border bg-secondary-bg py-2.5 pl-4 pr-2">
 					<div className="flex items-center gap-2">
 						<SidebarTrigger className="h-auto p-1.5" />
 						<Divider orientation="vertical" className="h-4 shrink-0" />
