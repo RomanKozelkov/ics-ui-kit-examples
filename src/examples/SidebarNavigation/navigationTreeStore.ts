@@ -24,5 +24,10 @@ export const useNavigationTreeStore = create<NavigationTreeStore>((set) => ({
 			}
 			return { expanded: next };
 		}),
-	select: (id) => set({ selectedId: id })
+	select: (id) =>
+		set((state) => {
+			const next = new Set(state.expanded);
+			next.add(id);
+			return { selectedId: id, expanded: next };
+		})
 }));

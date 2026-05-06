@@ -76,7 +76,10 @@ function NavigationTreeFolderRow({
 				onSelect={onSelect}
 				trigger={
 					<CollapsibleTrigger asChild>
-						<span className="group/actions flex size-4 items-center justify-center text-muted-foreground">
+						<span
+							className="group/actions flex size-4 items-center justify-center text-muted-foreground"
+							onClick={(e) => e.stopPropagation()}
+						>
 							<Icon
 								icon={ChevronRight}
 								size="sm"
