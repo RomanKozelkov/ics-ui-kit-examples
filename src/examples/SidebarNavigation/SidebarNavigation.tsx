@@ -26,6 +26,7 @@ export function SidebarNavigation() {
 	);
 
 	const isFloatingMode = visualVariant === "floating";
+	const sidebarWidth = isFloatingMode ? "284px" : "300px";
 	const { isSidebarFloating } = useSidebarFloating(sidebarRef as React.RefObject<HTMLDivElement>, isFloatingMode);
 
 	React.useEffect(() => {
@@ -49,7 +50,7 @@ export function SidebarNavigation() {
 		<div className="gramax h-full w-full bg-primary-bg">
 			<SidebarProvider
 				className="h-full w-full"
-				style={{ "--sidebar-width": "300px" } as React.CSSProperties}
+				style={{ "--sidebar-width": sidebarWidth } as React.CSSProperties}
 				open={open}
 				onOpenChange={setOpen}
 			>

@@ -24,7 +24,7 @@ export function MainContent() {
 					<div
 						className={cn(
 							"absolute left-4 top-4 z-20",
-							"pointer-events-auto flex flex-row gap-1 rounded-lg border-0.5 border-primary-border",
+							"pointer-events-auto flex h-9 w-[4.25rem] flex-row gap-1 rounded-lg border-0.5 border-primary-border",
 							"bg-sidebar-bg p-1 shadow-soft-base"
 						)}
 					>
@@ -43,8 +43,8 @@ export function MainContent() {
 					</div>
 				</>
 			) : (
-				<div className="h-14 w-full rounded-t-2xl rounded-tr-none border border-secondary-border bg-secondary-bg py-2.5 pl-4 pr-2">
-					<div className="flex items-center gap-2">
+				<div className="h-14 w-full rounded-t-2xl rounded-tr-none border border-secondary-border bg-secondary-bg py-2.5 pl-3.5 pr-2">
+					<div className="flex items-center gap-3.5">
 						<SidebarTrigger className="h-auto p-1.5" />
 						<Divider orientation="vertical" className="h-4 shrink-0" />
 						<BreadcrumbListComponent />
