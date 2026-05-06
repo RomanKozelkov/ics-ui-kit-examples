@@ -65,7 +65,7 @@ export function SidebarNavigation() {
 						isSidebarFloating && "sidebar-nav-floating-open"
 					)}
 				>
-					{!isSidebarFloating && <SidebarHeader />}
+					<SidebarHeader />
 					<SidebarContent>
 						<NavigationTree />
 					</SidebarContent>

@@ -1,27 +1,28 @@
-import type { ItemInstance } from "@headless-tree/core";
-import type { Item } from "./navigationData";
+import { ReactNode } from "react";
+import { Item } from "./navigationData";
 import {
 	SidebarMenuButton,
 	SidebarMenuItem,
 	SidebarMenuSubButton,
 	SidebarMenuSubItem
 } from "ics-ui-kit/components/sidebar";
-import { cn } from "ics-ui-kit/lib/utils";
-import { TextOverflowTooltip } from "ics-ui-kit/components/overflow-tooltip";
 import { NavigationItemCounter } from "./NavigationItemCounter";
 import { NavigationTreeItemActions } from "./NavigationTreeItemActions";
-import type { ReactNode } from "react";
+import { TextOverflowTooltip } from "ics-ui-kit/components/overflow-tooltip";
 
 export function SideMenuItemContent({
+	id,
 	isNested,
-	item,
 	data,
-	trigger,
-	...props
+	isSelected,
+	onSelect,
+	trigger
 }: {
+	id: string;
 	isNested: boolean;
-	item: ItemInstance<Item>;
 	data: Item;
+	isSelected: boolean;
+	onSelect: (id: string) => void;
 	trigger?: ReactNode;
 }) {
 	const ItemWrapper = (isNested ? SidebarMenuSubItem : SidebarMenuItem) as React.ForwardRefExoticComponent<any>;
@@ -29,21 +30,13 @@ export function SideMenuItemContent({
 		isNested ? SidebarMenuSubButton : SidebarMenuButton
 	) as React.ForwardRefExoticComponent<any>;
 
-	const { onClick: _treeRowClick, ...treeRest } = item.getProps();
-	const tree = item.getTree();
-	const isDragSource = Boolean(tree.getState().dnd?.draggedItems?.some((d) => d.getId() === item.getId()));
-
 	return (
-		<ItemWrapper className="hover:cursor-pointer" {...props}>
+		<ItemWrapper className="hover:cursor-pointer">
 			<ButtonComponent
-				{...treeRest}
-				isActive={item.isSelected()}
-				className={cn(
-					"group/nav h-7 py-1.5 hover:font-medium data-[active=true]:font-medium",
-					item.isFolder() && item.isDragTarget() && "bg-secondary-bg-hover",
-					isDragSource && "!bg-transparent opacity-50"
-				)}
-				onClick={() => tree.setSelectedItems([item.getId()])}
+				type="button"
+				onClick={() => onSelect(id)}
+				isActive={isSelected}
+				className="group/nav h-7 py-1.5 hover:font-medium data-[active=true]:font-medium"
 			>
 				<TextOverflowTooltip>{data.name}</TextOverflowTooltip>
 				{data.badge != null && <NavigationItemCounter>{data.badge}</NavigationItemCounter>}

@@ -38,16 +38,17 @@ export function MainContent() {
 						<SidebarTrigger className="size-7 h-auto p-1.5" {...sidebarTriggerFloatingProps} />
 					</div>
 
-					<div className={cn("w-full rounded-t-2xl bg-secondary-bg py-2.5 pl-14 pr-4")}>
+					<div className={cn("w-full rounded-t-xl bg-secondary-bg py-2.5 pl-14 pr-4")}>
 						<BreadcrumbListComponent />
 					</div>
 				</>
 			) : (
-				<div className="w-full rounded-t-2xl border border-secondary-border bg-secondary-bg py-2.5 pl-4 pr-2">
+				<div className="w-full rounded-t-xl border border-secondary-border bg-secondary-bg py-2.5 pl-4 pr-2">
 					<div className="flex items-center gap-2">
 						<SidebarTrigger className="h-auto p-1.5" />
 						<Divider orientation="vertical" className="h-4 shrink-0" />
 						<BreadcrumbListComponent />
+						<IconButton icon={Search} size="sm" variant="ghost" className="shrink-0 p-2" />
 					</div>
 				</div>
 			)}
