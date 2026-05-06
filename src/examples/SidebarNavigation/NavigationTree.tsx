@@ -19,7 +19,7 @@ export function NavigationTree() {
 					<SidebarGroup key={groupId} className="py-0 pr-4">
 						<NavigationSectionLabel data={groupData} />
 						<SidebarGroupContent>
-							<SidebarMenu className="gap-0.5">
+							<SidebarMenu className="gap-0.5 pb-0.5">
 								{childIds.map((childId) => (
 									<NavigationTreeItem key={childId} id={childId} level={1} />
 								))}

@@ -67,7 +67,7 @@ function NavigationTreeFolderRow({
 	children: ReactNode;
 }) {
 	return (
-		<Collapsible open={open} onOpenChange={onOpenChange}>
+		<Collapsible open={open} onOpenChange={onOpenChange} className="flex flex-col gap-0.5">
 			<SideMenuItemContent
 				id={id}
 				isNested={isNested}
@@ -90,7 +90,7 @@ function NavigationTreeFolderRow({
 				}
 			/>
 			<CollapsibleContent>
-				<SidebarMenuSub className="border-none">{children}</SidebarMenuSub>
+				<SidebarMenuSub className="gap-0.5 border-none py-0">{children}</SidebarMenuSub>
 			</CollapsibleContent>
 		</Collapsible>
 	);
