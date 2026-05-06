@@ -3,9 +3,9 @@ import { NavigationTreeItem } from "./NavigationTreeItem";
 import { NavigationSectionLabel } from "./NavigationSectionLabel";
 import { ROOT_ID } from "./navigationData";
 import { useNavigationTreeStore } from "./navigationTreeStore";
-import { Layers2, Layers3 } from "lucide-react";
+import { Layers, Layers2, Layers3 } from "lucide-react";
 
-const groupIcons = [Layers3, Layers2, Layers3];
+const groupIcons = [Layers2, Layers3, Layers];
 
 export function NavigationTree() {
 	const items = useNavigationTreeStore((s) => s.items);

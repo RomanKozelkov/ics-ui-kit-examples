@@ -36,7 +36,7 @@ export function SideMenuItemContent({
 				type="button"
 				onClick={() => onSelect(id)}
 				isActive={isSelected}
-				className="group/nav h-7 py-1.5 hover:font-medium data-[active=true]:font-medium"
+				className="group/nav h-7 py-1.5 pr-1.5 hover:font-medium data-[active=true]:font-medium"
 			>
 				<TextOverflowTooltip>{data.name}</TextOverflowTooltip>
 				{data.badge != null && <NavigationItemCounter>{data.badge}</NavigationItemCounter>}
