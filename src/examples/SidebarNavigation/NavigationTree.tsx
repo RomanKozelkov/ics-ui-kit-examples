@@ -16,7 +16,7 @@ export function NavigationTree() {
 
 				const childIds = groupData.children ?? [];
 				return (
-					<SidebarGroup key={groupId} className="py-0">
+					<SidebarGroup key={groupId} className="py-0 pr-4">
 						<NavigationSectionLabel data={groupData} />
 						<SidebarGroupContent>
 							<SidebarMenu className="gap-0.5">
