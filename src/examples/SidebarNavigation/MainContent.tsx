@@ -28,14 +28,14 @@ export function MainContent() {
 							"bg-sidebar-bg p-1 shadow-soft-base"
 						)}
 					>
+						<SidebarTrigger className="size-7 h-auto rounded-md p-1.5" {...sidebarTriggerFloatingProps} />
 						<IconButton
 							icon={Search}
 							size="xs"
 							variant="ghost"
-							className="shrink-0 p-1.5"
+							className="shrink-0 rounded-md p-1.5"
 							iconClassName="size-4"
 						/>
-						<SidebarTrigger className="size-7 h-auto p-1.5" {...sidebarTriggerFloatingProps} />
 					</div>
 
 					<div className={cn("w-full rounded-t-2xl bg-secondary-bg py-2.5 pl-14 pr-4")}>
@@ -45,7 +45,7 @@ export function MainContent() {
 			) : (
 				<div className="h-14 w-full rounded-t-2xl rounded-tr-none border border-secondary-border bg-secondary-bg py-2.5 pl-3.5 pr-2">
 					<div className="flex items-center gap-3.5">
-						<SidebarTrigger className="h-auto p-1.5" />
+						<SidebarTrigger className="h-auto rounded-md p-1.5" />
 						<Divider orientation="vertical" className="h-4 shrink-0" />
 						<BreadcrumbListComponent />
 					</div>
