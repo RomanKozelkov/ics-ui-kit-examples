@@ -24,8 +24,8 @@ importers:
         specifier: ^3.0.6
         version: 3.0.6(echarts@6.0.0)(react@19.2.4)
       ics-ui-kit:
-        specifier: 0.1.0-alpha.67
-        version: 0.1.0-alpha.67(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(tsx@4.21.0)
+        specifier: 0.1.0-alpha.65
+        version: 0.1.0-alpha.65(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(tsx@4.21.0)
       lucide-react:
         specifier: ^1.7.0
         version: 1.7.0(react@19.2.4)
@@ -1601,8 +1601,8 @@ packages:
     resolution: {integrity: sha512-4fCk79wshMdzMp2rH06qWrJE4iolqLhCUH+OiuIgU++RB0+94NlDL81atO7GX55uUKueo0txHNtvEyI6D7WdMw==}
     engines: {node: '>=0.10.0'}
 
-  ics-ui-kit@0.1.0-alpha.67:
-    resolution: {integrity: sha512-YgfXezTE3RURR2m0Bhus371a6OopRHPAMhTudNHs3cBMaChZHmcCt2c+lIFnJEhLeSqVV5ZnQrFy4jh08yBzng==}
+  ics-ui-kit@0.1.0-alpha.65:
+    resolution: {integrity: sha512-SkhlmZtYcHL1K4BoECU3UiSn03ecOin88rpzUcDK1kF5o6k940lNADrk3WAj6+XE3kWc0imLeDfGuThhxexexg==}
     peerDependencies:
       react: '>=17.0.0'
       react-dom: '>=17.0.0'
@@ -3856,7 +3856,7 @@ snapshots:
     dependencies:
       safer-buffer: 2.1.2
 
-  ics-ui-kit@0.1.0-alpha.67(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(tsx@4.21.0):
+  ics-ui-kit@0.1.0-alpha.65(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(tsx@4.21.0):
     dependencies:
       '@dnd-kit/core': 6.3.1(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       '@dnd-kit/modifiers': 8.0.0(@dnd-kit/core@6.3.1(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(react@19.2.4)
