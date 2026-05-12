@@ -13,7 +13,7 @@
     --primary-accent-hover: 240 4% 16%;
     --primary-fg: 240 6% 10%;
     --primary-border: 240 5% 84%;
-    --primary-bg: 0 0% 98%;
+    --primary-bg: 0 0% 99%;
     --primary-bg-hover: 240 6% 90%;
     --secondary-accent: 240 6% 10%;
     --secondary-fg: 240 5% 26%;
@@ -22,19 +22,19 @@
     --secondary-bg-hover: 240 5% 96%;
     --tertiary-accent: 240 4% 46%;
     --muted: 240 4% 46%;
-    --sidebar-bg: 0 0% 98%;
+    --sidebar-bg: 0 0% 99%;
 }
 
 .dark {
     .gramax {
         /** Base **/
-        --primary-accent: 0 0% 98%;
+        --primary-accent: 0 0% 99%;
         --primary-accent-hover: 240 6% 90%;
-        --primary-fg: 0 0% 98%;
+        --primary-fg: 0 0% 99%;
         --primary-border: 240 5% 34%;
         --primary-bg: 240 10% 4%;
         --primary-bg-hover: 240 5% 26%;
-        --secondary-accent: 0 0% 98%;
+        --secondary-accent: 0 0% 99%;
         --secondary-fg: 240 6% 90%;
         --secondary-border: 240 5% 26%;
         --secondary-bg: 240 6% 10%;
