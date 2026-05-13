@@ -53,8 +53,7 @@ export function MainContent() {
 			)}
 			<div
 				className={cn(
-					"h-full min-h-0 w-full border border-secondary-border bg-secondary-bg p-4",
-					"border-t-0 border-r-0 border-b-0",
+					"h-full min-h-0 w-full border-l border-secondary-border bg-secondary-bg p-4",
 					isCollapsed && "border-0"
 				)}
 			/>
