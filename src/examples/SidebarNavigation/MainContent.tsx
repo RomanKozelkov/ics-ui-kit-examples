@@ -57,7 +57,7 @@ export function MainContent() {
 					isCollapsed && "border-0"
 				)}
 			>
-				{!isCollapsed && <SidebarRail className="left-0 right-auto cursor-w-resize" />}
+				{!isCollapsed && <SidebarRail className="left-0 cursor-w-resize" />}
 			</div>
 		</div>
 	);
