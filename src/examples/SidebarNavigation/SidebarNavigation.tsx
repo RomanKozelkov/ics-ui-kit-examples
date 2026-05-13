@@ -74,7 +74,7 @@ export function SidebarNavigation() {
 					<SidebarFooter>
 						<SidebarFooterContent />
 					</SidebarFooter>
-					<SidebarRail />
+					<SidebarRail className="[[data-state=expanded]_&]:hidden" />
 				</Sidebar>
 				<SidebarInset>
 					<MainContent />
