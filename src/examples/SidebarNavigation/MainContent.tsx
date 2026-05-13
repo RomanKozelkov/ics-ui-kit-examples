@@ -1,4 +1,4 @@
-import { SidebarTrigger, useSidebar } from "ics-ui-kit/components/sidebar";
+import { SidebarRail, SidebarTrigger, useSidebar } from "ics-ui-kit/components/sidebar";
 import { cn } from "ics-ui-kit/lib/utils";
 import { IconButton } from "ics-ui-kit/components/button";
 import { Search } from "lucide-react";
@@ -53,10 +53,12 @@ export function MainContent() {
 			)}
 			<div
 				className={cn(
-					"h-full min-h-0 w-full border-l border-secondary-border bg-secondary-bg p-4",
+					"relative h-full min-h-0 w-full border-l border-secondary-border bg-secondary-bg p-4",
 					isCollapsed && "border-0"
 				)}
-			/>
+			>
+				{!isCollapsed && <SidebarRail className="left-0 right-auto cursor-w-resize" />}
+			</div>
 		</div>
 	);
 }
