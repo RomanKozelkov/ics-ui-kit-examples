@@ -1,8 +1,31 @@
-import { Badge } from "ics-ui-kit/components/badge";
 import { Card } from "ics-ui-kit/components/card";
 import { cn } from "ics-ui-kit/lib/utils";
 import { TrendingDown, TrendingUp } from "lucide-react";
 import { ReactNode } from "react";
+
+function splitCurrencySymbol(value: string): [string, string, string] {
+	const firstDigit = value.search(/\d/);
+	const lastDigit = value.search(/\d(?!.*\d)/);
+	if (firstDigit === -1) return ["", value, ""];
+	return [
+		value.slice(0, firstDigit),
+		value.slice(firstDigit, lastDigit + 1),
+		value.slice(lastDigit + 1),
+	];
+}
+
+function ValueWithSymbol({ value }: { value: ReactNode }) {
+	if (typeof value !== "string") return <>{value}</>;
+	const [prefix, number, suffix] = splitCurrencySymbol(value);
+	const symbolClass = "text-3xl leading-none font-normal text-muted";
+	return (
+		<>
+			{prefix && <span className={cn(symbolClass, "mr-[2px]")}>{prefix}</span>}
+			{number}
+			{suffix && <span className={cn(symbolClass, "ml-[2px]")}>{suffix}</span>}
+		</>
+	);
+}
 
 type MetricCardProps = {
 	title: string;
@@ -15,38 +38,56 @@ type MetricCardProps = {
 export const MetricCard = (props: MetricCardProps) => {
 	const { title, value, previousValue, percentage, isLoading } = props;
 	const positive = percentage != null && percentage >= 0;
+	const TrendIcon = positive ? TrendingUp : TrendingDown;
 
 	return (
-		<Card className="gap-4 p-4 px-5 !shadow-none">
-			<div className="flex flex-col gap-1.5">
-				<div className="flex items-center justify-between gap-1.5">
-					<div className="text-sm text-secondary-fg">{title}</div>
-					{percentage != null && (
-						<Badge
-							status={positive ? "success" : "error"}
-							size="sm"
-							startIcon={positive ? TrendingUp : TrendingDown}
+		<Card className="flex flex-col px-5 pb-4 pt-5 lg:px-5 h-[130px] border-[0.5px] border-primary-border shadow-soft-md">
+			<div className="text-sm font-normal text-muted">{title}</div>
+			<SkeletonText
+				className="mt-[18px] text-3xl leading-none font-medium tabular-nums tracking-[-0.06em] text-primary-fg"
+				loadingClassName="w-32"
+				loading={isLoading}
+			>
+				<ValueWithSymbol value={value} />
+			</SkeletonText>
+			{percentage != null ? (
+				<div className="mt-2.5 flex items-center gap-2 text-xs">
+					<div className="flex items-center gap-1">
+						<TrendIcon
+							className={cn(
+								"h-4 w-4 shrink-0",
+								positive ? "text-status-success-fg" : "text-status-error-fg"
+							)}
+						/>
+						<span
+							className={cn(
+								"font-medium",
+								positive ? "text-status-success-fg" : "text-status-error-fg"
+							)}
 						>
 							{positive ? "+" : ""}
 							{percentage.toFixed(1)}%
-						</Badge>
-					)}
+						</span>
+					</div>
+					<SkeletonText
+						loading={isLoading}
+						className="text-muted"
+						loadingClassName="w-36"
+					>
+						{previousValue}
+					</SkeletonText>
 				</div>
-				<SkeletonText
-					className="text-2xl font-semibold tabular-nums tracking-tight text-primary-fg"
-					loadingClassName="w-32"
-					loading={isLoading}
-				>
-					{value}
-				</SkeletonText>
-			</div>
-			<SkeletonText
-				loading={isLoading}
-				className="line-clamp-1 text-sm font-medium text-primary-fg"
-				loadingClassName="w-40"
-			>
-				{previousValue}
-			</SkeletonText>
+			) : (
+				isLoading && (
+					<SkeletonText
+						loading
+						className="text-secondary-fg"
+						loadingClassName="w-44"
+					>
+						{null}
+					</SkeletonText>
+				)
+			)}
 		</Card>
 	);
 };

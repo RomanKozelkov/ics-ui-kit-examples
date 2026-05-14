@@ -58,13 +58,13 @@ export function PrimarySalesDashboard() {
 						</div>
 					</div>
 
-					<div className="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-2">
+					<div className="mt-3 grid grid-cols-1 gap-3 lg:grid-cols-2">
 						<PrimarySalesValueCard />
 						<PrimarySalesUnitsCard />
 					</div>
 
-					<div className="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-2">
-						<div className="rounded-xl border border-secondary-border bg-secondary-bg p-4 px-5">
+					<div className="mt-3 grid grid-cols-1 gap-3 lg:grid-cols-2">
+						<div className="rounded-xl border-[0.5px] border-primary-border bg-secondary-bg p-4 px-5 shadow-soft-md">
 							<div className="mb-2">
 								<h2 className="text-base font-medium text-primary-fg">Тренд Primary Sales</h2>
 								<p className="text-xs text-secondary-fg">Помесячная динамика с YoY%</p>
@@ -74,7 +74,7 @@ export function PrimarySalesDashboard() {
 						<GrowthDriversChart />
 					</div>
 
-					<div className="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-2">
+					<div className="mt-3 grid grid-cols-1 gap-3 lg:grid-cols-2">
 						<DataGridTopDistributors />
 						<DataGridTopBrands />
 					</div>
