@@ -1,3 +1,4 @@
+import { ReactNode } from "react";
 import { useFiltersStore } from "../../stores/useFiltersStore";
 import { getNumberFormatter } from "../../utils/getNumberFormatter";
 import { MetricCard } from "../components/MetricCard";
@@ -7,15 +8,35 @@ export function PrimarySalesValueCard() {
 	const currency = useFiltersStore((s) => s.currency);
 	const year = useFiltersStore((s) => s.year);
 	const { data, isLoading } = useValueCard();
-	const symbol = currency === "USD" ? "$" : "₽";
-	const cf = getNumberFormatter(currency === "USD" ? "en-US" : "ru-RU", {
-		style: "currency",
-		currency,
-		maximumFractionDigits: 0,
-		currencyDisplay: "narrowSymbol"
+	const isUSD = currency === "USD";
+	const symbol = isUSD ? "$" : "₽";
+	const cf = getNumberFormatter(isUSD ? "en-US" : "ru-RU", {
+		style: "decimal",
+		maximumFractionDigits: 0
 	});
 
-	const value = data ? cf.format(data.current ?? 0) : null;
+	const number = data ? cf.format(data.current ?? 0) : null;
+
+	let value: ReactNode | null;
+	if (!number) value = null;
+	else {
+		if (isUSD) {
+			value = (
+				<>
+					<span className="mr-2 text-3xl font-light leading-none text-muted">{symbol}</span>
+					{number}
+				</>
+			);
+		} else {
+			value = (
+				<>
+					{number}
+					<span className="ml-2 text-3xl font-light leading-none text-muted">{symbol}</span>
+				</>
+			);
+		}
+	}
+
 	const percentage = data?.yoy;
 	const previousValue = data ? `PY (${year - 1}): ${cf.format(data.previous ?? 0)}` : null;
 

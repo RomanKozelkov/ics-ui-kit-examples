@@ -4,26 +4,6 @@ import { cn } from "ics-ui-kit/lib/utils";
 import { TrendingDown, TrendingUp } from "lucide-react";
 import { ReactNode } from "react";
 
-function splitCurrencySymbol(value: string): [string, string, string] {
-	const firstDigit = value.search(/\d/);
-	const lastDigit = value.search(/\d(?!.*\d)/);
-	if (firstDigit === -1) return ["", value, ""];
-	return [value.slice(0, firstDigit), value.slice(firstDigit, lastDigit + 1), value.slice(lastDigit + 1)];
-}
-
-function ValueWithSymbol({ value }: { value: ReactNode }) {
-	if (typeof value !== "string") return <>{value}</>;
-	const [prefix, number, suffix] = splitCurrencySymbol(value);
-	const symbolClass = "text-3xl leading-none font-normal text-muted";
-	return (
-		<>
-			{prefix && <span className={cn(symbolClass, "mr-[2px]")}>{prefix}</span>}
-			{number}
-			{suffix && <span className={cn(symbolClass, "ml-[2px]")}>{suffix}</span>}
-		</>
-	);
-}
-
 type MetricCardProps = {
 	title: string;
 	value: ReactNode;
@@ -45,7 +25,7 @@ export const MetricCard = (props: MetricCardProps) => {
 				loadingClassName="w-32"
 				loading={isLoading}
 			>
-				<ValueWithSymbol value={value} />
+				{value}
 			</SkeletonText>
 			{percentage != null && (
 				<div className="mt-2.5 flex items-center gap-2 text-xs">
