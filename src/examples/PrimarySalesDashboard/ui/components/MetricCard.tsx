@@ -47,7 +47,7 @@ export const MetricCard = (props: MetricCardProps) => {
 			>
 				<ValueWithSymbol value={value} />
 			</SkeletonText>
-			{percentage != null ? (
+			{percentage != null && (
 				<div className="mt-2.5 flex items-center gap-2 text-xs">
 					<div className="flex items-center gap-1">
 						<Icon
@@ -68,12 +68,6 @@ export const MetricCard = (props: MetricCardProps) => {
 						{previousValue}
 					</SkeletonText>
 				</div>
-			) : (
-				isLoading && (
-					<SkeletonText loading className="text-secondary-fg" loadingClassName="w-44">
-						{null}
-					</SkeletonText>
-				)
 			)}
 		</Card>
 	);
