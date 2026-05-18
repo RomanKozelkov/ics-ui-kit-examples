@@ -27,8 +27,9 @@ export const MetricCard = (props: MetricCardProps) => {
 			>
 				{value}
 			</SkeletonText>
-			{percentage != null && (
-				<div className="mt-2.5 flex items-center gap-2 text-xs">
+
+			<div className="mt-2.5 flex items-center gap-2 text-xs">
+				{percentage != null && (
 					<div className="flex items-center gap-1">
 						<Icon
 							icon={TrendIcon}
@@ -44,11 +45,11 @@ export const MetricCard = (props: MetricCardProps) => {
 							{percentage.toFixed(1)}%
 						</span>
 					</div>
-					<SkeletonText loading={isLoading} className="text-muted" loadingClassName="w-36">
-						{previousValue}
-					</SkeletonText>
-				</div>
-			)}
+				)}
+				<SkeletonText loading={isLoading} className="text-muted" loadingClassName="w-36">
+					{previousValue}
+				</SkeletonText>
+			</div>
 		</Card>
 	);
 };
