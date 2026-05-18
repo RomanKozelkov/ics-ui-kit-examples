@@ -1,4 +1,5 @@
 import { Card } from "ics-ui-kit/components/card";
+import { Icon } from "ics-ui-kit/components/icon";
 import { cn } from "ics-ui-kit/lib/utils";
 import { TrendingDown, TrendingUp } from "lucide-react";
 import { ReactNode } from "react";
@@ -7,11 +8,7 @@ function splitCurrencySymbol(value: string): [string, string, string] {
 	const firstDigit = value.search(/\d/);
 	const lastDigit = value.search(/\d(?!.*\d)/);
 	if (firstDigit === -1) return ["", value, ""];
-	return [
-		value.slice(0, firstDigit),
-		value.slice(firstDigit, lastDigit + 1),
-		value.slice(lastDigit + 1),
-	];
+	return [value.slice(0, firstDigit), value.slice(firstDigit, lastDigit + 1), value.slice(lastDigit + 1)];
 }
 
 function ValueWithSymbol({ value }: { value: ReactNode }) {
@@ -41,10 +38,10 @@ export const MetricCard = (props: MetricCardProps) => {
 	const TrendIcon = positive ? TrendingUp : TrendingDown;
 
 	return (
-		<Card className="flex flex-col px-5 pb-4 pt-5 lg:px-5 h-[130px] border-[0.5px] border-primary-border shadow-soft-md">
+		<Card className="flex h-[8.125rem] flex-col border-[0.5px] border-primary-border px-5 pb-4 pt-5 shadow-soft-md lg:px-5">
 			<div className="text-sm font-normal text-muted">{title}</div>
 			<SkeletonText
-				className="mt-[18px] text-3xl leading-none font-medium tabular-nums tracking-[-0.06em] text-primary-fg"
+				className="mt-[1.125rem] text-3xl font-medium tabular-nums leading-none tracking-[-0.06em] text-primary-fg"
 				loadingClassName="w-32"
 				loading={isLoading}
 			>
@@ -53,37 +50,27 @@ export const MetricCard = (props: MetricCardProps) => {
 			{percentage != null ? (
 				<div className="mt-2.5 flex items-center gap-2 text-xs">
 					<div className="flex items-center gap-1">
-						<TrendIcon
+						<Icon
+							icon={TrendIcon}
 							className={cn(
 								"h-4 w-4 shrink-0",
 								positive ? "text-status-success-fg" : "text-status-error-fg"
 							)}
 						/>
 						<span
-							className={cn(
-								"font-medium",
-								positive ? "text-status-success-fg" : "text-status-error-fg"
-							)}
+							className={cn("font-medium", positive ? "text-status-success-fg" : "text-status-error-fg")}
 						>
 							{positive ? "+" : ""}
 							{percentage.toFixed(1)}%
 						</span>
 					</div>
-					<SkeletonText
-						loading={isLoading}
-						className="text-muted"
-						loadingClassName="w-36"
-					>
+					<SkeletonText loading={isLoading} className="text-muted" loadingClassName="w-36">
 						{previousValue}
 					</SkeletonText>
 				</div>
 			) : (
 				isLoading && (
-					<SkeletonText
-						loading
-						className="text-secondary-fg"
-						loadingClassName="w-44"
-					>
+					<SkeletonText loading className="text-secondary-fg" loadingClassName="w-44">
 						{null}
 					</SkeletonText>
 				)
