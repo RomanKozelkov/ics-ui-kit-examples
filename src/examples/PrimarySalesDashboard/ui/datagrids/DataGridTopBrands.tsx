@@ -12,7 +12,7 @@ export function DataGridTopBrands() {
 	const rows = data ?? [];
 
 	return (
-		<div className="rounded-xl border border-secondary-border bg-secondary-bg p-4 px-5">
+		<div className="rounded-xl border-[0.5px] border-primary-border bg-secondary-bg p-4 px-5 shadow-soft-md">
 			<div className="mb-2">
 				<h2 className="text-base font-medium text-primary-fg">Топ Бренды</h2>
 			</div>
