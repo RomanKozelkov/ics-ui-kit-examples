@@ -1,5 +1,7 @@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "ics-ui-kit/components/table";
 import { RankCell, YoyCell } from "./TableCells";
+import { TablePagination } from "./TablePagination";
+import { usePagination } from "./usePagination";
 import { useDistributorsTableView, useMeasureLabel } from "./useDistributorsData";
 import { getNumberFormatter } from "../../utils/getNumberFormatter";
 
@@ -9,6 +11,8 @@ export function DataGridTopDistributors() {
 	const { data } = useDistributorsTableView();
 	const measureLabel = useMeasureLabel();
 	const rows = data ?? [];
+
+	const { page, pageSize, pageRows, total, setPage, setPageSize } = usePagination(rows);
 
 	return (
 		<div className="rounded-xl border-[0.5px] border-primary-border bg-secondary-bg p-4 px-5 shadow-soft-md">
@@ -27,7 +31,7 @@ export function DataGridTopDistributors() {
 					</TableRow>
 				</TableHeader>
 				<TableBody>
-					{rows.map((row) => (
+					{pageRows.map((row) => (
 						<TableRow key={row.name}>
 							<TableCell className="text-secondary-fg">{row.sortOrder}</TableCell>
 							<TableCell className="font-medium">{row.name}</TableCell>
@@ -43,6 +47,13 @@ export function DataGridTopDistributors() {
 					))}
 				</TableBody>
 			</Table>
+			<TablePagination
+				page={page}
+				pageSize={pageSize}
+				total={total}
+				onPageChange={setPage}
+				onPageSizeChange={setPageSize}
+			/>
 		</div>
 	);
 }

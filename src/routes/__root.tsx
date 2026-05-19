@@ -5,8 +5,7 @@ import { TooltipProvider } from "ics-ui-kit/components/tooltip";
 import "ics-ui-kit/theme.css";
 import type { ReactNode } from "react";
 import "../index.css";
-
-// import "ics-ui-kit/font-inter.css";
+import "@fontsource-variable/inter";
 
 export const Route = createRootRoute({
 	head: () => ({
