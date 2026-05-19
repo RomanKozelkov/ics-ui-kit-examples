@@ -1,11 +1,11 @@
-import { useEffect, useMemo, useState } from "react";
 import ReactECharts from "echarts-for-react";
-import { useTrendChartView } from "./useTrendData";
+import { useMemo } from "react";
 import { useFiltersStore } from "../../stores/useFiltersStore";
 import { getNumberFormatter } from "../../utils/getNumberFormatter";
+import { useTrendChartView } from "./useTrendData";
 
-const compactFormatter = getNumberFormatter("en-US", { notation: "compact", compactDisplay: "short" });
-const yoyFormatter = getNumberFormatter("en-US", {
+const compactFormatter = getNumberFormatter(void 0, { notation: "compact", compactDisplay: "short" });
+const yoyFormatter = getNumberFormatter(void 0, {
 	notation: "compact",
 	signDisplay: "auto",
 	maximumFractionDigits: 1
@@ -26,11 +26,8 @@ const COLORS = {
 };
 
 export function TrendChart() {
-	const [mounted, setMounted] = useState(false);
-	useEffect(() => setMounted(true), []);
-
 	const year = useFiltersStore((s) => s.year);
-	const { data, isLoading } = useTrendChartView();
+	const { data } = useTrendChartView();
 
 	const option = useMemo(() => {
 		const months = data?.months ?? [];
@@ -40,10 +37,9 @@ export function TrendChart() {
 
 		return {
 			backgroundColor: "transparent",
-			animation: false,
 			tooltip: {
 				trigger: "axis",
-				axisPointer: { type: "cross" },
+				axisPointer: { type: "none" },
 				backgroundColor: COLORS.tooltipBg,
 				borderColor: COLORS.tooltipBg,
 				textStyle: { color: COLORS.tooltipFg }
@@ -70,7 +66,7 @@ export function TrendChart() {
 					gridIndex: 0,
 					axisLine: { lineStyle: { color: COLORS.grid } },
 					axisLabel: { color: COLORS.text },
-					axisTick: { show: false }
+					axisTick: { show: true }
 				},
 				{
 					type: "category",
@@ -78,7 +74,7 @@ export function TrendChart() {
 					gridIndex: 1,
 					axisLine: { lineStyle: { color: COLORS.grid } },
 					axisLabel: { color: COLORS.text },
-					axisTick: { show: false }
+					axisTick: { show: true }
 				}
 			],
 			yAxis: [
@@ -89,8 +85,7 @@ export function TrendChart() {
 					axisLabel: {
 						color: COLORS.text,
 						formatter: (v: number) => compactFormatter.format(v)
-					},
-					scale: true
+					}
 				},
 				{
 					type: "value",
@@ -153,16 +148,9 @@ export function TrendChart() {
 		};
 	}, [data, year]);
 
-	if (!mounted) return <div className="h-[420px] w-full" />;
-
 	return (
 		<div className="relative">
 			<ReactECharts option={option} style={{ height: 420, width: "100%" }} notMerge lazyUpdate />
-			{isLoading && !data ? (
-				<div className="absolute inset-0 flex items-center justify-center text-sm text-secondary-fg">
-					Загрузка…
-				</div>
-			) : null}
 		</div>
 	);
 }

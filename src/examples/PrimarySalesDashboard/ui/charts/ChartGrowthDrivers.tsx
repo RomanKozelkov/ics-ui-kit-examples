@@ -15,11 +15,9 @@ function formatRub(v: number) {
 }
 
 export function GrowthDriversChart() {
-	const [mounted, setMounted] = useState(false);
 	const [view, setView] = useState<View>("products");
-	useEffect(() => setMounted(true), []);
 
-	const { data, isLoading } = useDriversChartView(view);
+	const { data } = useDriversChartView(view);
 
 	const option = useMemo(() => {
 		const rows = data ?? [];
@@ -29,10 +27,7 @@ export function GrowthDriversChart() {
 
 		return {
 			animation: false,
-			tooltip: {
-				trigger: "item",
-				formatter: (p: { name: string; value: number }) => `${p.name}<br/><b>${formatRub(p.value)}</b>`
-			},
+			tooltip: { trigger: "axis" },
 			grid: { left: 8, right: 24, top: 16, bottom: 28, containLabel: true },
 			xAxis: {
 				type: "value",
@@ -41,7 +36,7 @@ export function GrowthDriversChart() {
 			yAxis: {
 				type: "category",
 				data: categories,
-				axisLabel: { fontSize: 11, width: 110, overflow: "break" }
+				axisLabel: { fontSize: 11, width: 110, overflow: "truncate" }
 			},
 			series: [
 				{
@@ -86,18 +81,9 @@ export function GrowthDriversChart() {
 				</div>
 			</div>
 			<div className="flex h-full flex-col">
-				{mounted ? (
-					<div className="relative">
-						<ReactECharts option={option} style={{ height: 420, width: "100%" }} notMerge lazyUpdate />
-						{isLoading && !data ? (
-							<div className="absolute inset-0 flex items-center justify-center text-sm text-secondary-fg">
-								Загрузка…
-							</div>
-						) : null}
-					</div>
-				) : (
-					<div className="h-[420px] w-full" />
-				)}
+				<div className="relative">
+					<ReactECharts option={option} style={{ height: 420, width: "100%" }} notMerge lazyUpdate />
+				</div>
 			</div>
 		</div>
 	);

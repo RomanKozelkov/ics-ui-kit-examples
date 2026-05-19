@@ -1,11 +1,12 @@
 // src/routes/__root.tsx
 /// <reference types="vite/client" />
-import type { ReactNode } from "react";
-import { Outlet, createRootRoute, HeadContent, Scripts } from "@tanstack/react-router";
+import { createRootRoute, HeadContent, Outlet, Scripts } from "@tanstack/react-router";
 import { TooltipProvider } from "ics-ui-kit/components/tooltip";
-import "../index.css";
 import "ics-ui-kit/theme.css";
-import "@fontsource-variable/inter";
+import type { ReactNode } from "react";
+import "../index.css";
+
+// import "ics-ui-kit/font-inter.css";
 
 export const Route = createRootRoute({
 	head: () => ({
