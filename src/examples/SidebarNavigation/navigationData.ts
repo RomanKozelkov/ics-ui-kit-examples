@@ -50,14 +50,17 @@ export const initialItems: Record<string, Item> = {
 	},
 	"ics-it": { name: "ICS-IT Design System" },
 	maintaining: { name: "Maintaining quality over time" },
-
 	"good-design": {
 		name: "Good design",
 		children: ["what-makes-good", "common-patterns", "limits"]
 	},
-	"what-makes-good": { name: 'What Makes Design "Good"', badge: 157 },
-	"common-patterns": { name: "Common Patterns" },
-	limits: { name: "Limits of Good Design" }
+	"what-makes-good": {
+		name: 'What Makes Design "Good"',
+		badge: 157,
+		children: ["good-common-patterns", "good-limits"]
+	},
+	"good-common-patterns": { name: "Common Patterns" },
+	"good-limits": { name: "Limits of Good Design" }
 };
 
 export const initialExpanded = [
@@ -68,7 +71,8 @@ export const initialExpanded = [
 	"excellent-design",
 	"design-at-scale",
 	"design-systems",
-	"good-design"
+	"good-design",
+	"what-makes-good"
 ];
 
 export const initialSelected = ["invisible-means"];
