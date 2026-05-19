@@ -2,6 +2,7 @@ export interface Item {
 	name: string;
 	badge?: number;
 	children?: string[];
+	indicator?: boolean;
 }
 
 export const ROOT_ID = "__root";
@@ -57,10 +58,11 @@ export const initialItems: Record<string, Item> = {
 	"what-makes-good": {
 		name: 'What Makes Design "Good"',
 		badge: 157,
+		indicator: true,
 		children: ["good-common-patterns", "good-limits"]
 	},
-	"good-common-patterns": { name: "Common Patterns" },
-	"good-limits": { name: "Limits of Good Design" }
+	"good-common-patterns": { name: "Common Patterns", indicator: true },
+	"good-limits": { name: "Limits of Good Design", indicator: true }
 };
 
 export const initialExpanded = [

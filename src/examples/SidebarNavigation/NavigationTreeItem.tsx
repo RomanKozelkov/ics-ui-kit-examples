@@ -7,6 +7,7 @@ import { ChevronRight } from "lucide-react";
 import { cn } from "ics-ui-kit/lib/utils";
 import { useNavigationTreeStore } from "./navigationTreeStore";
 import { SideMenuItemContent } from "./SideMenuItemContent";
+import { NavigationIndicator } from "./NavigationIndicator";
 
 interface NavigationTreeItemProps {
 	id: string;
@@ -25,6 +26,7 @@ export function NavigationTreeItem({ id, level }: NavigationTreeItemProps) {
 	const childIds = data.children ?? [];
 	const isFolder = childIds.length > 0;
 	const isNested = level > 1;
+	const indicator = data.indicator && <NavigationIndicator level={level} />;
 
 	if (isFolder) {
 		return (
@@ -36,6 +38,7 @@ export function NavigationTreeItem({ id, level }: NavigationTreeItemProps) {
 				onOpenChange={(next) => toggleExpanded(id, next)}
 				isSelected={isSelected}
 				onSelect={select}
+				indicator={indicator}
 			>
 				{childIds.map((childId) => (
 					<NavigationTreeItem key={childId} id={childId} level={level + 1} />
@@ -44,7 +47,16 @@ export function NavigationTreeItem({ id, level }: NavigationTreeItemProps) {
 		);
 	}
 
-	return <SideMenuItemContent id={id} isNested={isNested} data={data} isSelected={isSelected} onSelect={select} />;
+	return (
+		<SideMenuItemContent
+			id={id}
+			isNested={isNested}
+			data={data}
+			isSelected={isSelected}
+			onSelect={select}
+			indicator={indicator}
+		/>
+	);
 }
 
 function NavigationTreeFolderRow({
@@ -55,6 +67,7 @@ function NavigationTreeFolderRow({
 	onOpenChange,
 	isSelected,
 	onSelect,
+	indicator,
 	children
 }: {
 	id: string;
@@ -64,6 +77,7 @@ function NavigationTreeFolderRow({
 	onOpenChange: (open: boolean) => void;
 	isSelected: boolean;
 	onSelect: (id: string) => void;
+	indicator?: ReactNode;
 	children: ReactNode;
 }) {
 	return (
@@ -74,6 +88,7 @@ function NavigationTreeFolderRow({
 				data={data}
 				isSelected={isSelected}
 				onSelect={onSelect}
+				indicator={indicator}
 				trigger={
 					<CollapsibleTrigger asChild>
 						<span
