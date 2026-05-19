@@ -10,7 +10,7 @@ export function PrimarySalesValueCard() {
 	const { data, isLoading } = useValueCard();
 	const isUSD = currency === "USD";
 	const symbol = isUSD ? "$" : "₽";
-	const cf = getNumberFormatter(isUSD ? "en-US" : "ru-RU", {
+	const cf = getNumberFormatter(void 0, {
 		style: "decimal",
 		maximumFractionDigits: 0
 	});

@@ -3,7 +3,7 @@ import { getNumberFormatter } from "../../utils/getNumberFormatter";
 import { MetricCard } from "../components/MetricCard";
 import { useUnitsCard } from "./useCardsData";
 
-const nf = getNumberFormatter("ru-RU");
+const nf = getNumberFormatter();
 
 export function PrimarySalesUnitsCard() {
 	const year = useFiltersStore((s) => s.year);
