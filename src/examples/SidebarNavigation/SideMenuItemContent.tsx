@@ -16,7 +16,8 @@ export function SideMenuItemContent({
 	data,
 	isSelected,
 	onSelect,
-	trigger
+	trigger,
+	indicator
 }: {
 	id: string;
 	isNested: boolean;
@@ -24,6 +25,7 @@ export function SideMenuItemContent({
 	isSelected: boolean;
 	onSelect: (id: string) => void;
 	trigger?: ReactNode;
+	indicator?: ReactNode;
 }) {
 	const ItemWrapper = (isNested ? SidebarMenuSubItem : SidebarMenuItem) as React.ForwardRefExoticComponent<any>;
 	const ButtonComponent = (
@@ -31,7 +33,8 @@ export function SideMenuItemContent({
 	) as React.ForwardRefExoticComponent<any>;
 
 	return (
-		<ItemWrapper className="hover:cursor-pointer">
+		<ItemWrapper className="relative hover:cursor-pointer">
+			{indicator}
 			<ButtonComponent
 				type="button"
 				onClick={() => onSelect(id)}
