@@ -1,5 +1,3 @@
-// src/routes/index.tsx
-
 import { createFileRoute } from "@tanstack/react-router";
 import { ComponentCanvas } from "../components/ComponentCanvas/ComponentCanvas";
 import { components } from "virtual:components";
@@ -12,7 +10,6 @@ export const Route = createFileRoute("/")({
 });
 
 function Home() {
-	// const router = useRouter();
 	const state = Route.useLoaderData();
 
 	return (
