@@ -6,9 +6,11 @@ const TOKENS = [
 	"--primary-fg",
 	"--primary-border",
 	"--primary-bg",
-	"--status-info",
-	"--status-success-fg",
-	"--status-error-fg"
+	"--chart-1",
+	"--chart-2",
+	"--chart-3",
+	"--chart-4",
+	"--chart-5"
 ] as const;
 
 export interface ChartColors {
@@ -37,12 +39,12 @@ export function useChartColors(): ChartColors {
 			tooltipBg: tokenToHsla(t["--primary-fg"]),
 			tooltipFg: tokenToHsla(t["--primary-bg"]),
 			series: {
-				primary: tokenToHsla(t["--status-info"]),
-				primarySoft: tokenToHsla(t["--status-info"], 0.35),
-				primaryFade: tokenToHsla(t["--status-info"], 0),
-				muted: tokenToHsla(t["--muted"]),
-				positive: tokenToHsla(t["--status-success-fg"]),
-				negative: tokenToHsla(t["--status-error-fg"])
+				primary: tokenToHsla(t["--chart-1"]),
+				primarySoft: tokenToHsla(t["--chart-1"], 0.35),
+				primaryFade: tokenToHsla(t["--chart-1"], 0),
+				muted: tokenToHsla(t["--chart-3"]),
+				positive: tokenToHsla(t["--chart-1"]),
+				negative: tokenToHsla(t["--chart-2"])
 			}
 		}),
 		[t]
