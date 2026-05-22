@@ -1,11 +1,10 @@
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import ReactECharts from "echarts-for-react";
 import { ToggleGroup, ToggleGroupItem } from "ics-ui-kit/components/toggle-group";
 import { Divider } from "ics-ui-kit/components/divider";
 import { useDriversChartView, type DriversView as View } from "./useDriversData";
-
-const SUCCESS = "#10b981";
-const ERROR = "#ef4444";
+import { useChartColors } from "./useChartColors";
+import { useChartFont } from "./useChartFont";
 
 function formatRub(v: number) {
 	const abs = Math.abs(v);
@@ -15,11 +14,11 @@ function formatRub(v: number) {
 }
 
 export function GrowthDriversChart() {
-	const [mounted, setMounted] = useState(false);
 	const [view, setView] = useState<View>("products");
-	useEffect(() => setMounted(true), []);
+	const colors = useChartColors();
+	const fontFamily = useChartFont();
 
-	const { data, isLoading } = useDriversChartView(view);
+	const { data } = useDriversChartView(view);
 
 	const option = useMemo(() => {
 		const rows = data ?? [];
@@ -29,19 +28,25 @@ export function GrowthDriversChart() {
 
 		return {
 			animation: false,
+			textStyle: { fontFamily },
 			tooltip: {
-				trigger: "item",
-				formatter: (p: { name: string; value: number }) => `${p.name}<br/><b>${formatRub(p.value)}</b>`
+				trigger: "axis",
+				backgroundColor: colors.tooltipBg,
+				borderColor: colors.tooltipBg,
+				textStyle: { color: colors.tooltipFg, fontFamily }
 			},
 			grid: { left: 8, right: 24, top: 16, bottom: 28, containLabel: true },
 			xAxis: {
 				type: "value",
-				axisLabel: { formatter: (v: number) => formatRub(v) }
+				axisLine: { lineStyle: { color: colors.grid } },
+				splitLine: { lineStyle: { color: colors.grid } },
+				axisLabel: { color: colors.text, formatter: (v: number) => formatRub(v) }
 			},
 			yAxis: {
 				type: "category",
 				data: categories,
-				axisLabel: { fontSize: 11, width: 110, overflow: "break" }
+				axisLine: { lineStyle: { color: colors.grid } },
+				axisLabel: { color: colors.text, fontSize: 11, width: 110, overflow: "truncate" }
 			},
 			series: [
 				{
@@ -49,7 +54,7 @@ export function GrowthDriversChart() {
 					data: values.map((v) => ({
 						value: v,
 						itemStyle: {
-							color: v >= 0 ? SUCCESS : ERROR,
+							color: v >= 0 ? colors.series.positive : colors.series.negative,
 							borderRadius: v >= 0 ? [0, 4, 4, 0] : [4, 0, 0, 4]
 						}
 					})),
@@ -57,7 +62,7 @@ export function GrowthDriversChart() {
 				}
 			]
 		};
-	}, [data]);
+	}, [data, colors, fontFamily]);
 
 	return (
 		<div className="rounded-xl border-[0.5px] border-primary-border bg-secondary-bg p-4 px-5 shadow-soft-md">
@@ -86,18 +91,9 @@ export function GrowthDriversChart() {
 				</div>
 			</div>
 			<div className="flex h-full flex-col">
-				{mounted ? (
-					<div className="relative">
-						<ReactECharts option={option} style={{ height: 420, width: "100%" }} notMerge lazyUpdate />
-						{isLoading && !data ? (
-							<div className="absolute inset-0 flex items-center justify-center text-sm text-secondary-fg">
-								Загрузка…
-							</div>
-						) : null}
-					</div>
-				) : (
-					<div className="h-[420px] w-full" />
-				)}
+				<div className="relative">
+					<ReactECharts option={option} style={{ height: 420, width: "100%" }} notMerge lazyUpdate />
+				</div>
 			</div>
 		</div>
 	);

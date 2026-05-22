@@ -34,10 +34,8 @@ export function PageComponentCanvas(props: PageComponentCanvasProps) {
 	}
 
 	return (
-		<div className={cn("relative h-full w-full", panelOpen ? "mb-12" : "")}>
-			{/* Full-screen preview */}
-
-			<div className="h-full w-full">
+		<div className={"relative flex h-screen w-full flex-col"}>
+			<div className="w-full flex-1 flex-col overflow-auto">
 				{tab === "preview" && (
 					<div className={cn("h-full w-full overflow-auto", props.attributes.canvas?.classNames)}>
 						<Component {...props.attributes.props} />
@@ -57,9 +55,8 @@ export function PageComponentCanvas(props: PageComponentCanvasProps) {
 				</div>
 			)}
 
-			{/* Bottom panel */}
 			{panelOpen && (
-				<div className="fixed bottom-0 left-0 right-0 z-[2147483647] border-t border-secondary-border bg-primary-bg px-2 py-2 shadow-[0_-4px_16px_rgba(0,0,0,0.1)]">
+				<div className="border-t border-secondary-border bg-primary-bg px-2 py-2 shadow-[0_-4px_16px_rgba(0,0,0,0.1)]">
 					<div className="flex items-center">
 						<div className="shrink-0">
 							<IconButton

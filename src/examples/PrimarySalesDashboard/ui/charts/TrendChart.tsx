@@ -1,36 +1,24 @@
-import { useEffect, useMemo, useState } from "react";
 import ReactECharts from "echarts-for-react";
-import { useTrendChartView } from "./useTrendData";
+import { useMemo } from "react";
 import { useFiltersStore } from "../../stores/useFiltersStore";
 import { getNumberFormatter } from "../../utils/getNumberFormatter";
+import { useTrendChartView } from "./useTrendData";
+import { useChartColors } from "./useChartColors";
+import { useChartFont } from "./useChartFont";
 
-const compactFormatter = getNumberFormatter("en-US", { notation: "compact", compactDisplay: "short" });
-const yoyFormatter = getNumberFormatter("en-US", {
+const compactFormatter = getNumberFormatter(void 0, { notation: "compact", compactDisplay: "short" });
+const yoyFormatter = getNumberFormatter(void 0, {
 	notation: "compact",
 	signDisplay: "auto",
 	maximumFractionDigits: 1
 });
 
-const COLORS = {
-	text: "#6b7280",
-	textStrong: "#111827",
-	grid: "#e5e7eb",
-	info: "#3b82f6",
-	infoSoft: "rgba(59, 130, 246, 0.35)",
-	infoFade: "rgba(59, 130, 246, 0)",
-	muted: "#9ca3af",
-	success: "#10b981",
-	error: "#ef4444",
-	tooltipBg: "#111827",
-	tooltipFg: "#f9fafb"
-};
-
 export function TrendChart() {
-	const [mounted, setMounted] = useState(false);
-	useEffect(() => setMounted(true), []);
+	const colors = useChartColors();
+	const fontFamily = useChartFont();
 
 	const year = useFiltersStore((s) => s.year);
-	const { data, isLoading } = useTrendChartView();
+	const { data } = useTrendChartView();
 
 	const option = useMemo(() => {
 		const months = data?.months ?? [];
@@ -40,20 +28,20 @@ export function TrendChart() {
 
 		return {
 			backgroundColor: "transparent",
-			animation: false,
+			textStyle: { fontFamily },
 			tooltip: {
 				trigger: "axis",
-				axisPointer: { type: "cross" },
-				backgroundColor: COLORS.tooltipBg,
-				borderColor: COLORS.tooltipBg,
-				textStyle: { color: COLORS.tooltipFg }
+				axisPointer: { type: "none" },
+				backgroundColor: colors.tooltipBg,
+				borderColor: colors.tooltipBg,
+				textStyle: { color: colors.tooltipFg, fontFamily }
 			},
 			legend: {
 				data: [
 					{ name: `CY (${year})`, icon: "circle" },
 					{ name: `PY (${year - 1})`, icon: "circle" }
 				],
-				textStyle: { color: COLORS.textStrong },
+				textStyle: { color: colors.textStrong },
 				left: 0,
 				top: 0,
 				itemGap: 16
@@ -68,36 +56,35 @@ export function TrendChart() {
 					type: "category",
 					data: months,
 					gridIndex: 0,
-					axisLine: { lineStyle: { color: COLORS.grid } },
-					axisLabel: { color: COLORS.text },
-					axisTick: { show: false }
+					axisLine: { lineStyle: { color: colors.grid } },
+					axisLabel: { color: colors.text },
+					axisTick: { show: true }
 				},
 				{
 					type: "category",
 					data: months,
 					gridIndex: 1,
-					axisLine: { lineStyle: { color: COLORS.grid } },
-					axisLabel: { color: COLORS.text },
-					axisTick: { show: false }
+					axisLine: { lineStyle: { color: colors.grid } },
+					axisLabel: { color: colors.text },
+					axisTick: { show: true }
 				}
 			],
 			yAxis: [
 				{
 					type: "value",
 					gridIndex: 0,
-					splitLine: { lineStyle: { color: COLORS.grid } },
+					splitLine: { lineStyle: { color: colors.grid } },
 					axisLabel: {
-						color: COLORS.text,
+						color: colors.text,
 						formatter: (v: number) => compactFormatter.format(v)
-					},
-					scale: true
+					}
 				},
 				{
 					type: "value",
 					gridIndex: 1,
 					splitLine: { show: false },
 					axisLabel: {
-						color: COLORS.text,
+						color: colors.text,
 						formatter: (v: number) => `${yoyFormatter.format(v)}%`
 					},
 					splitNumber: 2
@@ -111,8 +98,8 @@ export function TrendChart() {
 					symbol: "circle",
 					symbolSize: 6,
 					showSymbol: false,
-					lineStyle: { color: COLORS.info, width: 2.5 },
-					itemStyle: { color: COLORS.info },
+					lineStyle: { color: colors.series.primary, width: 2.5 },
+					itemStyle: { color: colors.series.primary },
 					areaStyle: {
 						color: {
 							type: "linear",
@@ -121,8 +108,8 @@ export function TrendChart() {
 							x2: 0,
 							y2: 1,
 							colorStops: [
-								{ offset: 0, color: COLORS.infoSoft },
-								{ offset: 1, color: COLORS.infoFade }
+								{ offset: 0, color: colors.series.primarySoft },
+								{ offset: 1, color: colors.series.primaryFade }
 							]
 						}
 					},
@@ -132,9 +119,11 @@ export function TrendChart() {
 					name: `PY (${year - 1})`,
 					type: "line",
 					smooth: true,
-					symbol: "none",
-					lineStyle: { color: COLORS.muted, width: 1.5, type: "dashed" },
-					itemStyle: { color: COLORS.muted },
+					symbol: "circle",
+					symbolSize: 6,
+					showSymbol: false,
+					lineStyle: { color: colors.series.muted, width: 1.5, type: "dashed" },
+					itemStyle: { color: colors.series.muted },
 					data: py
 				},
 				{
@@ -144,25 +133,19 @@ export function TrendChart() {
 					yAxisIndex: 1,
 					barWidth: "55%",
 					itemStyle: {
-						color: (params: { value: number }) => (params.value >= 0 ? COLORS.success : COLORS.error),
+						color: (params: { value: number }) =>
+							params.value >= 0 ? colors.series.positive : colors.series.negative,
 						borderRadius: [2, 2, 0, 0]
 					},
 					data: yoy
 				}
 			]
 		};
-	}, [data, year]);
-
-	if (!mounted) return <div className="h-[420px] w-full" />;
+	}, [data, year, colors, fontFamily]);
 
 	return (
 		<div className="relative">
 			<ReactECharts option={option} style={{ height: 420, width: "100%" }} notMerge lazyUpdate />
-			{isLoading && !data ? (
-				<div className="absolute inset-0 flex items-center justify-center text-sm text-secondary-fg">
-					Загрузка…
-				</div>
-			) : null}
 		</div>
 	);
 }

@@ -52,10 +52,10 @@ export function useTrendData() {
 	});
 }
 
-export function useTrendChartView(): { data: TrendChartData | undefined; isLoading: boolean } {
+export function useTrendChartView(): { data: TrendChartData | undefined } {
 	const metric = useFiltersStore((s) => s.metric);
 	const currency = useFiltersStore((s) => s.currency);
-	const { data, isLoading } = useTrendData();
-	if (!data) return { data: undefined, isLoading };
-	return { data: aggregate(data, pickMeasureField(metric, currency)), isLoading };
+	const { data } = useTrendData();
+	if (!data) return { data: undefined };
+	return { data: aggregate(data, pickMeasureField(metric, currency)) };
 }

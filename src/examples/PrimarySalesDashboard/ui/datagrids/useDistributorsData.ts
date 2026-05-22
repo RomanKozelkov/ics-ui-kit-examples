@@ -23,12 +23,13 @@ export function useTopDistributorsData() {
 	});
 }
 
-export function useDistributorsTableView(): { data: DistributorRow[] | undefined; isLoading: boolean } {
+type DistributorsTableView = { data: DistributorRow[] | undefined };
+export function useDistributorsTableView(): DistributorsTableView {
 	const metric = useFiltersStore((s) => s.metric);
 	const currency = useFiltersStore((s) => s.currency);
-	const { data, isLoading } = useTopDistributorsData();
-	if (!data) return { data: undefined, isLoading };
-	return { data: aggregateRanking(data.rows, data.year, pickMeasureField(metric, currency)), isLoading };
+	const { data } = useTopDistributorsData();
+	if (!data) return { data: undefined };
+	return { data: aggregateRanking(data.rows, data.year, pickMeasureField(metric, currency)) };
 }
 
 export function useMeasureLabel(): string {

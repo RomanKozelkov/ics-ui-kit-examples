@@ -24,10 +24,12 @@ export function useTopBrandsData() {
 	});
 }
 
-export function useBrandsTableView(): { data: BrandRow[] | undefined; isLoading: boolean } {
+type BrandsTableView = { data: BrandRow[] | undefined };
+
+export function useBrandsTableView(): BrandsTableView {
 	const metric = useFiltersStore((s) => s.metric);
 	const currency = useFiltersStore((s) => s.currency);
-	const { data, isLoading } = useTopBrandsData();
-	if (!data) return { data: undefined, isLoading };
-	return { data: aggregateRanking(data.rows, data.year, pickMeasureField(metric, currency)), isLoading };
+	const { data } = useTopBrandsData();
+	if (!data) return { data: undefined };
+	return { data: aggregateRanking(data.rows, data.year, pickMeasureField(metric, currency)) };
 }

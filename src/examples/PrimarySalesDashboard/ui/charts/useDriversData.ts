@@ -62,10 +62,10 @@ export function useDriversData(view: DriversView) {
 	});
 }
 
-export function useDriversChartView(view: DriversView): { data: DriverRow[] | undefined; isLoading: boolean } {
+export function useDriversChartView(view: DriversView): { data: DriverRow[] | undefined } {
 	const metric = useFiltersStore((s) => s.metric);
 	const currency = useFiltersStore((s) => s.currency);
-	const { data, isLoading } = useDriversData(view);
-	if (!data) return { data: undefined, isLoading };
-	return { data: aggregate(data, pickMeasureField(metric, currency)), isLoading };
+	const { data } = useDriversData(view);
+	if (!data) return { data: undefined };
+	return { data: aggregate(data, pickMeasureField(metric, currency)) };
 }

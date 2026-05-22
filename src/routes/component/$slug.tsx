@@ -17,7 +17,8 @@ export const Route = createFileRoute("/component/$slug")({
 		const component = components.find((c) => c.slug === params.slug);
 		if (!component) throw notFound();
 		return component;
-	}
+	},
+	ssr: false
 });
 
 function ComponentPage() {

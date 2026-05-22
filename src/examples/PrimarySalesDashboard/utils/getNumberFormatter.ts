@@ -1,6 +1,6 @@
 const cache = new Map<string, Intl.NumberFormat>();
 
-export const getNumberFormatter = (locale: string, options: Intl.NumberFormatOptions = {}) => {
+export const getNumberFormatter = (locale?: string, options: Intl.NumberFormatOptions = {}) => {
 	const key = `${locale}|${JSON.stringify(options)}`;
 	let formatter = cache.get(key);
 	if (!formatter) {

@@ -1,15 +1,19 @@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "ics-ui-kit/components/table";
 import { RankCell, YoyCell } from "./TableCells";
+import { TablePagination } from "./TablePagination";
+import { usePagination } from "./usePagination";
 import { useBrandsTableView } from "./useBrandsData";
 import { useMeasureLabel } from "./useDistributorsData";
 import { getNumberFormatter } from "../../utils/getNumberFormatter";
 
-const nf = getNumberFormatter("ru-RU");
+const nf = getNumberFormatter();
 
 export function DataGridTopBrands() {
-	const { data, isLoading } = useBrandsTableView();
+	const { data } = useBrandsTableView();
 	const measureLabel = useMeasureLabel();
 	const rows = data ?? [];
+
+	const { page, pageSize, pageRows, total, setPage, setPageSize } = usePagination(rows);
 
 	return (
 		<div className="rounded-xl border-[0.5px] border-primary-border bg-secondary-bg p-4 px-5 shadow-soft-md">
@@ -28,30 +32,29 @@ export function DataGridTopBrands() {
 					</TableRow>
 				</TableHeader>
 				<TableBody>
-					{isLoading && rows.length === 0 ? (
-						<TableRow>
-							<TableCell colSpan={6} className="text-center text-secondary-fg">
-								Загрузка…
+					{pageRows.map((row) => (
+						<TableRow key={row.name}>
+							<TableCell className="text-secondary-fg">{row.sortOrder}</TableCell>
+							<TableCell className="font-medium">{row.name}</TableCell>
+							<TableCell className="text-right tabular-nums">{nf.format(row.sales)}</TableCell>
+							<TableCell className="text-right tabular-nums">
+								<YoyCell value={row.yoy} />
+							</TableCell>
+							<TableCell className="text-right tabular-nums">{row.share}%</TableCell>
+							<TableCell className="text-right tabular-nums">
+								<RankCell value={row.rank} />
 							</TableCell>
 						</TableRow>
-					) : (
-						rows.map((row) => (
-							<TableRow key={row.name}>
-								<TableCell className="text-secondary-fg">{row.sortOrder}</TableCell>
-								<TableCell className="font-medium">{row.name}</TableCell>
-								<TableCell className="text-right tabular-nums">{nf.format(row.sales)}</TableCell>
-								<TableCell className="text-right tabular-nums">
-									<YoyCell value={row.yoy} />
-								</TableCell>
-								<TableCell className="text-right tabular-nums">{row.share}%</TableCell>
-								<TableCell className="text-right tabular-nums">
-									<RankCell value={row.rank} />
-								</TableCell>
-							</TableRow>
-						))
-					)}
+					))}
 				</TableBody>
 			</Table>
+			<TablePagination
+				page={page}
+				pageSize={pageSize}
+				total={total}
+				onPageChange={setPage}
+				onPageSizeChange={setPageSize}
+			/>
 		</div>
 	);
 }

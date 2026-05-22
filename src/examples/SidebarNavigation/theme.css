@@ -7,6 +7,11 @@
 	left: 0 !important;
 }
 
+/* удалить после исправления MP-15980 */
+[data-radix-scroll-area-viewport] > div {
+    display: block !important;
+}
+
 .gramax {
     /** Base **/
     --primary-accent: 240 6% 10%;
