@@ -1,5 +1,5 @@
 import { useFiltersStore, type Metric } from "../stores/useFiltersStore";
-import { formatMetric } from "./metricFormat";
+import { formatMetric, formatMetricParts } from "./metricFormat";
 
 export const useMetricFormat = (override?: Metric) => {
 	const fromStore = useFiltersStore((s) => s.metric);
@@ -7,6 +7,7 @@ export const useMetricFormat = (override?: Metric) => {
 	return {
 		metric,
 		compact: (value: number) => formatMetric(value, metric, "compact"),
-		full: (value: number) => formatMetric(value, metric, "full")
+		full: (value: number) => formatMetric(value, metric, "full"),
+		fullParts: (value: number) => formatMetricParts(value, metric, "full")
 	};
 };

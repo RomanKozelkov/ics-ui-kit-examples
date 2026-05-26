@@ -15,6 +15,9 @@ const buildOptions = (metric: Metric, mode: FormatMode): Intl.NumberFormatOption
 export const formatMetric = (value: number, metric: Metric, mode: FormatMode = "full") =>
 	getNumberFormatter(void 0, buildOptions(metric, mode)).format(value);
 
+export const formatMetricParts = (value: number, metric: Metric, mode: FormatMode = "full") =>
+	getNumberFormatter(void 0, buildOptions(metric, mode)).formatToParts(value);
+
 export const formatPercent = (value: number, opts: { signed?: boolean } = {}) =>
 	getNumberFormatter(void 0, {
 		style: "percent",
