@@ -8,6 +8,7 @@ import { cn } from "ics-ui-kit/lib/utils";
 import { useNavigationTreeStore } from "./navigationTreeStore";
 import { SideMenuItemContent } from "./SideMenuItemContent";
 import { NavigationIndicator } from "./NavigationIndicator";
+import { SidebarInsertionLine } from "../../shared/components/SidebarInsertionLine";
 
 interface NavigationTreeItemProps {
 	id: string;
@@ -48,14 +49,17 @@ export function NavigationTreeItem({ id, level }: NavigationTreeItemProps) {
 	}
 
 	return (
-		<SideMenuItemContent
-			id={id}
-			isNested={isNested}
-			data={data}
-			isSelected={isSelected}
-			onSelect={select}
-			indicator={indicator}
-		/>
+		<>
+			<SideMenuItemContent
+				id={id}
+				isNested={isNested}
+				data={data}
+				isSelected={isSelected}
+				onSelect={select}
+				indicator={indicator}
+			/>
+			<SidebarInsertionLine />
+		</>
 	);
 }
 
@@ -81,34 +85,37 @@ function NavigationTreeFolderRow({
 	children: ReactNode;
 }) {
 	return (
-		<Collapsible open={open} onOpenChange={onOpenChange} className="flex flex-col gap-0.5">
-			<SideMenuItemContent
-				id={id}
-				isNested={isNested}
-				data={data}
-				isSelected={isSelected}
-				onSelect={onSelect}
-				indicator={indicator}
-				trigger={
-					<CollapsibleTrigger asChild>
-						<span
-							className="group/actions flex size-4 items-center justify-center text-muted-foreground"
-							onClick={(e) => e.stopPropagation()}
-						>
-							<Icon
-								icon={ChevronRight}
-								size="sm"
-								className={cn(
-									"shrink-0 stroke-[2.5] text-muted transition-transform group-hover/actions:text-primary-fg",
-									open && "rotate-90"
-								)}
-							/>
-						</span>
-					</CollapsibleTrigger>
-				}
-			/>
+		<Collapsible open={open} onOpenChange={onOpenChange} className="flex flex-col">
+			<>
+				<SideMenuItemContent
+					id={id}
+					isNested={isNested}
+					data={data}
+					isSelected={isSelected}
+					onSelect={onSelect}
+					indicator={indicator}
+					trigger={
+						<CollapsibleTrigger asChild>
+							<span
+								className="group/actions flex size-4 items-center justify-center text-muted-foreground"
+								onClick={(e) => e.stopPropagation()}
+							>
+								<Icon
+									icon={ChevronRight}
+									size="sm"
+									className={cn(
+										"shrink-0 stroke-[2.5] text-muted transition-transform group-hover/actions:text-primary-fg",
+										open && "rotate-90"
+									)}
+								/>
+							</span>
+						</CollapsibleTrigger>
+					}
+				/>
+				<SidebarInsertionLine />
+			</>
 			<CollapsibleContent>
-				<SidebarMenuSub className="gap-0.5 border-none py-0">{children}</SidebarMenuSub>
+				<SidebarMenuSub className="gap-0 border-none py-0">{children}</SidebarMenuSub>
 			</CollapsibleContent>
 		</Collapsible>
 	);
