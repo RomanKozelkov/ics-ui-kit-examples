@@ -56,7 +56,7 @@ export function PageComponentCanvas(props: PageComponentCanvasProps) {
 			)}
 
 			{panelOpen && (
-				<div className="border-t border-secondary-border bg-primary-bg px-2 py-2 shadow-[0_-4px_16px_rgba(0,0,0,0.1)]">
+				<div className="z-10 border-t border-secondary-border bg-primary-bg px-2 py-2 shadow-[0_-4px_16px_rgba(0,0,0,0.1)]">
 					<div className="flex items-center">
 						<div className="shrink-0">
 							<IconButton
