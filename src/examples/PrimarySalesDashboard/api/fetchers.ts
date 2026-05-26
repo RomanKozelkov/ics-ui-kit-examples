@@ -574,11 +574,11 @@ const BRAND_POOL = [
 
 type GroupedInput = Pick<
 	FiltersState,
-	"year" | "metric" | "currency" | "sourceType" | "bindType" | "period" | "counterparties" | "brands"
+	"year" | "metric" | "sourceType" | "bindType" | "period" | "counterparties" | "brands"
 >;
 
 function buildGroupedRequest(input: GroupedInput, groupBy: "counterparty" | "brand"): TabularRequest {
-	const valueCol = getValueColumn(input.metric, input.currency);
+	const valueCol = getValueColumn(input.metric);
 	const groupCol =
 		groupBy === "counterparty"
 			? { column: { table: "Counterparty~Tabular", name: "Counterparty" } }
@@ -606,19 +606,19 @@ function buildGroupedRequest(input: GroupedInput, groupBy: "counterparty" | "bra
 function mockGroupedResponse(input: GroupedInput, groupBy: "counterparty" | "brand"): TabularRawRow[] {
 	const pool = groupBy === "counterparty" ? DISTRIBUTOR_POOL : BRAND_POOL;
 	const groupKey = GROUP_FIELD[groupBy];
-	const valueField = getValueField(input.metric, input.currency);
+	const valueField = getValueField(input.metric);
 
 	const pick = groupBy === "counterparty" ? input.brands : input.counterparties;
 	const pickTag = pick
 		.map((p) => p.value)
 		.sort()
 		.join("|");
-	const scale = input.metric === "Units" ? 1 : input.currency === "USD" ? 100 : 10_000;
+	const scale = input.metric === "Units" ? 1 : input.metric === "USD" ? 100 : 10_000;
 
 	const rows: TabularRawRow[] = [];
 	for (const name of pool) {
 		for (const y of [input.year, input.year - 1]) {
-			const k = `${name}|${y}|${input.period}|${input.sourceType}|${input.bindType}|${pickTag}|${input.metric}|${input.currency}`;
+			const k = `${name}|${y}|${input.period}|${input.sourceType}|${input.bindType}|${pickTag}|${input.metric}`;
 			const r = seed(k);
 			if (r < 0.15) continue;
 			const base = Math.floor((500 + r * 50_000) * scale);
@@ -641,7 +641,7 @@ async function fetchGrouped(input: GroupedInput, groupBy: "counterparty" | "bran
 	return {
 		rows: mockGroupedResponse(input, groupBy),
 		year: input.year,
-		valueField: getValueField(input.metric, input.currency),
+		valueField: getValueField(input.metric),
 		groupField: GROUP_FIELD[groupBy]
 	};
 }
@@ -659,7 +659,7 @@ export type TrendRaw = {
 };
 
 function buildTrendRequest(input: GroupedInput): TabularRequest {
-	const valueCol = getValueColumn(input.metric, input.currency);
+	const valueCol = getValueColumn(input.metric);
 	const periodIds = generatePeriodIds(input.year, input.period);
 
 	const filter = buildTableFilter({
@@ -684,14 +684,14 @@ function buildTrendRequest(input: GroupedInput): TabularRequest {
 }
 
 function mockTrendResponse(input: GroupedInput): TabularRawRow[] {
-	const valueField = getValueField(input.metric, input.currency);
+	const valueField = getValueField(input.metric);
 	const pickTag = [...input.brands.map((b) => b.value), ...input.counterparties.map((c) => c.value)].sort().join("|");
-	const scale = input.metric === "Units" ? 1 : input.currency === "USD" ? 100 : 10_000;
+	const scale = input.metric === "Units" ? 1 : input.metric === "USD" ? 100 : 10_000;
 
 	const rows: TabularRawRow[] = [];
 	for (const y of [input.year, input.year - 1]) {
 		for (const month of MONTHS_ORDER) {
-			const k = `${month}|${y}|${input.period}|${input.sourceType}|${input.bindType}|${pickTag}|${input.metric}|${input.currency}`;
+			const k = `${month}|${y}|${input.period}|${input.sourceType}|${input.bindType}|${pickTag}|${input.metric}`;
 			const r = seed(k);
 			const base = Math.floor((5_000 + r * 50_000) * scale);
 			rows.push({
@@ -710,7 +710,7 @@ export async function fetchTrend(input: GroupedInput): Promise<TrendRaw> {
 	return {
 		rows: mockTrendResponse(input),
 		year: input.year,
-		valueField: getValueField(input.metric, input.currency)
+		valueField: getValueField(input.metric)
 	};
 }
 

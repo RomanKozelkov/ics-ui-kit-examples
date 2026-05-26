@@ -54,7 +54,7 @@ export function TablePagination({
 			</div>
 			<div className="flex items-center gap-3">
 				<span className="tabular-nums">
-					Viewing {from}-{to} of {total} results
+					{from}-{to} of {total}
 				</span>
 				<div className="flex items-center gap-1">
 					<Button

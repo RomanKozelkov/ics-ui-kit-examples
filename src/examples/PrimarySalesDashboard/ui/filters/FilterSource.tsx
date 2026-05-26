@@ -1,31 +1,24 @@
+import { FieldSegmentedToggleGroup } from "../../../../shared/components/FieldSegmentedToggleGroup";
 import {
-	Select,
-	SelectContent,
-	SelectGroup,
-	SelectItem,
-	SelectTrigger,
-	SelectValue
-} from "ics-ui-kit/components/select";
+	SegmentedToggleDivider,
+	SegmentedToggleItem
+} from "../../../../shared/components/SegmentedToggle";
 import { useFiltersStore, type SourceType } from "../../stores/useFiltersStore";
-import { FilterField } from "../components/FilterField";
 
 export function FilterSource() {
 	const sourceType = useFiltersStore((s) => s.sourceType);
 	const setSourceType = useFiltersStore((s) => s.setSourceType);
 
 	return (
-		<FilterField label="Источник данных">
-			<Select value={sourceType} onValueChange={(v) => setSourceType(v as SourceType)}>
-				<SelectTrigger>
-					<SelectValue />
-				</SelectTrigger>
-				<SelectContent>
-					<SelectGroup>
-						<SelectItem value="MDLP">MDLP</SelectItem>
-						<SelectItem value="Sales">Sales</SelectItem>
-					</SelectGroup>
-				</SelectContent>
-			</Select>
-		</FilterField>
+		<FieldSegmentedToggleGroup
+			label="Источник данных"
+			type="single"
+			value={sourceType}
+			onValueChange={(v) => v && setSourceType(v as SourceType)}
+		>
+			<SegmentedToggleItem value="MDLP">MDLP</SegmentedToggleItem>
+			<SegmentedToggleDivider />
+			<SegmentedToggleItem value="Sales">Sales</SegmentedToggleItem>
+		</FieldSegmentedToggleGroup>
 	);
 }

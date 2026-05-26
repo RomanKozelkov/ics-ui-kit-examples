@@ -1,14 +1,16 @@
 import { useState } from "react";
+import { useTablePrefsStore } from "../../stores/useTablePrefsStore";
 
-export function usePagination<T>(rows: T[], initialPageSize = 10) {
+export function usePagination<T>(rows: T[]) {
 	const [page, setPage] = useState(1);
-	const [pageSize, setPageSize] = useState(initialPageSize);
+	const pageSize = useTablePrefsStore((s) => s.pageSize);
+	const setStorePageSize = useTablePrefsStore((s) => s.setPageSize);
 
 	const start = (page - 1) * pageSize;
 	const pageRows = rows.slice(start, start + pageSize);
 
 	const handlePageSizeChange = (size: number) => {
-		setPageSize(size);
+		setStorePageSize(size);
 		setPage(1);
 	};
 

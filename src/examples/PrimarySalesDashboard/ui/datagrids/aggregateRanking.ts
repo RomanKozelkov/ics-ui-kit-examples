@@ -9,9 +9,9 @@ export type RankingRow = {
 
 export type MeasureField = "units" | "valueUsd" | "valueRub";
 
-export function pickMeasureField(metric: string, currency: string): MeasureField {
+export function pickMeasureField(metric: string): MeasureField {
 	if (metric === "Units") return "units";
-	return currency === "USD" ? "valueUsd" : "valueRub";
+	return metric === "USD" ? "valueUsd" : "valueRub";
 }
 
 type InputRow = { name: string; year: number; units: number; valueUsd: number; valueRub: number };

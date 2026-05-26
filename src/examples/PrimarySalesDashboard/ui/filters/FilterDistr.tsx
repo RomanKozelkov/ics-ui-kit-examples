@@ -1,5 +1,6 @@
 import { useQueryClient } from "@tanstack/react-query";
 import type { LoadOptionsParams, SearchSelectOption } from "ics-ui-kit/components/search-select";
+import type { MultiSelectProps } from "ics-ui-kit/components/search-select";
 import { MultiSelect } from "ics-ui-kit/components/search-select";
 import { useCallback } from "react";
 import { fetchDistributors } from "../../api/fetchers";
@@ -28,9 +29,28 @@ export function FilterDistr() {
 		[setCounterparties]
 	);
 
+	const renderOption = useCallback<NonNullable<MultiSelectProps["renderOption"]>>(
+		(props) => {
+			if (props.type !== "trigger") return undefined;
+			if (props.option.value !== counterparties[0]?.value) return null;
+			return (
+				<span className="px-1.5 text-sm" key={props.option.value}>
+					Выбрано: {counterparties.length}
+				</span>
+			);
+		},
+		[counterparties]
+	);
+
 	return (
 		<FilterField label="Дистрибьюторы">
-			<MultiSelect value={counterparties} loadOptions={loadOptions} onChange={handleChange} />
+			<MultiSelect
+				value={counterparties}
+				loadOptions={loadOptions}
+				onChange={handleChange}
+				onClear={counterparties.length > 0 ? () => setCounterparties([]) : undefined}
+				renderOption={renderOption}
+			/>
 		</FilterField>
 	);
 }

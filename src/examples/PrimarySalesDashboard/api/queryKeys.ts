@@ -5,7 +5,7 @@ type CardsKeyInput = Pick<FiltersState, "year" | "sourceType" | "bindType" | "pe
 
 type TableKeyInput = Pick<
 	FiltersState,
-	"year" | "metric" | "currency" | "sourceType" | "bindType" | "period" | "counterparties" | "brands"
+	"year" | "metric" | "sourceType" | "bindType" | "period" | "counterparties" | "brands"
 >;
 
 type TopDistrKeyInput = Pick<FiltersState, "year" | "sourceType" | "bindType" | "period">;
@@ -30,7 +30,6 @@ export const primarySalesKeys = {
 			{
 				year: f.year,
 				metric: f.metric,
-				currency: f.currency,
 				sourceType: f.sourceType,
 				bindType: f.bindType,
 				period: f.period,
@@ -45,7 +44,6 @@ export const primarySalesKeys = {
 			{
 				year: f.year,
 				metric: f.metric,
-				currency: f.currency,
 				sourceType: f.sourceType,
 				bindType: f.bindType,
 				period: f.period,
@@ -60,7 +58,6 @@ export const primarySalesKeys = {
 			{
 				year: f.year,
 				metric: f.metric,
-				currency: f.currency,
 				sourceType: f.sourceType,
 				bindType: f.bindType,
 				period: f.period,

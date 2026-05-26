@@ -4,10 +4,9 @@ import { getNumberFormatter } from "../../utils/getNumberFormatter";
 import { MetricCard } from "../components/MetricCard";
 import { useValueCard } from "./useCardsData";
 
-export function PrimarySalesValueCard() {
-	const currency = useFiltersStore((s) => s.currency);
+export function PrimarySalesValueCard({ currency }: { currency: "RUB" | "USD" }) {
 	const year = useFiltersStore((s) => s.year);
-	const { data, isLoading } = useValueCard();
+	const { data, isLoading } = useValueCard(currency);
 	const isUSD = currency === "USD";
 	const symbol = isUSD ? "$" : "₽";
 	const cf = getNumberFormatter(void 0, {

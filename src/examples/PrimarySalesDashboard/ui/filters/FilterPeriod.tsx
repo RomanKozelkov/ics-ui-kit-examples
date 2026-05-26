@@ -1,15 +1,11 @@
-import {
-	Select,
-	SelectContent,
-	SelectGroup,
-	SelectItem,
-	SelectTrigger,
-	SelectValue
-} from "ics-ui-kit/components/select";
+import { Fragment } from "react";
 import { Tooltip, TooltipContent, TooltipTrigger } from "ics-ui-kit/components/tooltip";
-import { Info } from "lucide-react";
+import { FieldSegmentedToggleGroup } from "../../../../shared/components/FieldSegmentedToggleGroup";
+import {
+	SegmentedToggleDivider,
+	SegmentedToggleItem
+} from "../../../../shared/components/SegmentedToggle";
 import { useFiltersStore, type Period } from "../../stores/useFiltersStore";
-import { FilterField } from "../components/FilterField";
 
 const PERIOD_HINTS: Record<Period, string> = {
 	FY: "Полный финансовый год",
@@ -18,34 +14,44 @@ const PERIOD_HINTS: Record<Period, string> = {
 	MTD: "От начала текущего месяца по сегодняшнее число"
 };
 
+const PERIODS = Object.keys(PERIOD_HINTS) as Period[];
+
 export function FilterPeriod() {
 	const period = useFiltersStore((s) => s.period);
 	const setPeriod = useFiltersStore((s) => s.setPeriod);
+	const year = useFiltersStore((s) => s.year);
+
+	if (year !== new Date().getFullYear()) return null;
 
 	return (
-		<FilterField label="Период">
-			<Select value={period} onValueChange={(v) => setPeriod(v as Period)}>
-				<SelectTrigger>
-					<SelectValue>{period}</SelectValue>
-				</SelectTrigger>
-				<SelectContent>
-					<SelectGroup>
-						{(Object.keys(PERIOD_HINTS) as Period[]).map((p) => (
-							<SelectItem key={p} value={p}>
-								<div className="flex items-center">
-									<div>{p}</div>
-									<Tooltip>
-										<TooltipTrigger asChild>
-											<Info className="ml-1 size-3 shrink-0 text-muted-foreground" />
-										</TooltipTrigger>
-										<TooltipContent side="right">{PERIOD_HINTS[p]}</TooltipContent>
-									</Tooltip>
-								</div>
-							</SelectItem>
+		<Tooltip>
+			<TooltipTrigger asChild>
+				<div className="w-fit">
+					<FieldSegmentedToggleGroup
+						label="Период"
+						type="single"
+						value={period}
+						onValueChange={(v) => v && setPeriod(v as Period)}
+					>
+						{PERIODS.map((p, i) => (
+							<Fragment key={p}>
+								{i > 0 && <SegmentedToggleDivider />}
+								<SegmentedToggleItem value={p}>{p}</SegmentedToggleItem>
+							</Fragment>
 						))}
-					</SelectGroup>
-				</SelectContent>
-			</Select>
-		</FilterField>
+					</FieldSegmentedToggleGroup>
+				</div>
+			</TooltipTrigger>
+			<TooltipContent side="bottom" className="max-w-xs">
+				<dl className="grid grid-cols-[auto_1fr] gap-x-2 gap-y-1">
+					{PERIODS.map((p) => (
+						<Fragment key={p}>
+							<dt className="font-medium">{p}</dt>
+							<dd className="text-xs">{PERIOD_HINTS[p]}</dd>
+						</Fragment>
+					))}
+				</dl>
+			</TooltipContent>
+		</Tooltip>
 	);
 }

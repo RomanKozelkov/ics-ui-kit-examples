@@ -34,8 +34,7 @@ export function useCardsData() {
 	});
 }
 
-export function useValueCard(): { data: CardView | undefined; isLoading: boolean } {
-	const currency = useFiltersStore((s) => s.currency);
+export function useValueCard(currency: "RUB" | "USD"): { data: CardView | undefined; isLoading: boolean } {
 	const { data, isLoading } = useCardsData();
 	if (!data) return { data: undefined, isLoading };
 	const field = currency === "USD" ? "valueUsd" : "valueRub";

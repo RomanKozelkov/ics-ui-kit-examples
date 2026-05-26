@@ -26,15 +26,13 @@ export function useTopDistributorsData() {
 type DistributorsTableView = { data: DistributorRow[] | undefined };
 export function useDistributorsTableView(): DistributorsTableView {
 	const metric = useFiltersStore((s) => s.metric);
-	const currency = useFiltersStore((s) => s.currency);
 	const { data } = useTopDistributorsData();
 	if (!data) return { data: undefined };
-	return { data: aggregateRanking(data.rows, data.year, pickMeasureField(metric, currency)) };
+	return { data: aggregateRanking(data.rows, data.year, pickMeasureField(metric)) };
 }
 
 export function useMeasureLabel(): string {
 	const metric = useFiltersStore((s) => s.metric);
-	const currency = useFiltersStore((s) => s.currency);
 	if (metric === "Units") return "Units";
-	return currency === "USD" ? "Sales, $" : "Sales, ₽";
+	return metric === "USD" ? "Sales, $" : "Sales, ₽";
 }

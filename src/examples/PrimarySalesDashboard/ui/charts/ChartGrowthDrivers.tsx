@@ -1,22 +1,20 @@
 import { useMemo, useState } from "react";
 import ReactECharts from "echarts-for-react";
-import { ToggleGroup, ToggleGroupItem } from "ics-ui-kit/components/toggle-group";
-import { Divider } from "ics-ui-kit/components/divider";
+import {
+	SegmentedToggleDivider,
+	SegmentedToggleGroup,
+	SegmentedToggleItem
+} from "../../../../shared/components/SegmentedToggle";
+import { useMetricFormat } from "../../utils/useMetricFormat";
 import { useDriversChartView, type DriversView as View } from "./useDriversData";
 import { useChartColors } from "./useChartColors";
 import { useChartFont } from "./useChartFont";
-
-function formatRub(v: number) {
-	const abs = Math.abs(v);
-	if (abs >= 1_000_000) return `${(v / 1_000_000).toFixed(1)}M ₽`;
-	if (abs >= 1_000) return `${Math.round(v / 1_000)}K ₽`;
-	return `${v} ₽`;
-}
 
 export function GrowthDriversChart() {
 	const [view, setView] = useState<View>("products");
 	const colors = useChartColors();
 	const fontFamily = useChartFont();
+	const fmt = useMetricFormat();
 
 	const { data } = useDriversChartView(view);
 
@@ -27,20 +25,25 @@ export function GrowthDriversChart() {
 		const values = sorted.map((d) => d.diff);
 
 		return {
-			animation: false,
+			animation: true,
 			textStyle: { fontFamily },
 			tooltip: {
 				trigger: "axis",
 				backgroundColor: colors.tooltipBg,
 				borderColor: colors.tooltipBg,
-				textStyle: { color: colors.tooltipFg, fontFamily }
+				textStyle: { color: colors.tooltipFg, fontFamily },
+				valueFormatter: (v: number | string) => {
+					const n = Number(v);
+					if (!Number.isFinite(n)) return String(v);
+					return fmt.full(n);
+				}
 			},
 			grid: { left: 8, right: 24, top: 16, bottom: 28, containLabel: true },
 			xAxis: {
 				type: "value",
 				axisLine: { lineStyle: { color: colors.grid } },
 				splitLine: { lineStyle: { color: colors.grid } },
-				axisLabel: { color: colors.text, formatter: (v: number) => formatRub(v) }
+				axisLabel: { color: colors.text, formatter: (v: number) => fmt.compact(v) }
 			},
 			yAxis: {
 				type: "category",
@@ -62,7 +65,7 @@ export function GrowthDriversChart() {
 				}
 			]
 		};
-	}, [data, colors, fontFamily]);
+	}, [data, colors, fontFamily, fmt.metric]);
 
 	return (
 		<div className="rounded-xl border-[0.5px] border-primary-border bg-secondary-bg p-4 px-5 shadow-soft-md">
@@ -72,22 +75,11 @@ export function GrowthDriversChart() {
 					<p className="text-xs text-secondary-fg">Вклад в изменение продаж (Contribution)</p>
 				</div>
 				<div>
-					<ToggleGroup
-						className="gap-0 rounded-lg border border-secondary-border shadow-soft-sm"
-						type="single"
-						value={view}
-						onValueChange={(v) => v && setView(v as View)}
-						variant="ghost"
-						size="sm"
-					>
-						<ToggleGroupItem className="rounded-none rounded-l-md" value="products">
-							Продукты
-						</ToggleGroupItem>
-						<Divider className="h-8" orientation="vertical" />
-						<ToggleGroupItem className="rounded-none rounded-r-md" value="distributors">
-							Дистрибьюторы
-						</ToggleGroupItem>
-					</ToggleGroup>
+					<SegmentedToggleGroup type="single" value={view} onValueChange={(v) => v && setView(v as View)}>
+						<SegmentedToggleItem value="products">Продукты</SegmentedToggleItem>
+						<SegmentedToggleDivider />
+						<SegmentedToggleItem value="distributors">Дистрибьюторы</SegmentedToggleItem>
+					</SegmentedToggleGroup>
 				</div>
 			</div>
 			<div className="flex h-full flex-col">

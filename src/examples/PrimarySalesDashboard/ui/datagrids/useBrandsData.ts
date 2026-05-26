@@ -28,8 +28,7 @@ type BrandsTableView = { data: BrandRow[] | undefined };
 
 export function useBrandsTableView(): BrandsTableView {
 	const metric = useFiltersStore((s) => s.metric);
-	const currency = useFiltersStore((s) => s.currency);
 	const { data } = useTopBrandsData();
 	if (!data) return { data: undefined };
-	return { data: aggregateRanking(data.rows, data.year, pickMeasureField(metric, currency)) };
+	return { data: aggregateRanking(data.rows, data.year, pickMeasureField(metric)) };
 }

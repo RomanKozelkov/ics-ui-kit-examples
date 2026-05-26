@@ -64,8 +64,7 @@ export function useDriversData(view: DriversView) {
 
 export function useDriversChartView(view: DriversView): { data: DriverRow[] | undefined } {
 	const metric = useFiltersStore((s) => s.metric);
-	const currency = useFiltersStore((s) => s.currency);
 	const { data } = useDriversData(view);
 	if (!data) return { data: undefined };
-	return { data: aggregate(data, pickMeasureField(metric, currency)) };
+	return { data: aggregate(data, pickMeasureField(metric)) };
 }

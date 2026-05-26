@@ -2,6 +2,7 @@ import { useCallback } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { MultiSelect } from "ics-ui-kit/components/search-select";
 import type { LoadOptionsParams, SearchSelectOption } from "ics-ui-kit/components/search-select";
+import type { MultiSelectProps } from "ics-ui-kit/components/search-select";
 import { useFiltersStore } from "../../stores/useFiltersStore";
 import { fetchBrands } from "../../api/fetchers";
 import { FilterField } from "../components/FilterField";
@@ -28,9 +29,28 @@ export function FilterBrand() {
 		[setBrands]
 	);
 
+	const renderOption = useCallback<NonNullable<MultiSelectProps["renderOption"]>>(
+		(props) => {
+			if (props.type !== "trigger") return undefined;
+			if (props.option.value !== brands[0]?.value) return null;
+			return (
+				<span className="px-1.5 text-sm" key={props.option.value}>
+					Выбрано: {brands.length}
+				</span>
+			);
+		},
+		[brands]
+	);
+
 	return (
 		<FilterField label="Бренды">
-			<MultiSelect value={brands} loadOptions={loadOptions} onChange={handleChange} />
+			<MultiSelect
+				value={brands}
+				loadOptions={loadOptions}
+				onChange={handleChange}
+				onClear={brands.length > 0 ? () => setBrands([]) : undefined}
+				renderOption={renderOption}
+			/>
 		</FilterField>
 	);
 }

@@ -1,4 +1,4 @@
-import type { Currency, Metric, Period } from "../stores/useFiltersStore";
+import type { Metric, Period } from "../stores/useFiltersStore";
 
 export type TabularColumnRef = { column: { table: string; name: string } };
 
@@ -34,19 +34,19 @@ export const GROUP_FIELD = {
 
 export const YEAR_FIELD = "Calendar[Year]" as const;
 
-export function getValueColumn(metric: Metric, currency: Currency): TabularColumnRef {
+export function getValueColumn(metric: Metric): TabularColumnRef {
 	if (metric === "Units") {
 		return { column: { table: "Primary Sales~Tabular", name: "Primary Sales, unit" } };
 	}
-	if (currency === "USD") {
+	if (metric === "USD") {
 		return { column: { table: "Primary Sales~Tabular", name: "Primary Sales, USD conversion" } };
 	}
 	return { column: { table: "Primary Sales~Tabular", name: "Primary Sales, INV RUB" } };
 }
 
-export function getValueField(metric: Metric, currency: Currency): string {
+export function getValueField(metric: Metric): string {
 	if (metric === "Units") return MEASURE_FIELD.unit;
-	return currency === "USD" ? MEASURE_FIELD.usd : MEASURE_FIELD.rub;
+	return metric === "USD" ? MEASURE_FIELD.usd : MEASURE_FIELD.rub;
 }
 
 export function generatePeriodIds(year: number, period: Period): number[] | null {

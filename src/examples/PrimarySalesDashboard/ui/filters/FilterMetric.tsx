@@ -1,31 +1,30 @@
+import { Fragment } from "react";
+import { FieldSegmentedToggleGroup } from "../../../../shared/components/FieldSegmentedToggleGroup";
 import {
-	Select,
-	SelectContent,
-	SelectGroup,
-	SelectItem,
-	SelectTrigger,
-	SelectValue
-} from "ics-ui-kit/components/select";
+	SegmentedToggleDivider,
+	SegmentedToggleItem
+} from "../../../../shared/components/SegmentedToggle";
 import { useFiltersStore, type Metric } from "../../stores/useFiltersStore";
-import { FilterField } from "../components/FilterField";
+
+const METRICS: Metric[] = ["RUB", "USD", "Units"];
 
 export function FilterMetric() {
 	const metric = useFiltersStore((s) => s.metric);
 	const setMetric = useFiltersStore((s) => s.setMetric);
 
 	return (
-		<FilterField label="Метрика">
-			<Select value={metric} onValueChange={(v) => setMetric(v as Metric)}>
-				<SelectTrigger>
-					<SelectValue />
-				</SelectTrigger>
-				<SelectContent>
-					<SelectGroup>
-						<SelectItem value="Value">Value</SelectItem>
-						<SelectItem value="Units">Units</SelectItem>
-					</SelectGroup>
-				</SelectContent>
-			</Select>
-		</FilterField>
+		<FieldSegmentedToggleGroup
+			label="Метрика"
+			type="single"
+			value={metric}
+			onValueChange={(v) => v && setMetric(v as Metric)}
+		>
+			{METRICS.map((m, i) => (
+				<Fragment key={m}>
+					{i > 0 && <SegmentedToggleDivider />}
+					<SegmentedToggleItem value={m}>{m}</SegmentedToggleItem>
+				</Fragment>
+			))}
+		</FieldSegmentedToggleGroup>
 	);
 }

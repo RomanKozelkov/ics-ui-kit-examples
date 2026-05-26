@@ -1,23 +1,18 @@
 import ReactECharts from "echarts-for-react";
 import { useMemo } from "react";
 import { useFiltersStore } from "../../stores/useFiltersStore";
-import { getNumberFormatter } from "../../utils/getNumberFormatter";
+import { formatPercent } from "../../utils/metricFormat";
+import { useMetricFormat } from "../../utils/useMetricFormat";
 import { useTrendChartView } from "./useTrendData";
 import { useChartColors } from "./useChartColors";
 import { useChartFont } from "./useChartFont";
-
-const compactFormatter = getNumberFormatter(void 0, { notation: "compact", compactDisplay: "short" });
-const yoyFormatter = getNumberFormatter(void 0, {
-	notation: "compact",
-	signDisplay: "auto",
-	maximumFractionDigits: 1
-});
 
 export function TrendChart() {
 	const colors = useChartColors();
 	const fontFamily = useChartFont();
 
 	const year = useFiltersStore((s) => s.year);
+	const fmt = useMetricFormat();
 	const { data } = useTrendChartView();
 
 	const option = useMemo(() => {
@@ -31,10 +26,14 @@ export function TrendChart() {
 			textStyle: { fontFamily },
 			tooltip: {
 				trigger: "axis",
-				axisPointer: { type: "none" },
 				backgroundColor: colors.tooltipBg,
 				borderColor: colors.tooltipBg,
-				textStyle: { color: colors.tooltipFg, fontFamily }
+				textStyle: { color: colors.tooltipFg, fontFamily },
+				valueFormatter: (v: number | string) => {
+					const n = Number(v);
+					if (!Number.isFinite(n)) return String(v);
+					return fmt.full(n);
+				}
 			},
 			legend: {
 				data: [
@@ -76,7 +75,7 @@ export function TrendChart() {
 					splitLine: { lineStyle: { color: colors.grid } },
 					axisLabel: {
 						color: colors.text,
-						formatter: (v: number) => compactFormatter.format(v)
+						formatter: (v: number) => fmt.compact(v)
 					}
 				},
 				{
@@ -85,7 +84,7 @@ export function TrendChart() {
 					splitLine: { show: false },
 					axisLabel: {
 						color: colors.text,
-						formatter: (v: number) => `${yoyFormatter.format(v)}%`
+						formatter: (v: number) => formatPercent(v, { signed: true })
 					},
 					splitNumber: 2
 				}
@@ -127,7 +126,7 @@ export function TrendChart() {
 					data: py
 				},
 				{
-					name: "YoY %",
+					name: "YoY",
 					type: "bar",
 					xAxisIndex: 1,
 					yAxisIndex: 1,
@@ -137,11 +136,18 @@ export function TrendChart() {
 							params.value >= 0 ? colors.series.positive : colors.series.negative,
 						borderRadius: [2, 2, 0, 0]
 					},
+					tooltip: {
+						valueFormatter: (v: number | string) => {
+							const n = Number(v);
+							if (!Number.isFinite(n)) return String(v);
+							return formatPercent(n, { signed: true });
+						}
+					},
 					data: yoy
 				}
 			]
 		};
-	}, [data, year, colors, fontFamily]);
+	}, [data, year, colors, fontFamily, fmt.metric]);
 
 	return (
 		<div className="relative">
