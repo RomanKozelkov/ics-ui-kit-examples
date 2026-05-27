@@ -17,23 +17,23 @@ export const SidebarInsertionLine = React.forwardRef<HTMLDivElement, SidebarInse
 				ref={ref}
 				{...props}
 			>
-				<div className="peer/icon-wrap group/icon-wrap relative flex items-center justify-center opacity-0 group-hover/insertion:opacity-100">
+				<div className="peer/icon-wrap group/icon-wrap grid opacity-0 transition-opacity delay-75 duration-150 group-hover/insertion:opacity-100">
 					<IconButton
 						icon={CircleFadingPlus}
 						size="xs"
-						className="h-4 w-4 p-0.5 text-muted group-hover/icon-wrap:opacity-0"
+						className="col-start-1 row-start-1 h-4 w-4 p-0.5 text-muted group-hover/icon-wrap:opacity-0"
 						variant="link"
 						tabIndex={-1}
 					/>
 					<IconButton
 						icon={CirclePlus}
 						size="xs"
-						className="absolute h-4 w-4 p-0.5 text-primary-fg opacity-0 group-hover/icon-wrap:opacity-100"
+						className="col-start-1 row-start-1 h-4 w-4 p-0.5 text-primary-fg opacity-0 group-hover/icon-wrap:opacity-100"
 						variant="link"
 						tabIndex={-1}
 					/>
 				</div>
-				<div className="h-px w-full bg-transparent group-hover/insertion:[background:linear-gradient(90deg,#71717A_0%,rgba(113,113,122,0.00)_100%)] peer-hover/icon-wrap:bg-primary-fg" />
+				<div className="relative h-px w-full opacity-0 transition-opacity delay-75 duration-150 before:absolute before:inset-0 before:[background:linear-gradient(90deg,#71717A_0%,rgba(113,113,122,0.00)_100%)] group-hover/insertion:opacity-100 peer-hover/icon-wrap:bg-primary-fg peer-hover/icon-wrap:opacity-100 peer-hover/icon-wrap:before:bg-primary-fg" />
 			</div>
 		);
 	}
