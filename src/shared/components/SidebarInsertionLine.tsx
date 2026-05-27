@@ -11,7 +11,7 @@ export const SidebarInsertionLine = React.forwardRef<HTMLDivElement, SidebarInse
 			<div
 				data-sidebar="sidebar-insertion-line"
 				className={cn(
-					"group/insertion relative z-10 flex h-0.5 cursor-pointer flex-row items-center border-none bg-transparent p-0 before:absolute before:-inset-y-1.5 before:inset-x-0 before:content-['']",
+					"group/insertion absolute inset-x-0 bottom-0 z-10 flex h-2 translate-y-1/2 cursor-pointer flex-row items-center border-none bg-transparent p-0",
 					className
 				)}
 				ref={ref}

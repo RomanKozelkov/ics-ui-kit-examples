@@ -49,7 +49,7 @@ export function NavigationTreeItem({ id, level }: NavigationTreeItemProps) {
 	}
 
 	return (
-		<>
+		<div className="relative">
 			<SideMenuItemContent
 				id={id}
 				isNested={isNested}
@@ -59,7 +59,7 @@ export function NavigationTreeItem({ id, level }: NavigationTreeItemProps) {
 				indicator={indicator}
 			/>
 			<SidebarInsertionLine />
-		</>
+		</div>
 	);
 }
 
@@ -85,8 +85,8 @@ function NavigationTreeFolderRow({
 	children: ReactNode;
 }) {
 	return (
-		<Collapsible open={open} onOpenChange={onOpenChange} className="flex flex-col">
-			<>
+		<Collapsible open={open} onOpenChange={onOpenChange} className="flex flex-col gap-0.5">
+			<div className="relative">
 				<SideMenuItemContent
 					id={id}
 					isNested={isNested}
@@ -113,9 +113,9 @@ function NavigationTreeFolderRow({
 					}
 				/>
 				<SidebarInsertionLine />
-			</>
+			</div>
 			<CollapsibleContent>
-				<SidebarMenuSub className="gap-0 border-none py-0">{children}</SidebarMenuSub>
+				<SidebarMenuSub className="relative gap-0.5 border-none py-0">{children}</SidebarMenuSub>
 			</CollapsibleContent>
 		</Collapsible>
 	);

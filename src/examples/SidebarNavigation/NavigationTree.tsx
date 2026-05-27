@@ -21,10 +21,12 @@ export function NavigationTree() {
 				const childIds = groupData.children ?? [];
 				return (
 					<SidebarGroup key={groupId} className="py-0 pr-4 group-data-[variant=floating]:pr-2.5">
-						<NavigationSectionLabel data={groupData} icon={groupIcons[index]} />
-						<SidebarInsertionLine />
+						<div className="relative">
+							<NavigationSectionLabel data={groupData} icon={groupIcons[index]} />
+							<SidebarInsertionLine />
+						</div>
 						<SidebarGroupContent>
-							<SidebarMenu className="pb-0.5">
+							<SidebarMenu className="gap-0.5 pb-0.5">
 								{childIds.map((childId) => (
 									<NavigationTreeItem key={childId} id={childId} level={1} />
 								))}
