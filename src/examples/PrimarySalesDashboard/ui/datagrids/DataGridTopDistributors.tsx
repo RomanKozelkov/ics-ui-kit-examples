@@ -33,7 +33,7 @@ export function DataGridTopDistributors() {
 					<TableBody>
 						{pageRows.map((row) => (
 							<TableRow key={row.name}>
-								<TableCell className="text-secondary-fg">{row.sortOrder}</TableCell>
+								<TableCell className="text-right text-secondary-fg">{row.sortOrder}</TableCell>
 								<TableCell className="font-medium">{row.name}</TableCell>
 								<TableCell className="text-right tabular-nums">{nf.format(row.sales)}</TableCell>
 								<TableCell className="text-right tabular-nums">
