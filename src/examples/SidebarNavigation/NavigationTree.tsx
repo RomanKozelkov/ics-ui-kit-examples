@@ -10,6 +10,7 @@ const groupIcons = [Layers2, Layers3, Layers];
 
 export function NavigationTree() {
 	const items = useNavigationTreeStore((s) => s.items);
+	const addItem = useNavigationTreeStore((s) => s.addItem);
 	const groupIds = items[ROOT_ID]?.children ?? [];
 
 	return (
@@ -23,7 +24,7 @@ export function NavigationTree() {
 					<SidebarGroup key={groupId} className="py-0 pr-4 group-data-[variant=floating]:pr-2.5">
 						<div className="relative">
 							<NavigationSectionLabel data={groupData} icon={groupIcons[index]} />
-							<SidebarInsertionLine />
+							<SidebarInsertionLine onAdd={() => addItem(groupId)} />
 						</div>
 						<SidebarGroupContent>
 							<SidebarMenu className="gap-0.5 pb-0.5">

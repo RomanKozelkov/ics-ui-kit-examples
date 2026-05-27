@@ -9,6 +9,7 @@ import { useNavigationTreeStore } from "./navigationTreeStore";
 import { SideMenuItemContent } from "./SideMenuItemContent";
 import { NavigationIndicator } from "./NavigationIndicator";
 import { SidebarInsertionLine } from "../../shared/components/SidebarInsertionLine";
+import { NavigationInlineInput } from "./NavigationInlineInput";
 
 interface NavigationTreeItemProps {
 	id: string;
@@ -19,8 +20,10 @@ export function NavigationTreeItem({ id, level }: NavigationTreeItemProps) {
 	const data = useNavigationTreeStore((s) => s.items[id]);
 	const open = useNavigationTreeStore((s) => s.expanded.has(id));
 	const isSelected = useNavigationTreeStore((s) => s.selectedId === id);
+	const isEditing = useNavigationTreeStore((s) => s.editingId === id);
 	const toggleExpanded = useNavigationTreeStore((s) => s.toggleExpanded);
 	const select = useNavigationTreeStore((s) => s.select);
+	const addItem = useNavigationTreeStore((s) => s.addItem);
 
 	if (!data) return null;
 
@@ -58,7 +61,8 @@ export function NavigationTreeItem({ id, level }: NavigationTreeItemProps) {
 				onSelect={select}
 				indicator={indicator}
 			/>
-			<SidebarInsertionLine />
+			{isEditing && <NavigationInlineInput id={id} />}
+			<SidebarInsertionLine onAdd={() => addItem(id)} />
 		</div>
 	);
 }
@@ -84,6 +88,8 @@ function NavigationTreeFolderRow({
 	indicator?: ReactNode;
 	children: ReactNode;
 }) {
+	const addItem = useNavigationTreeStore((s) => s.addItem);
+
 	return (
 		<Collapsible open={open} onOpenChange={onOpenChange} className="flex flex-col gap-0.5">
 			<div className="relative">
@@ -112,7 +118,7 @@ function NavigationTreeFolderRow({
 						</CollapsibleTrigger>
 					}
 				/>
-				<SidebarInsertionLine />
+				<SidebarInsertionLine onAdd={() => addItem(id)} />
 			</div>
 			<CollapsibleContent>
 				<SidebarMenuSub className="relative gap-0.5 border-none py-0">{children}</SidebarMenuSub>

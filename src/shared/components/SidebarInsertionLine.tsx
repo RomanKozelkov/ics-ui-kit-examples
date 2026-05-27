@@ -3,10 +3,13 @@ import { cn } from "ics-ui-kit/lib/utils";
 import { CircleFadingPlus, CirclePlus } from "lucide-react";
 import React from "react";
 
-export type SidebarInsertionLineProps = React.HTMLAttributes<HTMLDivElement>;
+export type SidebarInsertionLineProps = {
+	className?: string;
+	onAdd?: () => void;
+};
 
 export const SidebarInsertionLine = React.forwardRef<HTMLDivElement, SidebarInsertionLineProps>(
-	({ className, ...props }, ref) => {
+	({ className, onAdd }, ref) => {
 		return (
 			<div
 				data-sidebar="sidebar-insertion-line"
@@ -15,7 +18,7 @@ export const SidebarInsertionLine = React.forwardRef<HTMLDivElement, SidebarInse
 					className
 				)}
 				ref={ref}
-				{...props}
+				onClick={onAdd}
 			>
 				<div className="peer/icon-wrap group/icon-wrap grid opacity-0 transition-opacity delay-75 duration-150 group-hover/insertion:opacity-100">
 					<IconButton
