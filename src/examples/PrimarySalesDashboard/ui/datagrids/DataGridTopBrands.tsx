@@ -1,4 +1,6 @@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "ics-ui-kit/components/table";
+import { DashboardCard } from "../../../../shared/components/DashboardCard";
+import { StaleOverlay } from "../../../../shared/components/StaleOverlay";
 import { RankCell, YoyCell } from "./TableCells";
 import { TablePagination } from "./TablePagination";
 import { usePagination } from "./usePagination";
@@ -9,52 +11,51 @@ import { getNumberFormatter } from "../../utils/getNumberFormatter";
 const nf = getNumberFormatter();
 
 export function DataGridTopBrands() {
-	const { data } = useBrandsTableView();
+	const { data, isStale } = useBrandsTableView();
 	const measureLabel = useMeasureLabel();
 	const rows = data ?? [];
 
 	const { page, pageSize, pageRows, total, setPage, setPageSize } = usePagination(rows);
 
 	return (
-		<div className="rounded-xl border-[0.5px] border-primary-border bg-secondary-bg p-4 px-5 shadow-soft-md">
-			<div className="mb-2">
-				<h2 className="text-base font-medium text-primary-fg">Топ Бренды</h2>
-			</div>
-			<Table>
-				<TableHeader>
-					<TableRow>
-						<TableHead className="w-[40px]">№</TableHead>
-						<TableHead>Бренд</TableHead>
-						<TableHead className="text-right">{measureLabel}</TableHead>
-						<TableHead className="text-right">YOY%</TableHead>
-						<TableHead className="text-right">Share</TableHead>
-						<TableHead className="text-right">Rank</TableHead>
-					</TableRow>
-				</TableHeader>
-				<TableBody>
-					{pageRows.map((row) => (
-						<TableRow key={row.name}>
-							<TableCell className="text-secondary-fg">{row.sortOrder}</TableCell>
-							<TableCell className="font-medium">{row.name}</TableCell>
-							<TableCell className="text-right tabular-nums">{nf.format(row.sales)}</TableCell>
-							<TableCell className="text-right tabular-nums">
-								<YoyCell value={row.yoy} />
-							</TableCell>
-							<TableCell className="text-right tabular-nums">{row.share}%</TableCell>
-							<TableCell className="text-right tabular-nums">
-								<RankCell value={row.rank} />
-							</TableCell>
+		<DashboardCard title="Топ Бренды">
+			<StaleOverlay isStale={isStale}>
+				<Table>
+					<TableHeader>
+						<TableRow>
+							<TableHead className="w-[40px]">№</TableHead>
+							<TableHead>Бренд</TableHead>
+							<TableHead className="text-right">{measureLabel}</TableHead>
+							<TableHead className="text-right">YOY%</TableHead>
+							<TableHead className="text-right">Share</TableHead>
+							<TableHead className="text-right">Rank</TableHead>
 						</TableRow>
-					))}
-				</TableBody>
-			</Table>
-			<TablePagination
-				page={page}
-				pageSize={pageSize}
-				total={total}
-				onPageChange={setPage}
-				onPageSizeChange={setPageSize}
-			/>
-		</div>
+					</TableHeader>
+					<TableBody>
+						{pageRows.map((row) => (
+							<TableRow key={row.name}>
+								<TableCell className="text-secondary-fg">{row.sortOrder}</TableCell>
+								<TableCell className="font-medium">{row.name}</TableCell>
+								<TableCell className="text-right tabular-nums">{nf.format(row.sales)}</TableCell>
+								<TableCell className="text-right tabular-nums">
+									<YoyCell value={row.yoy} />
+								</TableCell>
+								<TableCell className="text-right tabular-nums">{row.share}%</TableCell>
+								<TableCell className="text-right tabular-nums">
+									<RankCell value={row.rank} />
+								</TableCell>
+							</TableRow>
+						))}
+					</TableBody>
+				</Table>
+				<TablePagination
+					page={page}
+					pageSize={pageSize}
+					total={total}
+					onPageChange={setPage}
+					onPageSizeChange={setPageSize}
+				/>
+			</StaleOverlay>
+		</DashboardCard>
 	);
 }

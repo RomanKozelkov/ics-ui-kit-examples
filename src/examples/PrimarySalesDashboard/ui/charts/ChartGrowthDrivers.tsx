@@ -1,5 +1,7 @@
 import { useMemo, useState } from "react";
 import ReactECharts from "echarts-for-react";
+import { DashboardCard } from "../../../../shared/components/DashboardCard";
+import { StaleOverlay } from "../../../../shared/components/StaleOverlay";
 import {
 	SegmentedToggleDivider,
 	SegmentedToggleGroup,
@@ -16,7 +18,7 @@ export function GrowthDriversChart() {
 	const fontFamily = useChartFont();
 	const fmt = useMetricFormat();
 
-	const { data } = useDriversChartView(view);
+	const { data, isStale } = useDriversChartView(view);
 
 	const option = useMemo(() => {
 		const rows = data ?? [];
@@ -68,25 +70,22 @@ export function GrowthDriversChart() {
 	}, [data, colors, fontFamily, fmt.metric]);
 
 	return (
-		<div className="rounded-xl border-[0.5px] border-primary-border bg-secondary-bg p-4 px-5 shadow-soft-md">
-			<div className="mb-2 flex items-center justify-between">
-				<div>
-					<h2 className="text-base font-medium text-primary-fg">Драйверы роста / падения</h2>
-					<p className="text-xs text-secondary-fg">Вклад в изменение продаж (Contribution)</p>
-				</div>
-				<div>
-					<SegmentedToggleGroup type="single" value={view} onValueChange={(v) => v && setView(v as View)}>
-						<SegmentedToggleItem value="products">Продукты</SegmentedToggleItem>
-						<SegmentedToggleDivider />
-						<SegmentedToggleItem value="distributors">Дистрибьюторы</SegmentedToggleItem>
-					</SegmentedToggleGroup>
-				</div>
-			</div>
+		<DashboardCard
+			title="Драйверы роста / падения"
+			subtitle="Вклад в изменение продаж (Contribution)"
+			actions={
+				<SegmentedToggleGroup type="single" value={view} onValueChange={(v) => v && setView(v as View)}>
+					<SegmentedToggleItem value="products">Продукты</SegmentedToggleItem>
+					<SegmentedToggleDivider />
+					<SegmentedToggleItem value="distributors">Дистрибьюторы</SegmentedToggleItem>
+				</SegmentedToggleGroup>
+			}
+		>
 			<div className="flex h-full flex-col">
-				<div className="relative">
-					<ReactECharts option={option} style={{ height: 420, width: "100%" }} notMerge lazyUpdate />
-				</div>
+				<StaleOverlay isStale={isStale}>
+					<ReactECharts option={option} style={{ height: 420, width: "100%" }} lazyUpdate />
+				</StaleOverlay>
 			</div>
-		</div>
+		</DashboardCard>
 	);
 }

@@ -44,7 +44,7 @@ export const useFiltersStore = create<FiltersState & FiltersActions>()(
 	persist(
 		(set) => ({
 			...DEFAULTS,
-			setYear: (year) => set({ year }),
+			setYear: (year) => set({ year, period: "FY" }),
 			setPeriod: (period) => set({ period }),
 			setMetric: (metric) => set({ metric }),
 			setSourceType: (sourceType) => set({ sourceType }),

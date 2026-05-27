@@ -1,5 +1,8 @@
 const cache = new Map<string, Intl.NumberFormat>();
 
+/**
+ * Возвращает закешированный `Intl.NumberFormat` для пары locale+options.
+ */
 export const getNumberFormatter = (locale?: string, options: Intl.NumberFormatOptions = {}) => {
 	const key = `${locale}|${JSON.stringify(options)}`;
 	let formatter = cache.get(key);

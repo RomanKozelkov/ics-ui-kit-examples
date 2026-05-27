@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { useShallow } from "zustand/react/shallow";
 import { useFiltersStore } from "../../stores/useFiltersStore";
 import { primarySalesKeys } from "../../api/queryKeys";
@@ -48,13 +48,17 @@ export function useTrendData() {
 
 	return useQuery({
 		queryKey: primarySalesKeys.trendData(input),
-		queryFn: () => fetchTrendData(input)
+		queryFn: () => fetchTrendData(input),
+		placeholderData: keepPreviousData
 	});
 }
 
-export function useTrendChartView(): { data: TrendChartData | undefined } {
+export function useTrendChartView(): { data: TrendChartData | undefined; isStale: boolean } {
 	const metric = useFiltersStore((s) => s.metric);
-	const { data } = useTrendData();
-	if (!data) return { data: undefined };
-	return { data: aggregate(data, pickMeasureField(metric)) };
+	const { data, isPlaceholderData } = useTrendData();
+	if (!data) return { data: undefined, isStale: false };
+	return {
+		data: aggregate(data, pickMeasureField(metric)),
+		isStale: isPlaceholderData
+	};
 }

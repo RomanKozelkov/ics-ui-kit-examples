@@ -29,6 +29,19 @@ export interface ChartColors {
 	};
 }
 
+/**
+ * Возвращает палитру цветов для чартов дашборда, синхронизированную с текущей темой.
+ *
+ * Для чего нужен: Recharts/SVG принимают цвета строкой, а тема дашборда живёт в CSS-переменных
+ * (`--chart-1`, `--primary-fg`, …) и меняется на лету (light/dark, смена темы). Прямое чтение
+ * `getComputedStyle` в чартах не реагирует на смену темы и не даёт прозрачности. Хук подписывается
+ * на токены через `useThemeTokensRecord`, переводит HSL-триплеты в `hsla(...)` через `tokenToHsla`
+ * и реактивно обновляет цвета чарта при переключении темы.
+ *
+ * Пример (`hsla` строки готовы к передаче в `stroke`/`fill`):
+ *  `series.primary`     → `'hsla(220 90% 56% / 1)'`
+ *  `series.primarySoft` → `'hsla(220 90% 56% / 0.35)'`
+ */
 export function useChartColors(): ChartColors {
 	const t = useThemeTokensRecord(TOKENS);
 	return useMemo<ChartColors>(

@@ -1,7 +1,6 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useState } from "react";
-import { PrimarySalesUnitsCard } from "./ui/cards/CardUnits";
-import { PrimarySalesValueCard } from "./ui/cards/CardValue";
+import { PrimarySalesCard } from "./ui/cards/Card";
 import { GrowthDriversChart } from "./ui/charts/ChartGrowthDrivers";
 import { TrendChart } from "./ui/charts/TrendChart";
 import { DashboardHeader } from "./ui/components/DashboardHeader";
@@ -32,19 +31,13 @@ export function PrimarySalesDashboard() {
 				<ScrollShadowContainer className="flex-1 overflow-auto">
 					<div className="container mx-auto">
 						<div className="grid grid-cols-1 gap-3 lg:grid-cols-3">
-							<PrimarySalesUnitsCard />
-							<PrimarySalesValueCard currency="RUB" />
-							<PrimarySalesValueCard currency="USD" />
+							<PrimarySalesCard metric="Units" />
+							<PrimarySalesCard metric="RUB" />
+							<PrimarySalesCard metric="USD" />
 						</div>
 
 						<div className="mt-3 grid grid-cols-1 gap-3 lg:grid-cols-2">
-							<div className="rounded-xl border-[0.5px] border-primary-border bg-secondary-bg p-4 px-5 shadow-soft-md">
-								<div className="mb-2">
-									<h2 className="text-base font-medium text-primary-fg">Тренд Primary Sales</h2>
-									<p className="text-xs text-secondary-fg">Помесячная динамика с YoY%</p>
-								</div>
-								<TrendChart />
-							</div>
+							<TrendChart />
 							<GrowthDriversChart />
 						</div>
 

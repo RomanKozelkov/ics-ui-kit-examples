@@ -1,5 +1,7 @@
 import ReactECharts from "echarts-for-react";
 import { useMemo } from "react";
+import { DashboardCard } from "../../../../shared/components/DashboardCard";
+import { StaleOverlay } from "../../../../shared/components/StaleOverlay";
 import { useFiltersStore } from "../../stores/useFiltersStore";
 import { formatPercent } from "../../utils/metricFormat";
 import { useMetricFormat } from "../../utils/useMetricFormat";
@@ -13,7 +15,7 @@ export function TrendChart() {
 
 	const year = useFiltersStore((s) => s.year);
 	const fmt = useMetricFormat();
-	const { data } = useTrendChartView();
+	const { data, isStale } = useTrendChartView();
 
 	const option = useMemo(() => {
 		const months = data?.months ?? [];
@@ -150,8 +152,10 @@ export function TrendChart() {
 	}, [data, year, colors, fontFamily, fmt.metric]);
 
 	return (
-		<div className="relative">
-			<ReactECharts option={option} style={{ height: 420, width: "100%" }} notMerge lazyUpdate />
-		</div>
+		<DashboardCard title="Тренд Primary Sales" subtitle="Помесячная динамика с YoY%">
+			<StaleOverlay isStale={isStale}>
+				<ReactECharts option={option} style={{ height: 420, width: "100%" }} lazyUpdate />
+			</StaleOverlay>
+		</DashboardCard>
 	);
 }

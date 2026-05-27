@@ -1,6 +1,9 @@
 import { useSyncExternalStore, useMemo, useRef } from "react";
 import { subscribe, getToken, getSnapshotVersion, getServerSnapshot } from "./tokenStore";
 
+/**
+ * Читает значение CSS-переменной темы и подписывает компонент на её изменения.
+ */
 export function useThemeToken(name: string): string {
 	useSyncExternalStore(subscribe, getSnapshotVersion, getServerSnapshot);
 	return getToken(name);

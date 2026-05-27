@@ -1,25 +1,7 @@
+import type { TabularColumnRef, TabularFilter } from "../../../shared/api";
 import type { Metric, Period } from "../stores/useFiltersStore";
 
-export type TabularColumnRef = { column: { table: string; name: string } };
-
-export type TabularFilter =
-	| { op: "and" | "or"; groups: TabularFilter[] }
-	| { op: "eq"; column: { table: string; name: string }; value: string | number }
-	| { op: "in"; column: { table: string; name: string }; list: Array<string | number> }
-	| { op: "contains"; column: { table: string; name: string }; value: string }
-	| { op: "le" | "ge" | "lt" | "gt"; column: { table: string; name: string }; value: number | string };
-
 export type PeriodRange = { startId: number; endId: number };
-
-export type TabularRequest = {
-	select: TabularColumnRef[];
-	filter: TabularFilter;
-	take: number;
-	skip: number;
-};
-
-export type TabularRawRow = Record<string, string | number>;
-export type TabularResponse = { payload: { rows: TabularRawRow[] } };
 
 export const MEASURE_FIELD = {
 	unit: "[Primary Sales, unit]",
@@ -139,8 +121,4 @@ export function buildTableFilter(input: BuildFilterInput): TabularFilter {
 			}
 		]
 	};
-}
-
-export async function tabularFetch(_request: TabularRequest): Promise<TabularResponse> {
-	throw new Error("tabularFetch: real endpoint not wired yet");
 }

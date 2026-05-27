@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { useShallow } from "zustand/react/shallow";
 import { useFiltersStore } from "../../stores/useFiltersStore";
 import { primarySalesKeys } from "../../api/queryKeys";
@@ -58,13 +58,18 @@ export function useDriversData(view: DriversView) {
 		queryKey: isDistributors
 			? primarySalesKeys.distributorsByBrandData(distributorsInput)
 			: primarySalesKeys.topBrandsData(brandsInput),
-		queryFn: () => (isDistributors ? fetchDistributorsByBrandData(distributorsInput) : fetchBrandsData(brandsInput))
+		queryFn: () =>
+			isDistributors ? fetchDistributorsByBrandData(distributorsInput) : fetchBrandsData(brandsInput),
+		placeholderData: keepPreviousData
 	});
 }
 
-export function useDriversChartView(view: DriversView): { data: DriverRow[] | undefined } {
+export function useDriversChartView(view: DriversView): { data: DriverRow[] | undefined; isStale: boolean } {
 	const metric = useFiltersStore((s) => s.metric);
-	const { data } = useDriversData(view);
-	if (!data) return { data: undefined };
-	return { data: aggregate(data, pickMeasureField(metric)) };
+	const { data, isPlaceholderData } = useDriversData(view);
+	if (!data) return { data: undefined, isStale: false };
+	return {
+		data: aggregate(data, pickMeasureField(metric)),
+		isStale: isPlaceholderData
+	};
 }

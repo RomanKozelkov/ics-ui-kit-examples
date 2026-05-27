@@ -1,3 +1,10 @@
+import {
+	createMdtApiClient,
+	type TabularColumnRef,
+	type TabularFilter,
+	type TabularRawRow,
+	type TabularRequest
+} from "../../../shared/api";
 import type { FiltersState, Period } from "../stores/useFiltersStore";
 import {
 	buildTableFilter,
@@ -6,15 +13,13 @@ import {
 	getValueField,
 	GROUP_FIELD,
 	MEASURE_FIELD,
-	YEAR_FIELD,
-	type TabularColumnRef,
-	type TabularFilter,
-	type TabularRawRow,
-	type TabularRequest,
-	type TabularResponse
+	YEAR_FIELD
 } from "./tabular";
 
 const API_URL = "https://modules-dev.ics-it.ru/typification/api/v2";
+const mdtApi = createMdtApiClient(API_URL);
+
+export type FilterOption = { value: string; label: string };
 
 export async function fetchDistributors(search: string): Promise<FilterOption[]> {
 	const query: any = {
@@ -30,15 +35,7 @@ export async function fetchDistributors(search: string): Promise<FilterOption[]>
 		};
 	}
 
-	const res = await fetch(`${API_URL}/fetch`, {
-		method: "POST",
-		body: JSON.stringify(query),
-		credentials: "include",
-		headers: { "Content-Type": "application/json" }
-	});
-	if (!res.ok) throw new Error(`API error: ${res.status}`);
-
-	const data = await res.json();
+	const data = await mdtApi.rawFetch<{ payload: { rows: any[] } }>(query);
 
 	return data.payload.rows.map((item: any) => ({
 		value: item.ID_Company$.vw_Company_AdditionalInfo_o2o$.Name,
@@ -52,7 +49,7 @@ export async function fetchBrands(search: string): Promise<FilterOption[]> {
 		orderBy: [{ path: "Product Brand", orderType: "asc" }],
 		distinct: true,
 		select: [{ path: "Product Brand" }],
-		take: 10000
+		take: 1000000
 	};
 
 	if (search) {
@@ -63,15 +60,7 @@ export async function fetchBrands(search: string): Promise<FilterOption[]> {
 		};
 	}
 
-	const res = await fetch(`${API_URL}/fetch`, {
-		method: "POST",
-		body: JSON.stringify(query),
-		credentials: "include",
-		headers: { "Content-Type": "application/json" }
-	});
-	if (!res.ok) throw new Error(`API error: ${res.status}`);
-
-	const data = await res.json();
+	const data = await mdtApi.rawFetch<{ payload: { rows: any[] } }>(query);
 
 	return data.payload.rows.map((item: any) => ({
 		value: item["Product Brand"],
@@ -192,7 +181,7 @@ function buildCardsRequest(input: CardsFetcherInput): TabularRequest {
 			{ column: { table: "Primary Sales~Tabular", name: "Primary Sales, INV RUB" } },
 			{ column: { table: "Calendar~Tabular", name: "Year" } }
 		],
-		take: 1000,
+		take: 1000000,
 		skip: 0,
 		filter: { op: "and", groups: main }
 	};
@@ -200,14 +189,7 @@ function buildCardsRequest(input: CardsFetcherInput): TabularRequest {
 
 export async function fetchCards(input: CardsFetcherInput): Promise<CardsRaw> {
 	const body = buildCardsRequest(input);
-	const res = await fetch(`${API_URL}/tabular/fetch`, {
-		method: "POST",
-		headers: { "Content-Type": "application/json" },
-		credentials: "include",
-		body: JSON.stringify(body)
-	});
-	if (!res.ok) throw new Error(`API error: ${res.status}`);
-	const data = (await res.json()) as TabularResponse;
+	const data = await mdtApi.tabularFetch(body);
 
 	const rows = data.payload.rows.map((r) => ({
 		year: Number(r[YEAR_FIELD]),
@@ -258,7 +240,7 @@ function buildDistributorsRequest(input: DistributorsFetcherInput): TabularReque
 			{ column: { table: "Counterparty~Tabular", name: "Counterparty" } },
 			{ column: { table: "Calendar~Tabular", name: "Year" } }
 		],
-		take: 10000,
+		take: 1000000,
 		skip: 0,
 		filter: { op: "and", groups: main }
 	};
@@ -266,14 +248,7 @@ function buildDistributorsRequest(input: DistributorsFetcherInput): TabularReque
 
 export async function fetchDistributorsData(input: DistributorsFetcherInput): Promise<DistributorsRaw> {
 	const body = buildDistributorsRequest(input);
-	const res = await fetch(`${API_URL}/tabular/fetch`, {
-		method: "POST",
-		headers: { "Content-Type": "application/json" },
-		credentials: "include",
-		body: JSON.stringify(body)
-	});
-	if (!res.ok) throw new Error(`API error: ${res.status}`);
-	const data = (await res.json()) as TabularResponse;
+	const data = await mdtApi.tabularFetch(body);
 
 	const rows = data.payload.rows.map((r) => ({
 		name: String(r[GROUP_FIELD.counterparty] ?? ""),
@@ -337,7 +312,7 @@ function buildBrandsRequest(input: BrandsFetcherInput): TabularRequest {
 			BRAND_COL,
 			{ column: { table: "Calendar~Tabular", name: "Year" } }
 		],
-		take: 10000,
+		take: 1000000,
 		skip: 0,
 		filter: { op: "and", groups: main }
 	};
@@ -345,14 +320,7 @@ function buildBrandsRequest(input: BrandsFetcherInput): TabularRequest {
 
 export async function fetchBrandsData(input: BrandsFetcherInput): Promise<BrandsRaw> {
 	const body = buildBrandsRequest(input);
-	const res = await fetch(`${API_URL}/tabular/fetch`, {
-		method: "POST",
-		headers: { "Content-Type": "application/json" },
-		credentials: "include",
-		body: JSON.stringify(body)
-	});
-	if (!res.ok) throw new Error(`API error: ${res.status}`);
-	const data = (await res.json()) as TabularResponse;
+	const data = await mdtApi.tabularFetch(body);
 
 	const rows = data.payload.rows.map((r) => ({
 		name: String(r[GROUP_FIELD.brand] ?? ""),
@@ -364,11 +332,6 @@ export async function fetchBrandsData(input: BrandsFetcherInput): Promise<Brands
 
 	return { year: input.year, rows };
 }
-
-export type TrendDataRaw = {
-	year: number;
-	rows: Array<{ month: string; year: number; units: number; valueUsd: number; valueRub: number }>;
-};
 
 type TrendFetcherInput = Pick<
 	FiltersState,
@@ -427,22 +390,20 @@ function buildTrendDataRequest(input: TrendFetcherInput): TabularRequest {
 			MONTH_COL,
 			{ column: { table: "Calendar~Tabular", name: "Year" } }
 		],
-		take: 1000,
+		take: 1000000,
 		skip: 0,
 		filter: { op: "and", groups: main }
 	};
 }
 
+export type TrendDataRaw = {
+	year: number;
+	rows: Array<{ month: string; year: number; units: number; valueUsd: number; valueRub: number }>;
+};
+
 export async function fetchTrendData(input: TrendFetcherInput): Promise<TrendDataRaw> {
 	const body = buildTrendDataRequest(input);
-	const res = await fetch(`${API_URL}/tabular/fetch`, {
-		method: "POST",
-		headers: { "Content-Type": "application/json" },
-		credentials: "include",
-		body: JSON.stringify(body)
-	});
-	if (!res.ok) throw new Error(`API error: ${res.status}`);
-	const data = (await res.json()) as TabularResponse;
+	const data = await mdtApi.tabularFetch(body);
 
 	const rows = data.payload.rows.map((r) => ({
 		month: String(r[MONTH_RESP_FIELD] ?? ""),
@@ -497,7 +458,7 @@ function buildDistributorsByBrandRequest(input: DistributorsByBrandInput): Tabul
 			{ column: { table: "Counterparty~Tabular", name: "Counterparty" } },
 			{ column: { table: "Calendar~Tabular", name: "Year" } }
 		],
-		take: 10000,
+		take: 1000000,
 		skip: 0,
 		filter: { op: "and", groups: main }
 	};
@@ -505,14 +466,7 @@ function buildDistributorsByBrandRequest(input: DistributorsByBrandInput): Tabul
 
 export async function fetchDistributorsByBrandData(input: DistributorsByBrandInput): Promise<DistributorsRaw> {
 	const body = buildDistributorsByBrandRequest(input);
-	const res = await fetch(`${API_URL}/tabular/fetch`, {
-		method: "POST",
-		headers: { "Content-Type": "application/json" },
-		credentials: "include",
-		body: JSON.stringify(body)
-	});
-	if (!res.ok) throw new Error(`API error: ${res.status}`);
-	const data = (await res.json()) as TabularResponse;
+	const data = await mdtApi.tabularFetch(body);
 
 	const rows = data.payload.rows.map((r) => ({
 		name: String(r[GROUP_FIELD.counterparty] ?? ""),
@@ -524,221 +478,3 @@ export async function fetchDistributorsByBrandData(input: DistributorsByBrandInp
 
 	return { year: input.year, rows };
 }
-/////////
-// #region === AI Generated Code ===
-
-export type CardsRaw = {
-	year: number;
-	rows: Array<{ year: number; valueRub: number; valueUsd: number; units: number }>;
-};
-
-const seed = (s: string) => {
-	let h = 2166136261;
-	for (let i = 0; i < s.length; i++) {
-		h ^= s.charCodeAt(i);
-		h = Math.imul(h, 16777619);
-	}
-	return (h >>> 0) / 2 ** 32;
-};
-
-const DISTRIBUTOR_POOL = [
-	"Пульс ФК ООО",
-	"Гранд Капитал ООО",
-	"Фармкомплект ООО",
-	"БСС ООО",
-	"Вита Лайн ООО",
-	"Катрен НПК ЗАО",
-	"Протек Центр внедрения ЗАО",
-	"Магнит Фарма ООО",
-	"Фармперспектива ООО",
-	"Агроресурсы ООО"
-];
-
-const BRAND_POOL = [
-	"Zolphirex Night",
-	"Osteoglyph",
-	"Thyquolam",
-	"Rhevixol Joint",
-	"Ferruvoxin Hema",
-	"Panzyqor Enzyme",
-	"Yttrivax",
-	"Dwimoxan",
-	"Phleboquin Vaso",
-	"Pyrovexan",
-	"Pharynquex Throat",
-	"Zynqora",
-	"Cephaloquix",
-	"Xephador Rapid",
-	"Aetherix"
-];
-
-type GroupedInput = Pick<
-	FiltersState,
-	"year" | "metric" | "sourceType" | "bindType" | "period" | "counterparties" | "brands"
->;
-
-function buildGroupedRequest(input: GroupedInput, groupBy: "counterparty" | "brand"): TabularRequest {
-	const valueCol = getValueColumn(input.metric);
-	const groupCol =
-		groupBy === "counterparty"
-			? { column: { table: "Counterparty~Tabular", name: "Counterparty" } }
-			: { column: { table: "Product~Tabular", name: "Product Brand" } };
-
-	const periodIds = generatePeriodIds(input.year, input.period);
-
-	const filter = buildTableFilter({
-		year: input.year,
-		sourceType: input.sourceType,
-		bindType: input.bindType,
-		brandValues: groupBy === "counterparty" ? input.brands.map((b) => b.value) : undefined,
-		counterpartyValues: groupBy === "brand" ? input.counterparties.map((c) => c.value) : undefined,
-		periodIds
-	});
-
-	return {
-		select: [valueCol, groupCol, { column: { table: "Calendar~Tabular", name: "Year" } }],
-		take: 10000,
-		skip: 0,
-		filter
-	};
-}
-
-function mockGroupedResponse(input: GroupedInput, groupBy: "counterparty" | "brand"): TabularRawRow[] {
-	const pool = groupBy === "counterparty" ? DISTRIBUTOR_POOL : BRAND_POOL;
-	const groupKey = GROUP_FIELD[groupBy];
-	const valueField = getValueField(input.metric);
-
-	const pick = groupBy === "counterparty" ? input.brands : input.counterparties;
-	const pickTag = pick
-		.map((p) => p.value)
-		.sort()
-		.join("|");
-	const scale = input.metric === "Units" ? 1 : input.metric === "USD" ? 100 : 10_000;
-
-	const rows: TabularRawRow[] = [];
-	for (const name of pool) {
-		for (const y of [input.year, input.year - 1]) {
-			const k = `${name}|${y}|${input.period}|${input.sourceType}|${input.bindType}|${pickTag}|${input.metric}`;
-			const r = seed(k);
-			if (r < 0.15) continue;
-			const base = Math.floor((500 + r * 50_000) * scale);
-			rows.push({ [groupKey]: name, [YEAR_FIELD]: y, [valueField]: base });
-		}
-	}
-	return rows;
-}
-
-export type GroupedRaw = {
-	rows: TabularRawRow[];
-	year: number;
-	valueField: string;
-	groupField: string;
-};
-
-async function fetchGrouped(input: GroupedInput, groupBy: "counterparty" | "brand"): Promise<GroupedRaw> {
-	buildGroupedRequest(input, groupBy);
-	await new Promise((r) => setTimeout(r, 300));
-	return {
-		rows: mockGroupedResponse(input, groupBy),
-		year: input.year,
-		valueField: getValueField(input.metric),
-		groupField: GROUP_FIELD[groupBy]
-	};
-}
-
-export const fetchDistributorsTable = (input: GroupedInput) => fetchGrouped(input, "counterparty");
-export const fetchBrandsTable = (input: GroupedInput) => fetchGrouped(input, "brand");
-
-const MONTH_FIELD = "Calendar[Month]" as const;
-const MONTHS_ORDER = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-
-export type TrendRaw = {
-	rows: TabularRawRow[];
-	year: number;
-	valueField: string;
-};
-
-function buildTrendRequest(input: GroupedInput): TabularRequest {
-	const valueCol = getValueColumn(input.metric);
-	const periodIds = generatePeriodIds(input.year, input.period);
-
-	const filter = buildTableFilter({
-		year: input.year,
-		sourceType: input.sourceType,
-		bindType: input.bindType,
-		brandValues: input.brands.map((b) => b.value),
-		counterpartyValues: input.counterparties.map((c) => c.value),
-		periodIds
-	});
-
-	return {
-		select: [
-			valueCol,
-			{ column: { table: "Calendar~Tabular", name: "Month" } },
-			{ column: { table: "Calendar~Tabular", name: "Year" } }
-		],
-		take: 1000,
-		skip: 0,
-		filter
-	};
-}
-
-function mockTrendResponse(input: GroupedInput): TabularRawRow[] {
-	const valueField = getValueField(input.metric);
-	const pickTag = [...input.brands.map((b) => b.value), ...input.counterparties.map((c) => c.value)].sort().join("|");
-	const scale = input.metric === "Units" ? 1 : input.metric === "USD" ? 100 : 10_000;
-
-	const rows: TabularRawRow[] = [];
-	for (const y of [input.year, input.year - 1]) {
-		for (const month of MONTHS_ORDER) {
-			const k = `${month}|${y}|${input.period}|${input.sourceType}|${input.bindType}|${pickTag}|${input.metric}`;
-			const r = seed(k);
-			const base = Math.floor((5_000 + r * 50_000) * scale);
-			rows.push({
-				[MONTH_FIELD]: month,
-				[YEAR_FIELD]: y,
-				[valueField]: base
-			});
-		}
-	}
-	return rows;
-}
-
-export async function fetchTrend(input: GroupedInput): Promise<TrendRaw> {
-	buildTrendRequest(input);
-	await new Promise((r) => setTimeout(r, 300));
-	return {
-		rows: mockTrendResponse(input),
-		year: input.year,
-		valueField: getValueField(input.metric)
-	};
-}
-
-export type FilterOption = { value: string; label: string };
-
-function buildOptionsRequest(groupBy: "counterparty" | "brand", search: string): TabularRequest {
-	const groupCol: TabularColumnRef =
-		groupBy === "counterparty"
-			? { column: { table: "Counterparty~Tabular", name: "Counterparty" } }
-			: { column: { table: "Product~Tabular", name: "Product Brand" } };
-
-	const filter: TabularFilter = search
-		? { op: "contains", column: groupCol.column, value: search }
-		: { op: "and", groups: [] };
-
-	return { select: [groupCol], take: 50, skip: 0, filter };
-}
-
-export async function fetchBrandOptions(search: string): Promise<FilterOption[]> {
-	buildOptionsRequest("brand", search);
-	await new Promise((r) => setTimeout(r, 150));
-	const q = search.trim().toLowerCase();
-	return BRAND_POOL.filter((name) => (q ? name.toLowerCase().includes(q) : true)).map((name) => ({
-		value: name,
-		label: name
-	}));
-}
-
-// #endregion
-
-// === READY FOR USE ===

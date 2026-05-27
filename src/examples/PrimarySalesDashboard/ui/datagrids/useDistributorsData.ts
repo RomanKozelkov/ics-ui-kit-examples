@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { useShallow } from "zustand/react/shallow";
 import { useFiltersStore } from "../../stores/useFiltersStore";
 import { primarySalesKeys } from "../../api/queryKeys";
@@ -19,16 +19,20 @@ export function useTopDistributorsData() {
 
 	return useQuery({
 		queryKey: primarySalesKeys.topDistributorsData(input),
-		queryFn: () => fetchDistributorsData(input)
+		queryFn: () => fetchDistributorsData(input),
+		placeholderData: keepPreviousData
 	});
 }
 
-type DistributorsTableView = { data: DistributorRow[] | undefined };
+type DistributorsTableView = { data: DistributorRow[] | undefined; isStale: boolean };
 export function useDistributorsTableView(): DistributorsTableView {
 	const metric = useFiltersStore((s) => s.metric);
-	const { data } = useTopDistributorsData();
-	if (!data) return { data: undefined };
-	return { data: aggregateRanking(data.rows, data.year, pickMeasureField(metric)) };
+	const { data, isPlaceholderData } = useTopDistributorsData();
+	if (!data) return { data: undefined, isStale: false };
+	return {
+		data: aggregateRanking(data.rows, data.year, pickMeasureField(metric)),
+		isStale: isPlaceholderData
+	};
 }
 
 export function useMeasureLabel(): string {
