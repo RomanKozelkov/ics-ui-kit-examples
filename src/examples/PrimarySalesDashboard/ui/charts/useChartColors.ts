@@ -6,6 +6,7 @@ const TOKENS = [
 	"--primary-fg",
 	"--primary-border",
 	"--primary-bg",
+	"--alpha-high-80",
 	"--chart-1",
 	"--chart-2",
 	"--chart-3",
@@ -49,7 +50,7 @@ export function useChartColors(): ChartColors {
 			text: tokenToHsla(t["--muted"]),
 			textStrong: tokenToHsla(t["--primary-fg"]),
 			grid: tokenToHsla(t["--primary-border"]),
-			tooltipBg: tokenToHsla(t["--primary-fg"]),
+			tooltipBg: `hsl(${t["--alpha-high-80"]})`,
 			tooltipFg: tokenToHsla(t["--primary-bg"]),
 			series: {
 				primary: tokenToHsla(t["--chart-1"]),

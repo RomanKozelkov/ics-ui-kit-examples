@@ -20,7 +20,7 @@ export function DashboardCard({ title, subtitle, actions, children, className }:
 			<div className="mb-2 flex items-center justify-between">
 				<div>
 					<h2 className="text-base font-medium text-primary-fg">{title}</h2>
-					{subtitle && <p className="text-xs text-secondary-fg">{subtitle}</p>}
+					{subtitle && <p className="mt-1 text-xs text-secondary-fg">{subtitle}</p>}
 				</div>
 				{actions}
 			</div>

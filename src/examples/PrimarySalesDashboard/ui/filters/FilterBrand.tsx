@@ -1,55 +1,35 @@
-import { useCallback } from "react";
-import { useQueryClient } from "@tanstack/react-query";
-import { MultiSelect } from "ics-ui-kit/components/search-select";
-import type { LoadOptionsParams, SearchSelectOption } from "ics-ui-kit/components/search-select";
-import type { MultiSelectProps } from "ics-ui-kit/components/search-select";
+import { useState } from "react";
 import { useFiltersStore } from "../../stores/useFiltersStore";
 import { fetchBrands } from "../../api/fetchers";
 import { FilterField } from "../components/FilterField";
 import { primarySalesKeys } from "../../api/queryKeys";
 import { STALE_TIMES } from "../../api/queryConfig";
+import { useFilterOptions } from "../../../../shared/hooks/useFilterOptions";
+import { MultiSelectControlled } from "../../../../shared/components/MultiSelectControlled";
 
 export function FilterBrand() {
-	const queryClient = useQueryClient();
-	const loadOptions = useCallback(async (params: LoadOptionsParams) => {
-		const options = await queryClient.fetchQuery({
-			queryKey: primarySalesKeys.brands(params.searchQuery),
-			queryFn: () => fetchBrands(params.searchQuery),
-			staleTime: STALE_TIMES.dictionaries
-		});
-		return { options };
-	}, []);
-
 	const brands = useFiltersStore((s) => s.brands);
 	const setBrands = useFiltersStore((s) => s.setBrands);
-	const handleChange = useCallback(
-		(options: SearchSelectOption[]) => {
-			setBrands(options.map((o) => ({ value: String(o.value), label: o.label })));
-		},
-		[setBrands]
-	);
 
-	const renderOption = useCallback<NonNullable<MultiSelectProps["renderOption"]>>(
-		(props) => {
-			if (props.type !== "trigger") return undefined;
-			if (props.option.value !== brands[0]?.value) return null;
-			return (
-				<span className="px-1.5 text-sm" key={props.option.value}>
-					Выбрано: {brands.length}
-				</span>
-			);
-		},
-		[brands]
-	);
+	const [open, setOpen] = useState(false);
+	const { options, isLoading, error, onSearch } = useFilterOptions({
+		open,
+		queryKey: primarySalesKeys.brands,
+		queryFn: fetchBrands,
+		staleTime: STALE_TIMES.dictionaries
+	});
 
 	return (
 		<FilterField label="Бренды">
-			<MultiSelect
+			<MultiSelectControlled
 				value={brands}
-				loadOptions={loadOptions}
-				onChange={handleChange}
-				onClear={brands.length > 0 ? () => setBrands([]) : undefined}
-				renderOption={renderOption}
+				options={options}
+				isLoading={isLoading}
+				error={error}
+				onChange={setBrands}
+				onSearch={onSearch}
+				open={open}
+				onOpenChange={setOpen}
 			/>
 		</FilterField>
 	);

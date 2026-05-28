@@ -1,8 +1,5 @@
 import { FieldSegmentedToggleGroup } from "../../../../shared/components/FieldSegmentedToggleGroup";
-import {
-	SegmentedToggleDivider,
-	SegmentedToggleItem
-} from "../../../../shared/components/SegmentedToggle";
+import { SegmentedToggleDivider, SegmentedToggleItem } from "../../../../shared/components/SegmentedToggle";
 import { useFiltersStore, type SourceType } from "../../stores/useFiltersStore";
 
 export function FilterSource() {
@@ -11,7 +8,7 @@ export function FilterSource() {
 
 	return (
 		<FieldSegmentedToggleGroup
-			label="Источник данных"
+			label="Источник"
 			type="single"
 			value={sourceType}
 			onValueChange={(v) => v && setSourceType(v as SourceType)}

@@ -10,7 +10,7 @@ export const MEASURE_FIELD = {
 } as const;
 
 export const GROUP_FIELD = {
-	counterparty: "Counterparty[Counterparty]",
+	counterparty: "Client[Client]",
 	brand: "Product[Product Brand]"
 } as const;
 
@@ -101,7 +101,7 @@ export function buildTableFilter(input: BuildFilterInput): TabularFilter {
 	if (input.counterpartyValues && input.counterpartyValues.length > 0) {
 		main.push({
 			op: "in",
-			column: { table: "Counterparty~Tabular", name: "Counterparty" },
+			column: { table: "Client~Tabular", name: "Client" },
 			list: input.counterpartyValues
 		});
 	}

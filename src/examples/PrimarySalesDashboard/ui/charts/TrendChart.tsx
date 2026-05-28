@@ -1,7 +1,12 @@
 import ReactECharts from "echarts-for-react";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { DashboardCard } from "../../../../shared/components/DashboardCard";
 import { StaleOverlay } from "../../../../shared/components/StaleOverlay";
+import {
+	SegmentedToggleDivider,
+	SegmentedToggleGroup,
+	SegmentedToggleItem
+} from "../../../../shared/components/SegmentedToggle";
 import { useFiltersStore } from "../../stores/useFiltersStore";
 import { formatPercent } from "../../utils/metricFormat";
 import { useMetricFormat } from "../../utils/useMetricFormat";
@@ -9,7 +14,21 @@ import { useTrendChartView } from "./useTrendData";
 import { useChartColors } from "./useChartColors";
 import { useChartFont } from "./useChartFont";
 
+type TrendView = "trend" | "cumulative";
+
+function runningSum(values: Array<number | null>): Array<number | null> {
+	let acc = 0;
+	let started = false;
+	return values.map((v) => {
+		if (v == null) return started ? acc : null;
+		acc += v;
+		started = true;
+		return acc;
+	});
+}
+
 export function TrendChart() {
+	const [view, setView] = useState<TrendView>("trend");
 	const colors = useChartColors();
 	const fontFamily = useChartFont();
 
@@ -19,9 +38,18 @@ export function TrendChart() {
 
 	const option = useMemo(() => {
 		const months = data?.months ?? [];
-		const cy = data?.cy ?? [];
-		const py = data?.py ?? [];
-		const yoy = data?.yoy ?? [];
+		const rawCy = data?.cy ?? [];
+		const rawPy = data?.py ?? [];
+		const cy = view === "cumulative" ? runningSum(rawCy) : rawCy;
+		const py = view === "cumulative" ? runningSum(rawPy) : rawPy;
+		const yoy =
+			view === "cumulative"
+				? cy.map((c, i) => {
+						const p = py[i];
+						if (c == null || p == null || p === 0) return null;
+						return Number((((c - p) / p) * 100).toFixed(1));
+					})
+				: (data?.yoy ?? []);
 
 		return {
 			backgroundColor: "transparent",
@@ -30,11 +58,28 @@ export function TrendChart() {
 				trigger: "axis",
 				backgroundColor: colors.tooltipBg,
 				borderColor: colors.tooltipBg,
+				borderWidth: 0,
+				extraCssText: "border-radius: var(--radius)",
 				textStyle: { color: colors.tooltipFg, fontFamily },
-				valueFormatter: (v: number | string) => {
-					const n = Number(v);
-					if (!Number.isFinite(n)) return String(v);
-					return fmt.full(n);
+				formatter: (
+					params: Array<{ axisValue: string; dataIndex: number; marker: string; seriesName: string }>
+				) => {
+					const p = params[0];
+					if (!p) return "";
+					const i = p.dataIndex;
+					const markerOf = (name: string) => params.find((it) => it.seriesName === name)?.marker ?? "";
+					const c = cy[i];
+					const pv = py[i];
+					const y = yoy[i];
+					const valueCell = "text-align:right;padding-left:16px;font-variant-numeric:tabular-nums";
+					const row = (label: string, value: string) =>
+						`<tr><td>${label}</td><td style="${valueCell}">${value}</td></tr>`;
+					const rows = [
+						row(`${markerOf(`CY (${year})`)}CY (${year})`, c == null ? "—" : fmt.full(c)),
+						row(`${markerOf(`PY (${year - 1})`)}PY (${year - 1})`, pv == null ? "—" : fmt.full(pv)),
+						row(`${markerOf("YoY")}YoY %`, y == null ? "—" : formatPercent(y, { signed: true }))
+					].join("");
+					return `<div>${p.axisValue}</div><table style="border-collapse:collapse;margin-top:4px"><tbody>${rows}</tbody></table>`;
 				}
 			},
 			legend: {
@@ -138,21 +183,28 @@ export function TrendChart() {
 							params.value >= 0 ? colors.series.positive : colors.series.negative,
 						borderRadius: [2, 2, 0, 0]
 					},
-					tooltip: {
-						valueFormatter: (v: number | string) => {
-							const n = Number(v);
-							if (!Number.isFinite(n)) return String(v);
-							return formatPercent(n, { signed: true });
-						}
-					},
 					data: yoy
 				}
 			]
 		};
-	}, [data, year, colors, fontFamily, fmt.metric]);
+	}, [data, year, colors, fontFamily, fmt.metric, view]);
 
 	return (
-		<DashboardCard title="Тренд Primary Sales" subtitle="Помесячная динамика с YoY%">
+		<DashboardCard
+			title="Тренд Primary Sales"
+			subtitle="Помесячная динамика с YoY%"
+			actions={
+				<SegmentedToggleGroup
+					type="single"
+					value={view}
+					onValueChange={(v) => v && setView(v as TrendView)}
+				>
+					<SegmentedToggleItem value="trend">Тренд</SegmentedToggleItem>
+					<SegmentedToggleDivider />
+					<SegmentedToggleItem value="cumulative">Накопительный</SegmentedToggleItem>
+				</SegmentedToggleGroup>
+			}
+		>
 			<StaleOverlay isStale={isStale}>
 				<ReactECharts option={option} style={{ height: 420, width: "100%" }} lazyUpdate />
 			</StaleOverlay>

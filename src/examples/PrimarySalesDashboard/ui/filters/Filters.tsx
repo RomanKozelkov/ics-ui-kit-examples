@@ -16,7 +16,7 @@ export function Filters() {
 
 	return (
 		<div className="ml-auto">
-			<div className="hidden w-full flex-1 items-end gap-4 px-5 lg:flex">
+			<div className="hidden w-full flex-1 items-end gap-4 lg:flex">
 				<div className="w-56">
 					<FilterDistr />
 				</div>

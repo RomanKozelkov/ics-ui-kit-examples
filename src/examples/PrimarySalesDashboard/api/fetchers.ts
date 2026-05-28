@@ -237,7 +237,7 @@ function buildDistributorsRequest(input: DistributorsFetcherInput): TabularReque
 			{ column: { table: "Primary Sales~Tabular", name: "Primary Sales, unit" } },
 			{ column: { table: "Primary Sales~Tabular", name: "Primary Sales, USD conversion" } },
 			{ column: { table: "Primary Sales~Tabular", name: "Primary Sales, INV RUB" } },
-			{ column: { table: "Counterparty~Tabular", name: "Counterparty" } },
+			{ column: { table: "Client~Tabular", name: "Client" } },
 			{ column: { table: "Calendar~Tabular", name: "Year" } }
 		],
 		take: 1000000,
@@ -294,7 +294,7 @@ function buildBrandsRequest(input: BrandsFetcherInput): TabularRequest {
 	if (input.counterparties.length > 0) {
 		main.push({
 			op: "in",
-			column: { table: "Counterparty~Tabular", name: "Counterparty" },
+			column: { table: "Client~Tabular", name: "Client" },
 			list: input.counterparties.map((c) => c.value)
 		});
 	}
@@ -365,7 +365,7 @@ function buildTrendDataRequest(input: TrendFetcherInput): TabularRequest {
 	if (input.counterparties.length > 0) {
 		main.push({
 			op: "in",
-			column: { table: "Counterparty~Tabular", name: "Counterparty" },
+			column: { table: "Client~Tabular", name: "Client" },
 			list: input.counterparties.map((c) => c.value)
 		});
 	}
@@ -455,7 +455,7 @@ function buildDistributorsByBrandRequest(input: DistributorsByBrandInput): Tabul
 			{ column: { table: "Primary Sales~Tabular", name: "Primary Sales, unit" } },
 			{ column: { table: "Primary Sales~Tabular", name: "Primary Sales, USD conversion" } },
 			{ column: { table: "Primary Sales~Tabular", name: "Primary Sales, INV RUB" } },
-			{ column: { table: "Counterparty~Tabular", name: "Counterparty" } },
+			{ column: { table: "Client~Tabular", name: "Client" } },
 			{ column: { table: "Calendar~Tabular", name: "Year" } }
 		],
 		take: 1000000,
