@@ -1,4 +1,3 @@
-import { SidebarMenuSub } from "ics-ui-kit/components/sidebar";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "ics-ui-kit/components/collapsible";
 import type { Item } from "./navigationData";
 import type { ReactNode } from "react";
@@ -29,15 +28,14 @@ export function NavigationTreeItem({ id, level }: NavigationTreeItemProps) {
 
 	const childIds = data.children ?? [];
 	const isFolder = childIds.length > 0;
-	const isNested = level > 1;
-	const indicator = data.indicator && <NavigationIndicator level={level} />;
+	const indicator = data.indicator && <NavigationIndicator />;
 
 	if (isFolder) {
 		return (
 			<NavigationTreeFolderRow
 				id={id}
+				level={level}
 				data={data}
-				isNested={isNested}
 				open={open}
 				onOpenChange={(next) => toggleExpanded(id, next)}
 				isSelected={isSelected}
@@ -55,7 +53,7 @@ export function NavigationTreeItem({ id, level }: NavigationTreeItemProps) {
 		<div className="relative">
 			<SideMenuItemContent
 				id={id}
-				isNested={isNested}
+				level={level}
 				data={data}
 				isSelected={isSelected}
 				onSelect={select}
@@ -69,8 +67,8 @@ export function NavigationTreeItem({ id, level }: NavigationTreeItemProps) {
 
 function NavigationTreeFolderRow({
 	id,
+	level,
 	data,
-	isNested,
 	open,
 	onOpenChange,
 	isSelected,
@@ -79,8 +77,8 @@ function NavigationTreeFolderRow({
 	children
 }: {
 	id: string;
+	level: number;
 	data: Item;
-	isNested: boolean;
 	open: boolean;
 	onOpenChange: (open: boolean) => void;
 	isSelected: boolean;
@@ -95,7 +93,7 @@ function NavigationTreeFolderRow({
 			<div className="relative">
 				<SideMenuItemContent
 					id={id}
-					isNested={isNested}
+					level={level}
 					data={data}
 					isSelected={isSelected}
 					onSelect={onSelect}
@@ -121,7 +119,7 @@ function NavigationTreeFolderRow({
 				<SidebarInsertionLine onAdd={() => addItem(id)} />
 			</div>
 			<CollapsibleContent>
-				<SidebarMenuSub className="relative gap-0.5 border-none py-0">{children}</SidebarMenuSub>
+				<div className="relative flex flex-col gap-0.5">{children}</div>
 			</CollapsibleContent>
 		</Collapsible>
 	);
