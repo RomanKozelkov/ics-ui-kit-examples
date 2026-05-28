@@ -7,7 +7,7 @@ import { pickMeasureField, type MeasureField } from "../datagrids/aggregateRanki
 
 export type DriversView = "products" | "distributors";
 
-export type DriverRow = { name: string; diff: number };
+export type DriverRow = { name: string; diff: number; pct: number | null };
 
 type InputRow = { name: string; year: number; units: number; valueUsd: number; valueRub: number };
 type RawData = { year: number; rows: InputRow[] };
@@ -23,7 +23,11 @@ function aggregate(raw: RawData, field: MeasureField): DriverRow[] {
 	}
 
 	const rows = Object.entries(byName)
-		.map(([name, v]) => ({ name, diff: Math.round(v.cur - v.prev) }))
+		.map(([name, v]) => ({
+			name,
+			diff: Math.round(v.cur - v.prev),
+			pct: v.prev !== 0 ? Number((((v.cur - v.prev) / v.prev) * 100).toFixed(1)) : null
+		}))
 		.filter((r) => r.diff !== 0)
 		.sort((a, b) => b.diff - a.diff);
 

@@ -7,13 +7,17 @@ import {
 	SegmentedToggleGroup,
 	SegmentedToggleItem
 } from "../../../../shared/components/SegmentedToggle";
+import { formatPercent } from "../../utils/metricFormat";
 import { useMetricFormat } from "../../utils/useMetricFormat";
 import { useDriversChartView, type DriversView as View } from "./useDriversData";
 import { useChartColors } from "./useChartColors";
 import { useChartFont } from "./useChartFont";
 
+type Measure = "value" | "pct";
+
 export function GrowthDriversChart() {
 	const [view, setView] = useState<View>("products");
+	const [measure, setMeasure] = useState<Measure>("value");
 	const colors = useChartColors();
 	const fontFamily = useChartFont();
 	const fmt = useMetricFormat();
@@ -22,9 +26,10 @@ export function GrowthDriversChart() {
 
 	const option = useMemo(() => {
 		const rows = data ?? [];
-		const sorted = [...rows].sort((a, b) => b.diff - a.diff).reverse();
+		const sortKey = (d: { diff: number; pct: number | null }) =>
+			measure === "pct" ? (d.pct ?? Number.NEGATIVE_INFINITY) : d.diff;
+		const sorted = [...rows].sort((a, b) => sortKey(b) - sortKey(a)).reverse();
 		const categories = sorted.map((d) => d.name);
-		const values = sorted.map((d) => d.diff);
 
 		return {
 			animation: true,
@@ -34,10 +39,13 @@ export function GrowthDriversChart() {
 				backgroundColor: colors.tooltipBg,
 				borderColor: colors.tooltipBg,
 				textStyle: { color: colors.tooltipFg, fontFamily },
-				valueFormatter: (v: number | string) => {
-					const n = Number(v);
-					if (!Number.isFinite(n)) return String(v);
-					return fmt.full(n);
+				formatter: (params: Array<{ dataIndex: number; marker: string; name: string }>) => {
+					const p = params[0];
+					if (!p) return "";
+					const row = sorted[p.dataIndex];
+					const valueLine = `${p.marker}Значение: ${fmt.full(row.diff)}`;
+					const pctLine = `Динамика: ${row.pct == null ? "—" : formatPercent(row.pct, { signed: true })}`;
+					return `${row.name}<br/>${valueLine}<br/>${pctLine}`;
 				}
 			},
 			grid: { left: 8, right: 24, top: 16, bottom: 28, containLabel: true },
@@ -45,7 +53,11 @@ export function GrowthDriversChart() {
 				type: "value",
 				axisLine: { lineStyle: { color: colors.grid } },
 				splitLine: { lineStyle: { color: colors.grid } },
-				axisLabel: { color: colors.text, formatter: (v: number) => fmt.compact(v) }
+				axisLabel: {
+					color: colors.text,
+					formatter: (v: number) =>
+						measure === "pct" ? formatPercent(v, { signed: true }) : fmt.compact(v)
+				}
 			},
 			yAxis: {
 				type: "category",
@@ -56,29 +68,44 @@ export function GrowthDriversChart() {
 			series: [
 				{
 					type: "bar",
-					data: values.map((v) => ({
-						value: v,
-						itemStyle: {
-							color: v >= 0 ? colors.series.positive : colors.series.negative,
-							borderRadius: v >= 0 ? [0, 4, 4, 0] : [4, 0, 0, 4]
-						}
-					})),
+					data: sorted.map((d) => {
+						const v = measure === "pct" ? d.pct : d.diff;
+						const positive = (v ?? 0) >= 0;
+						return {
+							value: v,
+							itemStyle: {
+								color: positive ? colors.series.positive : colors.series.negative,
+								borderRadius: positive ? [0, 4, 4, 0] : [4, 0, 0, 4]
+							}
+						};
+					}),
 					barWidth: "60%"
 				}
 			]
 		};
-	}, [data, colors, fontFamily, fmt.metric]);
+	}, [data, colors, fontFamily, fmt.metric, measure]);
 
 	return (
 		<DashboardCard
 			title="Драйверы роста / падения"
 			subtitle="Вклад в изменение продаж (Contribution)"
 			actions={
-				<SegmentedToggleGroup type="single" value={view} onValueChange={(v) => v && setView(v as View)}>
-					<SegmentedToggleItem value="products">Продукты</SegmentedToggleItem>
-					<SegmentedToggleDivider />
-					<SegmentedToggleItem value="distributors">Дистрибьюторы</SegmentedToggleItem>
-				</SegmentedToggleGroup>
+				<div className="flex items-center gap-3">
+					<SegmentedToggleGroup type="single" value={view} onValueChange={(v) => v && setView(v as View)}>
+						<SegmentedToggleItem value="products">Продукты</SegmentedToggleItem>
+						<SegmentedToggleDivider />
+						<SegmentedToggleItem value="distributors">Дистрибьюторы</SegmentedToggleItem>
+					</SegmentedToggleGroup>
+					<SegmentedToggleGroup
+						type="single"
+						value={measure}
+						onValueChange={(v) => v && setMeasure(v as Measure)}
+					>
+						<SegmentedToggleItem value="value">Значение</SegmentedToggleItem>
+						<SegmentedToggleDivider />
+						<SegmentedToggleItem value="pct">%</SegmentedToggleItem>
+					</SegmentedToggleGroup>
+				</div>
 			}
 		>
 			<div className="flex h-full flex-col">
