@@ -20,7 +20,7 @@ export function NavigationInlineInput({ id, level }: { id: string; level: number
 	return (
 		<input
 			ref={ref}
-			className="absolute inset-0 w-auto rounded-sm bg-background px-2 text-sm outline-none ring-1 ring-inset ring-primary-fg"
+			className="absolute inset-0 w-auto rounded-md bg-background px-2 text-sm font-medium outline-none ring-1 ring-inset ring-muted"
 			style={{ marginLeft: (level - 1) * INDENT_SIDEBAR_ITEM_WIDTH }}
 			onBlur={(e) => handleSubmit(e.currentTarget.value)}
 			onKeyDown={(e) => {
