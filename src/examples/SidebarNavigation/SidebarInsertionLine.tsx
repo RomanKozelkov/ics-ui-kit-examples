@@ -51,11 +51,9 @@ export const SidebarInsertionLine = React.forwardRef<HTMLDivElement, SidebarInse
 							)}
 
 							<div
-								className="absolute top-1/2 -translate-y-1/2"
+								className="absolute top-1/2 h-4 w-4 -translate-y-1/2"
 								style={{
-									left,
-									width: INSERTION_BUTTON_SIZE,
-									height: INSERTION_BUTTON_SIZE
+									left
 								}}
 							>
 								<Icon
