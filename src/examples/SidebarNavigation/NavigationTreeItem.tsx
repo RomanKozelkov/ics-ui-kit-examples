@@ -137,7 +137,7 @@ function NavigationTreeFolderRow({
 					onAdd={(targetDepth) => insertAfter(id, level, targetDepth)}
 				/>
 			</div>
-			<CollapsibleContent>
+			<CollapsibleContent className="data-[state=open]:!overflow-visible">
 				<div className="relative flex flex-col gap-0.5">{children}</div>
 			</CollapsibleContent>
 		</Collapsible>
