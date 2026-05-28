@@ -1,15 +1,13 @@
 import { INDENT_SIDEBAR_ITEM_WIDTH, INSERTION_BUTTON_SIZE } from "./constants";
 import type { Item } from "./navigationData";
 
-export const BASE_X = 12;
-
 export function depthFromMouseX(offsetX: number, maxDepth: number, minDepth: number): number {
-	const raw = Math.round((offsetX - BASE_X) / INDENT_SIDEBAR_ITEM_WIDTH) + 1;
+	const raw = Math.round(offsetX / INDENT_SIDEBAR_ITEM_WIDTH) + 1;
 	return Math.min(maxDepth, Math.max(minDepth, raw));
 }
 
 export function iconLeft(depth: number): number {
-	return BASE_X + (depth - 1) * INDENT_SIDEBAR_ITEM_WIDTH - INSERTION_BUTTON_SIZE / 2;
+	return (depth - 1) * INDENT_SIDEBAR_ITEM_WIDTH - INSERTION_BUTTON_SIZE / 2;
 }
 
 export function buildParentMap(items: Record<string, Item>): Record<string, string> {

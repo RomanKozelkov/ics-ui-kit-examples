@@ -62,7 +62,7 @@ export const SidebarInsertionLine = React.forwardRef<HTMLDivElement, SidebarInse
 									icon={isActive ? CirclePlus : CircleFadingPlus}
 									size="xs"
 									className={cn(
-										"absolute h-4 w-4 p-0.5 transition-opacity duration-150",
+										"insertion-icon absolute h-4 w-4 p-0.5 transition-opacity duration-150",
 										isActive ? "text-primary-fg" : "text-muted",
 										isHidden ? "opacity-0" : "opacity-0 group-hover/insertion:opacity-100"
 									)}
@@ -75,12 +75,10 @@ export const SidebarInsertionLine = React.forwardRef<HTMLDivElement, SidebarInse
 				})}
 
 				<div
-					className="absolute top-1/2 h-px -translate-y-1/2 opacity-0 group-hover/insertion:opacity-100"
+					className="absolute right-0 top-1/2 h-px -translate-y-1/2 opacity-0 [background:linear-gradient(90deg,hsl(var(--muted))_0%,rgba(113,113,122,0.00)_100%)] group-hover/insertion:opacity-100 [.group\/insertion:has(.insertion-icon:hover)_&]:bg-primary-fg"
 					style={{
 						left: iconLeft(selectedDepth) + INSERTION_BUTTON_SIZE,
-						right: 14,
-						transition: "left 140ms ease-out, opacity 150ms 75ms",
-						background: "linear-gradient(90deg, hsl(var(--muted)) 0%, rgba(113,113,122,0.00) 100%)"
+						transition: "left 140ms ease-out, opacity 150ms 75ms"
 					}}
 				/>
 			</div>
