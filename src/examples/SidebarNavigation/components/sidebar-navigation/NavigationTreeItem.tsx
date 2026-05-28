@@ -1,15 +1,15 @@
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "ics-ui-kit/components/collapsible";
-import type { Item } from "./navigationData";
+import type { Item } from "../../data/navigationData";
 import type { ReactNode } from "react";
 import { Icon } from "ics-ui-kit/components/icon";
 import { ChevronRight } from "lucide-react";
 import { cn } from "ics-ui-kit/lib/utils";
-import { useNavigationTreeStore } from "./navigationTreeStore";
-import { getInsertionConfig } from "./sidebarInsertionLineUtils";
 import { SideMenuItemContent } from "./SideMenuItemContent";
 import { NavigationIndicator } from "./NavigationIndicator";
 import { SidebarInsertionLine } from "./SidebarInsertionLine";
 import { NavigationInlineInput } from "./NavigationInlineInput";
+import { useNavigationTreeStore } from "../../store/navigationTreeStore";
+import { getInsertionConfig } from "../../utils/sidebarInsertionLineUtils";
 
 interface NavigationTreeItemProps {
 	id: string;

@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
-import { useNavigationTreeStore } from "./navigationTreeStore";
-import { INDENT_SIDEBAR_ITEM_WIDTH } from "./constants";
+import { INDENT_SIDEBAR_ITEM_WIDTH } from "../../utils/constants";
+import { useNavigationTreeStore } from "../../store/navigationTreeStore";
 
 export function NavigationInlineInput({ id, level }: { id: string; level: number }) {
 	const commitRename = useNavigationTreeStore((s) => s.commitRename);

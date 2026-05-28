@@ -1,13 +1,16 @@
 import { useState, useCallback, type MouseEvent } from "react";
-import { depthFromMouseX } from "./sidebarInsertionLineUtils";
+import { depthFromMouseX } from "../utils/sidebarInsertionLineUtils";
 
 export function useDepthSelection(depth: number, minDepth: number, maxDepth: number) {
 	const [selectedDepth, setSelectedDepth] = useState(depth);
 
-	const handleMouseMove = useCallback((e: MouseEvent<HTMLDivElement>) => {
-		const rect = e.currentTarget.getBoundingClientRect();
-		setSelectedDepth(depthFromMouseX(e.clientX - rect.left, maxDepth, minDepth));
-	}, [maxDepth, minDepth]);
+	const handleMouseMove = useCallback(
+		(e: MouseEvent<HTMLDivElement>) => {
+			const rect = e.currentTarget.getBoundingClientRect();
+			setSelectedDepth(depthFromMouseX(e.clientX - rect.left, maxDepth, minDepth));
+		},
+		[maxDepth, minDepth]
+	);
 
 	const handleMouseEnter = useCallback(() => {
 		setSelectedDepth(depth);
@@ -22,7 +25,7 @@ export function useDepthSelection(depth: number, minDepth: number, maxDepth: num
 		handlers: {
 			onMouseMove: handleMouseMove,
 			onMouseEnter: handleMouseEnter,
-			onMouseLeave: handleMouseLeave,
-		},
+			onMouseLeave: handleMouseLeave
+		}
 	};
 }

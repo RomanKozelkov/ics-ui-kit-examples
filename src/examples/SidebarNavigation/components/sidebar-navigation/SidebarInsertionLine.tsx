@@ -1,10 +1,10 @@
 import { cn } from "ics-ui-kit/lib/utils";
 import { CircleFadingPlus, CirclePlus } from "lucide-react";
 import React from "react";
-import { iconLeft } from "./sidebarInsertionLineUtils";
-import { INSERTION_BUTTON_SIZE } from "./constants";
-import { useDepthSelection } from "./useDepthSelection";
+import { INSERTION_BUTTON_SIZE } from "../../utils/constants";
+import { useDepthSelection } from "../../hooks/useDepthSelection";
 import { Icon } from "ics-ui-kit/components/icon";
+import { iconLeft } from "../../utils/sidebarInsertionLineUtils";
 
 export type SidebarInsertionLineProps = {
 	className?: string;

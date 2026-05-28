@@ -1,7 +1,6 @@
 import { create } from "zustand";
-import type { Item } from "./navigationData";
-import { initialExpanded, initialItems, initialSelected } from "./navigationData";
-import { buildParentMap } from "./sidebarInsertionLineUtils";
+import { initialExpanded, initialItems, initialSelected, Item } from "../data/navigationData";
+import { buildParentMap } from "../utils/sidebarInsertionLineUtils";
 
 type NavigationTreeStore = {
 	items: Record<string, Item>;

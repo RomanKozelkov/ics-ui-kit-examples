@@ -1,5 +1,5 @@
+import { Item } from "../data/navigationData";
 import { INDENT_SIDEBAR_ITEM_WIDTH, INSERTION_BUTTON_SIZE } from "./constants";
-import type { Item } from "./navigationData";
 
 export function depthFromMouseX(offsetX: number, maxDepth: number, minDepth: number): number {
 	const raw = Math.round(offsetX / INDENT_SIDEBAR_ITEM_WIDTH) + 1;

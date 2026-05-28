@@ -1,10 +1,10 @@
 import { ReactNode } from "react";
-import { Item } from "./navigationData";
+import { Item } from "../../data/navigationData";
 import { SidebarMenuButton, SidebarMenuItem } from "ics-ui-kit/components/sidebar";
 import { NavigationItemCounter } from "./NavigationItemCounter";
 import { NavigationTreeItemActions } from "./NavigationTreeItemActions";
 import { TextOverflowTooltip } from "ics-ui-kit/components/overflow-tooltip";
-import { INDENT_SIDEBAR_ITEM_WIDTH } from "./constants";
+import { INDENT_SIDEBAR_ITEM_WIDTH } from "../../utils/constants";
 
 export function SideMenuItemContent({
 	id,

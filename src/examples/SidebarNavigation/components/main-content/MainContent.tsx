@@ -4,7 +4,7 @@ import { IconButton } from "ics-ui-kit/components/button";
 import { Search } from "lucide-react";
 import { Divider } from "ics-ui-kit/components/divider";
 import { BreadcrumbListComponent } from "./BreadcrumbListComponent";
-import { SIDEBAR_TRIGGER_ATTR } from "./useSidebarFloating";
+import { SIDEBAR_TRIGGER_ATTR } from "../../hooks/useSidebarFloating";
 
 const sidebarTriggerFloatingProps = { [SIDEBAR_TRIGGER_ATTR]: true };
 
