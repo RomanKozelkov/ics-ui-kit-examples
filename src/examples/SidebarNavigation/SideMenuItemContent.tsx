@@ -4,8 +4,7 @@ import { SidebarMenuButton, SidebarMenuItem } from "ics-ui-kit/components/sideba
 import { NavigationItemCounter } from "./NavigationItemCounter";
 import { NavigationTreeItemActions } from "./NavigationTreeItemActions";
 import { TextOverflowTooltip } from "ics-ui-kit/components/overflow-tooltip";
-
-const INDENT_PX = 24;
+import { INDENT_SIDEBAR_ITEM_WIDTH } from "./constants";
 
 export function SideMenuItemContent({
 	id,
@@ -24,7 +23,7 @@ export function SideMenuItemContent({
 	trigger?: ReactNode;
 	indicator?: ReactNode;
 }) {
-	const paddingLeft = (level - 1) * INDENT_PX;
+	const paddingLeft = (level - 1) * INDENT_SIDEBAR_ITEM_WIDTH;
 
 	return (
 		<SidebarMenuItem

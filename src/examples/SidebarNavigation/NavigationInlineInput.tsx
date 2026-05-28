@@ -1,7 +1,8 @@
 import { useEffect, useRef } from "react";
 import { useNavigationTreeStore } from "./navigationTreeStore";
+import { INDENT_SIDEBAR_ITEM_WIDTH } from "./constants";
 
-export function NavigationInlineInput({ id }: { id: string }) {
+export function NavigationInlineInput({ id, level }: { id: string; level: number }) {
 	const commitRename = useNavigationTreeStore((s) => s.commitRename);
 	const cancelRename = useNavigationTreeStore((s) => s.cancelRename);
 	const ref = useRef<HTMLInputElement>(null);
@@ -19,7 +20,8 @@ export function NavigationInlineInput({ id }: { id: string }) {
 	return (
 		<input
 			ref={ref}
-			className="absolute inset-0 w-full rounded-sm bg-background px-2 text-sm outline-none ring-1 ring-inset ring-primary-fg"
+			className="absolute inset-0 w-auto rounded-sm bg-background px-2 text-sm outline-none ring-1 ring-inset ring-primary-fg"
+			style={{ marginLeft: (level - 1) * INDENT_SIDEBAR_ITEM_WIDTH }}
 			onBlur={(e) => handleSubmit(e.currentTarget.value)}
 			onKeyDown={(e) => {
 				if (e.key === "Enter") handleSubmit(e.currentTarget.value);

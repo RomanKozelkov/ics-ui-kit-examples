@@ -4,13 +4,13 @@ import { NavigationSectionLabel } from "./NavigationSectionLabel";
 import { ROOT_ID } from "./navigationData";
 import { useNavigationTreeStore } from "./navigationTreeStore";
 import { Layers, Layers2, Layers3 } from "lucide-react";
-import { SidebarInsertionLine } from "../../shared/components/SidebarInsertionLine";
+import { SidebarInsertionLine } from "./SidebarInsertionLine";
 
 const groupIcons = [Layers2, Layers3, Layers];
 
 export function NavigationTree() {
 	const items = useNavigationTreeStore((s) => s.items);
-	const addItem = useNavigationTreeStore((s) => s.addItem);
+	const insertAfter = useNavigationTreeStore((s) => s.insertAfter);
 	const groupIds = items[ROOT_ID]?.children ?? [];
 
 	return (
@@ -24,7 +24,7 @@ export function NavigationTree() {
 					<SidebarGroup key={groupId} className="py-0 pr-4 group-data-[variant=floating]:pr-2.5">
 						<div className="relative">
 							<NavigationSectionLabel data={groupData} icon={groupIcons[index]} />
-							<SidebarInsertionLine onAdd={() => addItem(groupId)} />
+							<SidebarInsertionLine depth={1} minDepth={1} maxDepth={1} onAdd={() => insertAfter(groupId, 0, 1)} />
 						</div>
 						<SidebarGroupContent>
 							<SidebarMenu className="gap-0.5 pb-0.5">

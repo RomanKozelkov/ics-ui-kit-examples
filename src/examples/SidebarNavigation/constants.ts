@@ -1,0 +1,1 @@
+export const INDENT_SIDEBAR_ITEM_WIDTH = 24;
