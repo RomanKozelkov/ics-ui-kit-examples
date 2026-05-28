@@ -58,11 +58,28 @@ export function TrendChart() {
 				trigger: "axis",
 				backgroundColor: colors.tooltipBg,
 				borderColor: colors.tooltipBg,
+				borderWidth: 0,
+				extraCssText: "border-radius: var(--radius)",
 				textStyle: { color: colors.tooltipFg, fontFamily },
-				valueFormatter: (v: number | string) => {
-					const n = Number(v);
-					if (!Number.isFinite(n)) return String(v);
-					return fmt.full(n);
+				formatter: (
+					params: Array<{ axisValue: string; dataIndex: number; marker: string; seriesName: string }>
+				) => {
+					const p = params[0];
+					if (!p) return "";
+					const i = p.dataIndex;
+					const markerOf = (name: string) => params.find((it) => it.seriesName === name)?.marker ?? "";
+					const c = cy[i];
+					const pv = py[i];
+					const y = yoy[i];
+					const valueCell = "text-align:right;padding-left:16px;font-variant-numeric:tabular-nums";
+					const row = (label: string, value: string) =>
+						`<tr><td>${label}</td><td style="${valueCell}">${value}</td></tr>`;
+					const rows = [
+						row(`${markerOf(`CY (${year})`)}CY (${year})`, c == null ? "—" : fmt.full(c)),
+						row(`${markerOf(`PY (${year - 1})`)}PY (${year - 1})`, pv == null ? "—" : fmt.full(pv)),
+						row(`${markerOf("YoY")}YoY %`, y == null ? "—" : formatPercent(y, { signed: true }))
+					].join("");
+					return `<div>${p.axisValue}</div><table style="border-collapse:collapse;margin-top:4px"><tbody>${rows}</tbody></table>`;
 				}
 			},
 			legend: {
@@ -165,13 +182,6 @@ export function TrendChart() {
 						color: (params: { value: number }) =>
 							params.value >= 0 ? colors.series.positive : colors.series.negative,
 						borderRadius: [2, 2, 0, 0]
-					},
-					tooltip: {
-						valueFormatter: (v: number | string) => {
-							const n = Number(v);
-							if (!Number.isFinite(n)) return String(v);
-							return formatPercent(n, { signed: true });
-						}
 					},
 					data: yoy
 				}

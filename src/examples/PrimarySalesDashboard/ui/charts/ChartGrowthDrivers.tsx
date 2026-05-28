@@ -7,6 +7,7 @@ import {
 	SegmentedToggleGroup,
 	SegmentedToggleItem
 } from "../../../../shared/components/SegmentedToggle";
+import { useFiltersStore } from "../../stores/useFiltersStore";
 import { formatPercent } from "../../utils/metricFormat";
 import { useMetricFormat } from "../../utils/useMetricFormat";
 import { useDriversChartView, type DriversView as View } from "./useDriversData";
@@ -21,6 +22,7 @@ export function GrowthDriversChart() {
 	const colors = useChartColors();
 	const fontFamily = useChartFont();
 	const fmt = useMetricFormat();
+	const year = useFiltersStore((s) => s.year);
 
 	const { data, isStale } = useDriversChartView(view);
 
@@ -39,13 +41,23 @@ export function GrowthDriversChart() {
 				backgroundColor: colors.tooltipBg,
 				borderColor: colors.tooltipBg,
 				textStyle: { color: colors.tooltipFg, fontFamily },
+				borderWidth: 0,
+				extraCssText: "border-radius: var(--radius)",
 				formatter: (params: Array<{ dataIndex: number; marker: string; name: string }>) => {
 					const p = params[0];
 					if (!p) return "";
 					const row = sorted[p.dataIndex];
-					const valueLine = `${p.marker}Значение: ${fmt.full(row.diff)}`;
-					const pctLine = `Динамика: ${row.pct == null ? "—" : formatPercent(row.pct, { signed: true })}`;
-					return `${row.name}<br/>${valueLine}<br/>${pctLine}`;
+					const b = p.marker;
+					const valueCell = "text-align:right;padding-left:16px;font-variant-numeric:tabular-nums";
+					const tr = (label: string, value: string) =>
+						`<tr><td>${b}${label}</td><td style="${valueCell}">${value}</td></tr>`;
+					const yoyRow = tr("YoY", fmt.full(row.diff));
+					const pctRow = tr("YoY %", row.pct == null ? "—" : formatPercent(row.pct, { signed: true }));
+					const cyRow = tr(`CY (${year})`, fmt.full(row.cy));
+					const pyRow = tr(`PY (${year - 1})`, fmt.full(row.py));
+					const head = measure === "pct" ? [pctRow, yoyRow] : [yoyRow, pctRow];
+					const rowsHtml = [...head, cyRow, pyRow].join("");
+					return `<div>${row.name}</div><table style="border-collapse:collapse;margin-top:4px"><tbody>${rowsHtml}</tbody></table>`;
 				}
 			},
 			grid: { left: 8, right: 24, top: 16, bottom: 28, containLabel: true },
@@ -55,8 +67,7 @@ export function GrowthDriversChart() {
 				splitLine: { lineStyle: { color: colors.grid } },
 				axisLabel: {
 					color: colors.text,
-					formatter: (v: number) =>
-						measure === "pct" ? formatPercent(v, { signed: true }) : fmt.compact(v)
+					formatter: (v: number) => (measure === "pct" ? formatPercent(v, { signed: true }) : fmt.compact(v))
 				}
 			},
 			yAxis: {
@@ -83,7 +94,7 @@ export function GrowthDriversChart() {
 				}
 			]
 		};
-	}, [data, colors, fontFamily, fmt.metric, measure]);
+	}, [data, year, colors, fontFamily, fmt.metric, measure]);
 
 	return (
 		<DashboardCard
@@ -101,9 +112,9 @@ export function GrowthDriversChart() {
 						value={measure}
 						onValueChange={(v) => v && setMeasure(v as Measure)}
 					>
-						<SegmentedToggleItem value="value">Значение</SegmentedToggleItem>
+						<SegmentedToggleItem value="value">YoY</SegmentedToggleItem>
 						<SegmentedToggleDivider />
-						<SegmentedToggleItem value="pct">%</SegmentedToggleItem>
+						<SegmentedToggleItem value="pct">YoY %</SegmentedToggleItem>
 					</SegmentedToggleGroup>
 				</div>
 			}

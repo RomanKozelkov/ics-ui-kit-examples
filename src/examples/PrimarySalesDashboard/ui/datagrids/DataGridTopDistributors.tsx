@@ -22,7 +22,7 @@ export function DataGridTopDistributors() {
 				<Table>
 					<TableHeader>
 						<TableRow>
-							<TableHead className="w-[40px]">№</TableHead>
+							<TableHead className="w-[40px] text-right">№</TableHead>
 							<TableHead>Дистрибьютор</TableHead>
 							<TableHead className="text-right">{measureLabel}</TableHead>
 							<TableHead className="text-right">YOY%</TableHead>

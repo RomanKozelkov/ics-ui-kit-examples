@@ -127,7 +127,7 @@ export function MultiSelectControlled<T extends SearchSelectOption = SearchSelec
 						{value.length > 0 ? (
 							<div className="flex h-6 items-center gap-1 pl-1.5 text-sm">
 								<span>Выбрано:</span>
-								<Counter variant="secondary" status="info">
+								<Counter variant="secondary" status="default" className="rounded-full tabular-nums">
 									{value.length}
 								</Counter>
 							</div>
