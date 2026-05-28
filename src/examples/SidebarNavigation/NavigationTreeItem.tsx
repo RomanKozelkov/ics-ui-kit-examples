@@ -5,6 +5,7 @@ import { Icon } from "ics-ui-kit/components/icon";
 import { ChevronRight } from "lucide-react";
 import { cn } from "ics-ui-kit/lib/utils";
 import { useNavigationTreeStore } from "./navigationTreeStore";
+import { getInsertionConfig } from "./sidebarInsertionLineUtils";
 import { SideMenuItemContent } from "./SideMenuItemContent";
 import { NavigationIndicator } from "./NavigationIndicator";
 import { SidebarInsertionLine } from "./SidebarInsertionLine";
@@ -23,15 +24,14 @@ export function NavigationTreeItem({ id, level }: NavigationTreeItemProps) {
 	const toggleExpanded = useNavigationTreeStore((s) => s.toggleExpanded);
 	const select = useNavigationTreeStore((s) => s.select);
 	const insertAfter = useNavigationTreeStore((s) => s.insertAfter);
+	const items = useNavigationTreeStore((s) => s.items);
+	const parentMap = useNavigationTreeStore((s) => s.parentMap);
 
 	if (!data) return null;
 
 	const childIds = data.children ?? [];
 	const isFolder = childIds.length > 0;
 	const indicator = data.indicator && <NavigationIndicator />;
-
-	const minDepth = 1;
-	const maxDepth = level + 1;
 
 	if (isFolder) {
 		return (
@@ -44,8 +44,6 @@ export function NavigationTreeItem({ id, level }: NavigationTreeItemProps) {
 				isSelected={isSelected}
 				onSelect={select}
 				indicator={indicator}
-				minDepth={minDepth}
-				maxDepth={maxDepth}
 			>
 				{childIds.map((childId) => (
 					<NavigationTreeItem key={childId} id={childId} level={level + 1} />
@@ -53,6 +51,8 @@ export function NavigationTreeItem({ id, level }: NavigationTreeItemProps) {
 			</NavigationTreeFolderRow>
 		);
 	}
+
+	const { minDepth, maxDepth } = getInsertionConfig(id, level, false, items, parentMap);
 
 	return (
 		<div className="relative">
@@ -66,7 +66,7 @@ export function NavigationTreeItem({ id, level }: NavigationTreeItemProps) {
 			/>
 			{isEditing && <NavigationInlineInput id={id} level={level} />}
 			<SidebarInsertionLine
-				depth={level}
+				depth={maxDepth}
 				minDepth={minDepth}
 				maxDepth={maxDepth}
 				onAdd={(targetDepth) => insertAfter(id, level, targetDepth)}
@@ -84,8 +84,6 @@ function NavigationTreeFolderRow({
 	isSelected,
 	onSelect,
 	indicator,
-	minDepth,
-	maxDepth,
 	children
 }: {
 	id: string;
@@ -96,11 +94,13 @@ function NavigationTreeFolderRow({
 	isSelected: boolean;
 	onSelect: (id: string) => void;
 	indicator?: ReactNode;
-	minDepth: number;
-	maxDepth: number;
 	children: ReactNode;
 }) {
 	const insertAfter = useNavigationTreeStore((s) => s.insertAfter);
+	const items = useNavigationTreeStore((s) => s.items);
+	const parentMap = useNavigationTreeStore((s) => s.parentMap);
+
+	const { minDepth, maxDepth } = getInsertionConfig(id, level, open, items, parentMap);
 
 	return (
 		<Collapsible open={open} onOpenChange={onOpenChange} className="flex flex-col gap-0.5">
@@ -131,7 +131,7 @@ function NavigationTreeFolderRow({
 					}
 				/>
 				<SidebarInsertionLine
-					depth={level}
+					depth={maxDepth}
 					minDepth={minDepth}
 					maxDepth={maxDepth}
 					onAdd={(targetDepth) => insertAfter(id, level, targetDepth)}
