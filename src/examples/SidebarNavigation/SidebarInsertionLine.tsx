@@ -1,10 +1,10 @@
-import { IconButton } from "ics-ui-kit/components/button";
 import { cn } from "ics-ui-kit/lib/utils";
 import { CircleFadingPlus, CirclePlus } from "lucide-react";
 import React from "react";
 import { iconLeft } from "./sidebarInsertionLineUtils";
 import { INSERTION_BUTTON_SIZE } from "./constants";
 import { useDepthSelection } from "./useDepthSelection";
+import { Icon } from "ics-ui-kit/components/icon";
 
 export type SidebarInsertionLineProps = {
 	className?: string;
@@ -58,16 +58,14 @@ export const SidebarInsertionLine = React.forwardRef<HTMLDivElement, SidebarInse
 									height: INSERTION_BUTTON_SIZE
 								}}
 							>
-								<IconButton
+								<Icon
 									icon={isActive ? CirclePlus : CircleFadingPlus}
-									size="xs"
+									size="sm"
 									className={cn(
 										"insertion-icon absolute h-4 w-4 p-0.5 transition-opacity duration-150",
 										isActive ? "text-primary-fg" : "text-muted",
 										isHidden ? "opacity-0" : "opacity-0 group-hover/insertion:opacity-100"
 									)}
-									variant="link"
-									tabIndex={-1}
 								/>
 							</div>
 						</React.Fragment>
