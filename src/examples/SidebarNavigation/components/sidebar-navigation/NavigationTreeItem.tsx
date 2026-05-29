@@ -9,6 +9,7 @@ import { NavigationIndicator } from "./NavigationIndicator";
 import { SidebarInsertionLine } from "./sidebar-insertion-line/SidebarInsertionLine";
 import { useNavigationTreeStore } from "../../store/navigationTreeStore";
 import { useInsertionProps } from "../../hooks/useInsertionProps";
+import { SidebarMenuSub } from "ics-ui-kit/components/sidebar";
 
 interface NavigationTreeItemProps {
 	id: string;
@@ -22,13 +23,15 @@ export function NavigationTreeItem({ id, level }: NavigationTreeItemProps) {
 	const toggleExpanded = useNavigationTreeStore((s) => s.toggleExpanded);
 	const select = useNavigationTreeStore((s) => s.select);
 	const items = useNavigationTreeStore((s) => s.items);
+	const isNested = level > 1;
+
 	const { minDepth, maxDepth, getParentId } = useInsertionProps(id, level, false);
 
 	if (!data) return null;
 
 	const childIds = data.children ?? [];
 	const isFolder = childIds.length > 0;
-	const indicator = data.indicator && <NavigationIndicator />;
+	const indicator = data.indicator && <NavigationIndicator level={level} />;
 
 	if (isFolder) {
 		return (
@@ -53,7 +56,7 @@ export function NavigationTreeItem({ id, level }: NavigationTreeItemProps) {
 		<div className="relative">
 			<SideMenuItemContent
 				id={id}
-				level={level}
+				isNested={isNested}
 				data={data}
 				isSelected={isSelected}
 				onSelect={select}
@@ -62,6 +65,7 @@ export function NavigationTreeItem({ id, level }: NavigationTreeItemProps) {
 			<SidebarInsertionLine
 				minDepth={minDepth}
 				maxDepth={maxDepth}
+				level={level}
 				onAdd={(targetDepth) => {
 					const parentId = getParentId(targetDepth);
 					const parentName = parentId ? items[parentId]?.name : undefined;
@@ -95,13 +99,14 @@ function NavigationTreeFolderRow({
 }) {
 	const items = useNavigationTreeStore((s) => s.items);
 	const { minDepth, maxDepth, getParentId } = useInsertionProps(id, level, open);
+	const isNested = level > 1;
 
 	return (
 		<Collapsible open={open} onOpenChange={onOpenChange} className="flex flex-col gap-0.5">
 			<div className="relative">
 				<SideMenuItemContent
 					id={id}
-					level={level}
+					isNested={isNested}
 					data={data}
 					isSelected={isSelected}
 					onSelect={onSelect}
@@ -127,6 +132,7 @@ function NavigationTreeFolderRow({
 				<SidebarInsertionLine
 					minDepth={minDepth}
 					maxDepth={maxDepth}
+					level={level}
 					onAdd={(targetDepth) => {
 						const parentId = getParentId(targetDepth);
 						const parentName = parentId ? items[parentId]?.name : undefined;
@@ -135,7 +141,7 @@ function NavigationTreeFolderRow({
 				/>
 			</div>
 			<CollapsibleContent className="data-[state=open]:!overflow-visible">
-				<div className="relative flex flex-col gap-0.5">{children}</div>
+				<SidebarMenuSub className="gap-0.5 border-none py-0">{children}</SidebarMenuSub>
 			</CollapsibleContent>
 		</Collapsible>
 	);

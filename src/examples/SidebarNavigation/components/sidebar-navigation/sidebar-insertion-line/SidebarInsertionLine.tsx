@@ -10,16 +10,18 @@ export type SidebarInsertionLineProps = {
 	className?: string;
 	minDepth: number;
 	maxDepth: number;
+	level: number;
 	onAdd: (depth: number) => void;
 };
 
 export const SidebarInsertionLine = React.forwardRef<HTMLDivElement, SidebarInsertionLineProps>(
-	({ className, minDepth, maxDepth, onAdd }, ref) => {
+	({ className, minDepth, maxDepth, level, onAdd }, ref) => {
+		const levelOffset = level - 1;
 		const [hoverDepth, setHoverDepth] = useState<number | null>(null);
 
 		const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
 			const rect = e.currentTarget.getBoundingClientRect();
-			setHoverDepth(depthFromMouseX(e.clientX - rect.left, maxDepth, minDepth));
+			setHoverDepth(depthFromMouseX(e.clientX - rect.left, maxDepth, minDepth, levelOffset));
 		};
 
 		const handleMouseLeave = () => {
@@ -41,7 +43,7 @@ export const SidebarInsertionLine = React.forwardRef<HTMLDivElement, SidebarInse
 					const d = minDepth + i;
 					const isHidden = hoverDepth === null || d > hoverDepth;
 					const isPlaceholder = d < activeDepth;
-					const prevLeft = i > 0 ? iconLeft(minDepth + i - 1) : null;
+					const prevLeft = i > 0 ? iconLeft(minDepth + i - 1, levelOffset) : null;
 					const connectorStyle =
 						prevLeft !== null
 							? { left: prevLeft + INSERTION_BUTTON_SIZE, opacity: isHidden ? 0 : undefined }
@@ -53,7 +55,7 @@ export const SidebarInsertionLine = React.forwardRef<HTMLDivElement, SidebarInse
 							<InsertionDepthIcon
 								isHidden={isHidden}
 								isPlaceholder={isPlaceholder}
-								style={{ left: iconLeft(d) }}
+								style={{ left: iconLeft(d, levelOffset) }}
 								onClick={() => onAdd(d)}
 							/>
 						</React.Fragment>
@@ -62,7 +64,7 @@ export const SidebarInsertionLine = React.forwardRef<HTMLDivElement, SidebarInse
 
 				<InsertionTailLine
 					style={{
-						left: iconLeft(activeDepth) + INSERTION_BUTTON_SIZE
+						left: iconLeft(activeDepth, levelOffset) + INSERTION_BUTTON_SIZE
 					}}
 				/>
 			</div>

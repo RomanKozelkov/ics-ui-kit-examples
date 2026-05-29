@@ -1,2 +1,2 @@
-export const INDENT_SIDEBAR_ITEM_WIDTH = 24;
+export const SIDEBAR_MENU_SUB_INDENT = 24;
 export const INSERTION_BUTTON_SIZE = 14;
