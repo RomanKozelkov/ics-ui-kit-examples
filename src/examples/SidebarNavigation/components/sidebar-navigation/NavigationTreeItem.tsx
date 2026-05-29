@@ -52,6 +52,9 @@ export function NavigationTreeItem({ id, level }: NavigationTreeItemProps) {
 		);
 	}
 
+	const setHoveredParentId = useNavigationTreeStore((s) => s.setHoveredParentId);
+	const handleParentHover = (depth: number | null) => setHoveredParentId(depth !== null ? getParentId(depth) : null);
+
 	return (
 		<div className="relative">
 			<SideMenuItemContent
@@ -71,6 +74,7 @@ export function NavigationTreeItem({ id, level }: NavigationTreeItemProps) {
 					const parentName = parentId ? items[parentId]?.name : undefined;
 					console.log(`Вставить в "${parentName}" после "${data.name}"`);
 				}}
+				onParentHover={handleParentHover}
 			/>
 		</div>
 	);
@@ -98,8 +102,12 @@ function NavigationTreeFolderRow({
 	children: ReactNode;
 }) {
 	const items = useNavigationTreeStore((s) => s.items);
+	const hoveredParentId = useNavigationTreeStore((s) => s.hoveredParentId);
+	const setHoveredParentId = useNavigationTreeStore((s) => s.setHoveredParentId);
 	const { minDepth, maxDepth, getParentId } = useInsertionProps(id, level, open);
 	const isNested = level > 1;
+	const isHoveredParent = hoveredParentId === id;
+	const handleParentHover = (depth: number | null) => setHoveredParentId(depth !== null ? getParentId(depth) : null);
 
 	return (
 		<Collapsible open={open} onOpenChange={onOpenChange} className="flex flex-col gap-0.5">
@@ -110,6 +118,7 @@ function NavigationTreeFolderRow({
 					data={data}
 					isSelected={isSelected}
 					onSelect={onSelect}
+					isInsertionHovered={isHoveredParent}
 					indicator={indicator}
 					trigger={
 						<CollapsibleTrigger asChild>
@@ -138,10 +147,20 @@ function NavigationTreeFolderRow({
 						const parentName = parentId ? items[parentId]?.name : undefined;
 						console.log(`Вставить в "${parentName}" после "${data.name}"`);
 					}}
+					onParentHover={handleParentHover}
 				/>
 			</div>
 			<CollapsibleContent className="data-[state=open]:!overflow-visible">
-				<SidebarMenuSub className="gap-0.5 border-none py-0">{children}</SidebarMenuSub>
+				<div className="relative ml-6">
+					<span
+						className={cn(
+							"pointer-events-none absolute left-0 top-0 w-px",
+							"bottom-2",
+							isHoveredParent ? "bg-primary-border" : "bg-transparent"
+						)}
+					/>
+					<SidebarMenuSub className="ml-0 gap-0.5 border-none p-0">{children}</SidebarMenuSub>
+				</div>
 			</CollapsibleContent>
 		</Collapsible>
 	);

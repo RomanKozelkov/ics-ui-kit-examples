@@ -5,14 +5,17 @@ type NavigationTreeStore = {
 	items: Record<string, Item>;
 	expanded: ReadonlySet<string>;
 	selectedId: string;
+	hoveredParentId: string | null;
 	toggleExpanded: (id: string, open: boolean) => void;
 	select: (id: string) => void;
+	setHoveredParentId: (id: string | null) => void;
 };
 
 export const useNavigationTreeStore = create<NavigationTreeStore>((set) => ({
 	items: initialItems,
 	expanded: new Set(initialExpanded),
 	selectedId: initialSelected[0] ?? "",
+	hoveredParentId: null,
 
 	toggleExpanded: (id, open) =>
 		set((state) => {
@@ -27,5 +30,7 @@ export const useNavigationTreeStore = create<NavigationTreeStore>((set) => ({
 			const next = new Set(state.expanded);
 			next.add(id);
 			return { selectedId: id, expanded: next };
-		})
+		}),
+
+	setHoveredParentId: (id) => set({ hoveredParentId: id })
 }));

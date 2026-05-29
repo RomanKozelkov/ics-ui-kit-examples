@@ -1,4 +1,5 @@
 import { ReactNode } from "react";
+import { cn } from "ics-ui-kit/lib/utils";
 import { Item } from "../../data/navigationData";
 import {
 	SidebarMenuButton,
@@ -17,7 +18,8 @@ export function SideMenuItemContent({
 	isSelected,
 	onSelect,
 	trigger,
-	indicator
+	indicator,
+	isInsertionHovered
 }: {
 	id: string;
 	isNested: boolean;
@@ -26,6 +28,7 @@ export function SideMenuItemContent({
 	onSelect: (id: string) => void;
 	trigger?: ReactNode;
 	indicator?: ReactNode;
+	isInsertionHovered?: boolean;
 }) {
 	const ItemWrapper = isNested ? SidebarMenuSubItem : SidebarMenuItem;
 	const ButtonComponent = isNested ? SidebarMenuSubButton : SidebarMenuButton;
@@ -37,7 +40,10 @@ export function SideMenuItemContent({
 				type="button"
 				onClick={() => onSelect(id)}
 				isActive={isSelected}
-				className="group/nav h-7 py-1.5 pr-1.5 data-[active=true]:font-medium"
+				className={cn(
+					"group/nav h-7 py-1.5 pr-1.5 data-[active=true]:font-medium",
+					isInsertionHovered && "bg-secondary-bg-hover"
+				)}
 			>
 				<TextOverflowTooltip>{data.name}</TextOverflowTooltip>
 				{data.badge != null && <NavigationItemCounter>{data.badge}</NavigationItemCounter>}
