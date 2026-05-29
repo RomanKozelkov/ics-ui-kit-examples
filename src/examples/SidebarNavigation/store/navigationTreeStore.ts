@@ -1,8 +1,10 @@
 import { create } from "zustand";
 import { initialExpanded, initialItems, initialSelected, Item } from "../data/navigationData";
+import { buildParentMap } from "../utils/navigationTreeUtils";
 
 type NavigationTreeStore = {
 	items: Record<string, Item>;
+	parentMap: Record<string, string>;
 	expanded: ReadonlySet<string>;
 	selectedId: string;
 	toggleExpanded: (id: string, open: boolean) => void;
@@ -11,6 +13,7 @@ type NavigationTreeStore = {
 
 export const useNavigationTreeStore = create<NavigationTreeStore>((set) => ({
 	items: initialItems,
+	parentMap: buildParentMap(initialItems),
 	expanded: new Set(initialExpanded),
 	selectedId: initialSelected[0] ?? "",
 

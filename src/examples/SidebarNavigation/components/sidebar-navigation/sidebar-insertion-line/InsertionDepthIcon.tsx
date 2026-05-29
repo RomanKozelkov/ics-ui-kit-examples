@@ -5,14 +5,16 @@ import { Icon } from "ics-ui-kit/components/icon";
 export function InsertionDepthIcon({
 	isActive,
 	isHidden,
-	style
+	style,
+	onClick
 }: {
 	isActive: boolean;
 	isHidden: boolean;
 	style?: React.CSSProperties;
+	onClick?: () => void;
 }) {
 	return (
-		<div className="absolute top-1/2 h-4 w-4 -translate-y-1/2" style={style}>
+		<div className="absolute top-1/2 h-4 w-4 -translate-y-1/2 cursor-pointer" style={style} onClick={onClick}>
 			<Icon
 				icon={isActive ? CirclePlus : CircleFadingPlus}
 				size="sm"

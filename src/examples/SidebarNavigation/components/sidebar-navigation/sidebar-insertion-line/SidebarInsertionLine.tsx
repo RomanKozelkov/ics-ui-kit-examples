@@ -1,23 +1,33 @@
 import { cn } from "ics-ui-kit/lib/utils";
-import React from "react";
+import React, { useState, useCallback } from "react";
 import { INSERTION_BUTTON_SIZE } from "../../../utils/constants";
-import { useDepthSelection } from "../../../hooks/useDepthSelection";
-import { iconLeft } from "../../../utils/sidebarInsertionLineUtils";
+import { iconLeft, depthFromMouseX } from "../../../utils/sidebarInsertionLineUtils";
 import { InsertionDepthIcon } from "./InsertionDepthIcon";
 import { InsertionConnectorLine } from "./InsertionConnectorLine";
 import { InsertionTailLine } from "./InsertionTailLine";
 
 export type SidebarInsertionLineProps = {
 	className?: string;
-	depth: number;
 	minDepth: number;
 	maxDepth: number;
 	onAdd: (depth: number) => void;
 };
 
 export const SidebarInsertionLine = React.forwardRef<HTMLDivElement, SidebarInsertionLineProps>(
-	({ className, depth, minDepth, maxDepth, onAdd }, ref) => {
-		const { selectedDepth, handlers } = useDepthSelection(depth, minDepth, maxDepth);
+	({ className, minDepth, maxDepth, onAdd }, ref) => {
+		const [hoverDepth, setHoverDepth] = useState(maxDepth);
+
+		const handleMouseMove = useCallback(
+			(e: React.MouseEvent<HTMLDivElement>) => {
+				const rect = e.currentTarget.getBoundingClientRect();
+				setHoverDepth(depthFromMouseX(e.clientX - rect.left, maxDepth, minDepth));
+			},
+			[maxDepth, minDepth]
+		);
+
+		const handleMouseLeave = useCallback(() => {
+			setHoverDepth(maxDepth);
+		}, [maxDepth]);
 
 		const count = maxDepth - minDepth + 1;
 
@@ -26,17 +36,17 @@ export const SidebarInsertionLine = React.forwardRef<HTMLDivElement, SidebarInse
 				ref={ref}
 				data-sidebar="sidebar-insertion-line"
 				className={cn(
-					"group/insertion absolute inset-x-0 bottom-0 z-10 h-2 translate-y-1/2 cursor-pointer",
+					"group/insertion absolute inset-x-0 bottom-0 z-10 h-2 translate-y-1/2",
 					className
 				)}
-				{...handlers}
-				onClick={() => onAdd(selectedDepth)}
+				onMouseMove={handleMouseMove}
+				onMouseLeave={handleMouseLeave}
 			>
 				{Array.from({ length: count }, (_, i) => {
 					const d = minDepth + i;
 					const left = iconLeft(d);
-					const isActive = d === selectedDepth;
-					const isHidden = d > selectedDepth;
+					const isActive = d === hoverDepth;
+					const isHidden = d > hoverDepth;
 					const prevLeft = i > 0 ? iconLeft(minDepth + i - 1) : null;
 
 					return (
@@ -46,14 +56,14 @@ export const SidebarInsertionLine = React.forwardRef<HTMLDivElement, SidebarInse
 									style={{ left: prevLeft + INSERTION_BUTTON_SIZE, ...(isHidden && { opacity: 0 }) }}
 								/>
 							)}
-							<InsertionDepthIcon isActive={isActive} isHidden={isHidden} style={{ left }} />
+							<InsertionDepthIcon isActive={isActive} isHidden={isHidden} style={{ left }} onClick={() => onAdd(d)} />
 						</React.Fragment>
 					);
 				})}
 
 				<InsertionTailLine
 					style={{
-						left: iconLeft(selectedDepth) + INSERTION_BUTTON_SIZE
+						left: iconLeft(hoverDepth) + INSERTION_BUTTON_SIZE
 					}}
 				/>
 			</div>
