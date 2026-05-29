@@ -6,7 +6,7 @@ import { ChevronRight } from "lucide-react";
 import { cn } from "ics-ui-kit/lib/utils";
 import { SideMenuItemContent } from "./SideMenuItemContent";
 import { NavigationIndicator } from "./NavigationIndicator";
-import { SidebarInsertionLine } from "./SidebarInsertionLine";
+import { SidebarInsertionLine } from "./sidebar-insertion-line/SidebarInsertionLine";
 import { NavigationInlineInput } from "./NavigationInlineInput";
 import { useNavigationTreeStore } from "../../store/navigationTreeStore";
 import { getInsertionConfig } from "../../utils/sidebarInsertionLineUtils";

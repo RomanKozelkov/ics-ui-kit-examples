@@ -3,7 +3,7 @@ import { NavigationTreeItem } from "./NavigationTreeItem";
 import { NavigationSectionLabel } from "./NavigationSectionLabel";
 import { ROOT_ID } from "../../data/navigationData";
 import { Layers, Layers2, Layers3 } from "lucide-react";
-import { SidebarInsertionLine } from "./SidebarInsertionLine";
+import { SidebarInsertionLine } from "./sidebar-insertion-line/SidebarInsertionLine";
 import { useNavigationTreeStore } from "../../store/navigationTreeStore";
 
 const groupIcons = [Layers2, Layers3, Layers];
