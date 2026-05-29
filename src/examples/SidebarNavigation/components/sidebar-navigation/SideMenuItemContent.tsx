@@ -5,6 +5,8 @@ import { NavigationItemCounter } from "./NavigationItemCounter";
 import { NavigationTreeItemActions } from "./NavigationTreeItemActions";
 import { TextOverflowTooltip } from "ics-ui-kit/components/overflow-tooltip";
 import { INDENT_SIDEBAR_ITEM_WIDTH } from "../../utils/constants";
+import { cn } from "ics-ui-kit/lib/utils";
+import { useDragDrop } from "../../hooks/useDragDrop";
 
 export function SideMenuItemContent({
 	id,
@@ -24,6 +26,7 @@ export function SideMenuItemContent({
 	indicator?: ReactNode;
 }) {
 	const paddingLeft = (level - 1) * INDENT_SIDEBAR_ITEM_WIDTH;
+	const { isPlaceholder, listeners, attributes, isDraggingAny, isDropTarget } = useDragDrop(id);
 
 	return (
 		<SidebarMenuItem
@@ -35,7 +38,14 @@ export function SideMenuItemContent({
 				type="button"
 				onClick={() => onSelect(id)}
 				isActive={isSelected}
-				className="group/nav h-7 py-1.5 pr-1.5 data-[active=true]:font-medium"
+				className={cn(
+					"group/nav h-7 py-1.5 pr-1.5 data-[active=true]:font-medium",
+					isDraggingAny && "cursor-grabbing",
+					isPlaceholder && "pointer-events-none opacity-50",
+					isDropTarget && "bg-secondary-bg-hover"
+				)}
+				{...listeners}
+				{...attributes}
 			>
 				<TextOverflowTooltip>{data.name}</TextOverflowTooltip>
 				{data.badge != null && <NavigationItemCounter>{data.badge}</NavigationItemCounter>}

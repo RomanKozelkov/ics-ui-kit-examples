@@ -9,6 +9,8 @@ import { NavigationIndicator } from "./NavigationIndicator";
 import { SidebarInsertionLine } from "./sidebar-insertion-line/SidebarInsertionLine";
 import { useNavigationTreeStore } from "../../store/navigationTreeStore";
 import { useInsertionProps } from "../../hooks/useInsertionProps";
+import { DndInsertionLine } from "./dnd/DndInsertionLine";
+import { useDragDrop } from "../../hooks/useDragDrop";
 
 interface NavigationTreeItemProps {
 	id: string;
@@ -22,7 +24,9 @@ export function NavigationTreeItem({ id, level }: NavigationTreeItemProps) {
 	const toggleExpanded = useNavigationTreeStore((s) => s.toggleExpanded);
 	const select = useNavigationTreeStore((s) => s.select);
 	const items = useNavigationTreeStore((s) => s.items);
+	const isDragging = useNavigationTreeStore((s) => s.isDragging);
 	const { minDepth, maxDepth, getParentId } = useInsertionProps(id, level, false);
+	const { combinedRef, isInsertAfter } = useDragDrop(id);
 
 	if (!data) return null;
 
@@ -50,7 +54,7 @@ export function NavigationTreeItem({ id, level }: NavigationTreeItemProps) {
 	}
 
 	return (
-		<div className="relative">
+		<div ref={combinedRef} className="relative">
 			<SideMenuItemContent
 				id={id}
 				level={level}
@@ -59,7 +63,9 @@ export function NavigationTreeItem({ id, level }: NavigationTreeItemProps) {
 				onSelect={select}
 				indicator={indicator}
 			/>
+			{isInsertAfter && <DndInsertionLine />}
 			<SidebarInsertionLine
+				disabled={isDragging}
 				minDepth={minDepth}
 				maxDepth={maxDepth}
 				onAdd={(targetDepth) => {
@@ -94,11 +100,13 @@ function NavigationTreeFolderRow({
 	children: ReactNode;
 }) {
 	const items = useNavigationTreeStore((s) => s.items);
+	const isDragging = useNavigationTreeStore((s) => s.isDragging);
 	const { minDepth, maxDepth, getParentId } = useInsertionProps(id, level, open);
+	const { isInsertAfter, combinedRef } = useDragDrop(id);
 
 	return (
 		<Collapsible open={open} onOpenChange={onOpenChange} className="flex flex-col gap-0.5">
-			<div className="relative">
+			<div ref={combinedRef} className="relative">
 				<SideMenuItemContent
 					id={id}
 					level={level}
@@ -124,7 +132,9 @@ function NavigationTreeFolderRow({
 						</CollapsibleTrigger>
 					}
 				/>
+				{isInsertAfter && !open && <DndInsertionLine />}
 				<SidebarInsertionLine
+					disabled={isDragging}
 					minDepth={minDepth}
 					maxDepth={maxDepth}
 					onAdd={(targetDepth) => {
@@ -135,7 +145,12 @@ function NavigationTreeFolderRow({
 				/>
 			</div>
 			<CollapsibleContent className="data-[state=open]:!overflow-visible">
-				<div className="relative flex flex-col gap-0.5">{children}</div>
+				<div className="relative flex flex-col gap-0.5 overflow-visible">{children}</div>
+				{open && isInsertAfter && (
+					<div className="relative overflow-visible">
+						<DndInsertionLine />
+					</div>
+				)}
 			</CollapsibleContent>
 		</Collapsible>
 	);
