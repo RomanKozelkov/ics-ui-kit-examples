@@ -5,14 +5,19 @@ type NavigationTreeStore = {
 	items: Record<string, Item>;
 	expanded: ReadonlySet<string>;
 	selectedId: string;
+	isDragging: boolean;
 	toggleExpanded: (id: string, open: boolean) => void;
 	select: (id: string) => void;
+	setDragging: (v: boolean) => void;
 };
 
 export const useNavigationTreeStore = create<NavigationTreeStore>((set) => ({
 	items: initialItems,
 	expanded: new Set(initialExpanded),
 	selectedId: initialSelected[0] ?? "",
+	isDragging: false,
+
+	setDragging: (v) => set({ isDragging: v }),
 
 	toggleExpanded: (id, open) =>
 		set((state) => {
