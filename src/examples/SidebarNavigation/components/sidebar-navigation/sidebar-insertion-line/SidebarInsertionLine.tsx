@@ -15,48 +15,54 @@ export type SidebarInsertionLineProps = {
 
 export const SidebarInsertionLine = React.forwardRef<HTMLDivElement, SidebarInsertionLineProps>(
 	({ className, minDepth, maxDepth, onAdd }, ref) => {
-		const [hoverDepth, setHoverDepth] = useState(maxDepth);
+		const [hoverDepth, setHoverDepth] = useState<number | null>(null);
 
 		const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
 			const rect = e.currentTarget.getBoundingClientRect();
 			setHoverDepth(depthFromMouseX(e.clientX - rect.left, maxDepth, minDepth));
 		};
 
-		const handleMouseLeave = () => setHoverDepth(maxDepth);
+		const handleMouseLeave = () => {
+			setHoverDepth(null);
+		};
 
 		const count = maxDepth - minDepth + 1;
+		const activeDepth = hoverDepth ?? maxDepth;
 
 		return (
 			<div
 				ref={ref}
 				data-sidebar="sidebar-insertion-line"
-				className={cn(
-					"group/insertion absolute inset-x-0 bottom-0 z-10 h-2 translate-y-1/2",
-					className
-				)}
+				className={cn("group/insertion absolute inset-x-0 bottom-0 z-10 h-2 translate-y-1/2", className)}
 				onMouseMove={handleMouseMove}
 				onMouseLeave={handleMouseLeave}
 			>
 				{Array.from({ length: count }, (_, i) => {
 					const d = minDepth + i;
-					const isActive = d === hoverDepth;
-					const isHidden = d > hoverDepth;
+					const isHidden = hoverDepth === null || d > hoverDepth;
+					const isPlaceholder = d < activeDepth;
 					const prevLeft = i > 0 ? iconLeft(minDepth + i - 1) : null;
-					const connectorStyle = prevLeft !== null
-						? { left: prevLeft + INSERTION_BUTTON_SIZE, opacity: isHidden ? 0 : undefined }
-						: undefined;
+					const connectorStyle =
+						prevLeft !== null
+							? { left: prevLeft + INSERTION_BUTTON_SIZE, opacity: isHidden ? 0 : undefined }
+							: undefined;
 
 					return (
 						<React.Fragment key={d}>
 							{connectorStyle && <InsertionConnectorLine style={connectorStyle} />}
-							<InsertionDepthIcon isActive={isActive} isHidden={isHidden} style={{ left: iconLeft(d) }} onClick={() => onAdd(d)} />
+							<InsertionDepthIcon
+								isHidden={isHidden}
+								isPlaceholder={isPlaceholder}
+								style={{ left: iconLeft(d) }}
+								onClick={() => onAdd(d)}
+							/>
 						</React.Fragment>
 					);
 				})}
 
 				<InsertionTailLine
 					style={{
-						left: iconLeft(hoverDepth) + INSERTION_BUTTON_SIZE
+						left: iconLeft(activeDepth) + INSERTION_BUTTON_SIZE
 					}}
 				/>
 			</div>

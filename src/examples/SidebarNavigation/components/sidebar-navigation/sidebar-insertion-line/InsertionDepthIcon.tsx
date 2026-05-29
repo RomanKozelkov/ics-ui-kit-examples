@@ -3,26 +3,39 @@ import { CircleFadingPlus, CirclePlus } from "lucide-react";
 import { Icon } from "ics-ui-kit/components/icon";
 
 export function InsertionDepthIcon({
-	isActive,
 	isHidden,
+	isPlaceholder,
 	style,
 	onClick
 }: {
-	isActive: boolean;
 	isHidden: boolean;
+	isPlaceholder: boolean;
 	style?: React.CSSProperties;
 	onClick?: () => void;
 }) {
 	return (
-		<div className="absolute top-1/2 h-4 w-4 -translate-y-1/2 cursor-pointer" style={style} onClick={onClick}>
+		<div
+			role="button"
+			tabIndex={0}
+			className={cn(
+				"group/depth-icon absolute top-1/2 h-4 w-4 -translate-y-1/2 cursor-pointer transition-opacity duration-150"
+			)}
+			style={style}
+			onClick={onClick}
+		>
 			<Icon
-				icon={isActive ? CirclePlus : CircleFadingPlus}
+				icon={CircleFadingPlus}
 				size="sm"
 				className={cn(
-					"insertion-icon absolute h-4 w-4 p-0.5 transition-opacity duration-150",
-					isActive ? "text-primary-fg" : "text-primary-border",
-					isHidden ? "opacity-0" : "opacity-0 group-hover/insertion:opacity-100"
+					"insertion-icon absolute h-4 w-4 p-0.5 text-muted group-hover/depth-icon:opacity-0",
+					isHidden ? "pointer-events-none opacity-0" : "opacity-100",
+					isPlaceholder && "text-primary-border"
 				)}
+			/>
+			<Icon
+				icon={CirclePlus}
+				size="sm"
+				className="insertion-icon absolute h-4 w-4 p-0.5 text-primary-fg opacity-0 group-hover/depth-icon:opacity-100"
 			/>
 		</div>
 	);
