@@ -24,7 +24,6 @@ export function NavigationTree() {
 						<div className="relative">
 							<NavigationSectionLabel data={groupData} icon={groupIcons[index]} />
 							<SidebarInsertionLine
-								depth={1}
 								minDepth={1}
 								maxDepth={1}
 								onAdd={() => {
