@@ -7,7 +7,6 @@ import { cn } from "ics-ui-kit/lib/utils";
 import { SideMenuItemContent } from "./SideMenuItemContent";
 import { NavigationIndicator } from "./NavigationIndicator";
 import { SidebarInsertionLine } from "./sidebar-insertion-line/SidebarInsertionLine";
-import { NavigationInlineInput } from "./NavigationInlineInput";
 import { useNavigationTreeStore } from "../../store/navigationTreeStore";
 import { getInsertionConfig } from "../../utils/sidebarInsertionLineUtils";
 
@@ -20,10 +19,8 @@ export function NavigationTreeItem({ id, level }: NavigationTreeItemProps) {
 	const data = useNavigationTreeStore((s) => s.items[id]);
 	const open = useNavigationTreeStore((s) => s.expanded.has(id));
 	const isSelected = useNavigationTreeStore((s) => s.selectedId === id);
-	const isEditing = useNavigationTreeStore((s) => s.editingId === id);
 	const toggleExpanded = useNavigationTreeStore((s) => s.toggleExpanded);
 	const select = useNavigationTreeStore((s) => s.select);
-	const insertAfter = useNavigationTreeStore((s) => s.insertAfter);
 	const items = useNavigationTreeStore((s) => s.items);
 	const parentMap = useNavigationTreeStore((s) => s.parentMap);
 
@@ -64,12 +61,15 @@ export function NavigationTreeItem({ id, level }: NavigationTreeItemProps) {
 				onSelect={select}
 				indicator={indicator}
 			/>
-			{isEditing && <NavigationInlineInput id={id} level={level} />}
 			<SidebarInsertionLine
 				depth={maxDepth}
 				minDepth={minDepth}
 				maxDepth={maxDepth}
-				onAdd={(targetDepth) => insertAfter(id, level, targetDepth)}
+				onAdd={(targetDepth) => {
+					const parentId = targetDepth > level ? id : parentMap[id];
+					const parentName = parentId ? items[parentId]?.name : undefined;
+					console.log(`Вставить в "${parentName}" после "${data.name}"`);
+				}}
 			/>
 		</div>
 	);
@@ -96,7 +96,6 @@ function NavigationTreeFolderRow({
 	indicator?: ReactNode;
 	children: ReactNode;
 }) {
-	const insertAfter = useNavigationTreeStore((s) => s.insertAfter);
 	const items = useNavigationTreeStore((s) => s.items);
 	const parentMap = useNavigationTreeStore((s) => s.parentMap);
 
@@ -134,7 +133,11 @@ function NavigationTreeFolderRow({
 					depth={maxDepth}
 					minDepth={minDepth}
 					maxDepth={maxDepth}
-					onAdd={(targetDepth) => insertAfter(id, level, targetDepth)}
+					onAdd={(targetDepth) => {
+						const parentId = targetDepth > level ? id : parentMap[id];
+						const parentName = parentId ? items[parentId]?.name : undefined;
+						console.log(`Вставить в "${parentName}" после "${data.name}"`);
+					}}
 				/>
 			</div>
 			<CollapsibleContent className="data-[state=open]:!overflow-visible">

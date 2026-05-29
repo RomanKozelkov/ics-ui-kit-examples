@@ -10,7 +10,6 @@ const groupIcons = [Layers2, Layers3, Layers];
 
 export function NavigationTree() {
 	const items = useNavigationTreeStore((s) => s.items);
-	const insertAfter = useNavigationTreeStore((s) => s.insertAfter);
 	const groupIds = items[ROOT_ID]?.children ?? [];
 
 	return (
@@ -28,7 +27,9 @@ export function NavigationTree() {
 								depth={1}
 								minDepth={1}
 								maxDepth={1}
-								onAdd={() => insertAfter(groupId, 0, 1)}
+								onAdd={() => {
+									console.log(`Вставить в "${groupData.name}" первым элементом`);
+								}}
 							/>
 						</div>
 						<SidebarGroupContent>
