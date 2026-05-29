@@ -35,6 +35,24 @@ export function buildParentMap(items: Record<string, Item>): Record<string, stri
  *    - Если таких предков нет — линию можно двигать вплоть до уровня 1.
  */
 
+export function resolveInsertionParent(
+	id: string,
+	level: number,
+	targetDepth: number,
+	parentMap: Record<string, string>
+): string | undefined {
+	if (targetDepth > level) return id;
+	let curId = id;
+	let curDepth = level;
+	while (curDepth > targetDepth) {
+		const pid = parentMap[curId];
+		if (!pid) break;
+		curId = pid;
+		curDepth--;
+	}
+	return parentMap[curId];
+}
+
 export function getInsertionConfig(
 	id: string,
 	level: number,

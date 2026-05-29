@@ -1,6 +1,7 @@
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "ics-ui-kit/components/collapsible";
 import type { Item } from "../../data/navigationData";
 import type { ReactNode } from "react";
+import { useMemo } from "react";
 import { Icon } from "ics-ui-kit/components/icon";
 import { ChevronRight } from "lucide-react";
 import { cn } from "ics-ui-kit/lib/utils";
@@ -8,7 +9,11 @@ import { SideMenuItemContent } from "./SideMenuItemContent";
 import { NavigationIndicator } from "./NavigationIndicator";
 import { SidebarInsertionLine } from "./sidebar-insertion-line/SidebarInsertionLine";
 import { useNavigationTreeStore } from "../../store/navigationTreeStore";
-import { getInsertionConfig } from "../../utils/sidebarInsertionLineUtils";
+import {
+	buildParentMap,
+	getInsertionConfig,
+	resolveInsertionParent
+} from "../../utils/sidebarInsertionLineUtils";
 
 interface NavigationTreeItemProps {
 	id: string;
@@ -22,7 +27,7 @@ export function NavigationTreeItem({ id, level }: NavigationTreeItemProps) {
 	const toggleExpanded = useNavigationTreeStore((s) => s.toggleExpanded);
 	const select = useNavigationTreeStore((s) => s.select);
 	const items = useNavigationTreeStore((s) => s.items);
-	const parentMap = useNavigationTreeStore((s) => s.parentMap);
+	const parentMap = useMemo(() => buildParentMap(items), [items]);
 
 	if (!data) return null;
 
@@ -41,6 +46,8 @@ export function NavigationTreeItem({ id, level }: NavigationTreeItemProps) {
 				isSelected={isSelected}
 				onSelect={select}
 				indicator={indicator}
+				items={items}
+				parentMap={parentMap}
 			>
 				{childIds.map((childId) => (
 					<NavigationTreeItem key={childId} id={childId} level={level + 1} />
@@ -66,7 +73,7 @@ export function NavigationTreeItem({ id, level }: NavigationTreeItemProps) {
 				minDepth={minDepth}
 				maxDepth={maxDepth}
 				onAdd={(targetDepth) => {
-					const parentId = targetDepth > level ? id : parentMap[id];
+					const parentId = resolveInsertionParent(id, level, targetDepth, parentMap);
 					const parentName = parentId ? items[parentId]?.name : undefined;
 					console.log(`Вставить в "${parentName}" после "${data.name}"`);
 				}}
@@ -84,7 +91,9 @@ function NavigationTreeFolderRow({
 	isSelected,
 	onSelect,
 	indicator,
-	children
+	children,
+	items,
+	parentMap
 }: {
 	id: string;
 	level: number;
@@ -95,10 +104,9 @@ function NavigationTreeFolderRow({
 	onSelect: (id: string) => void;
 	indicator?: ReactNode;
 	children: ReactNode;
+	items: Record<string, Item>;
+	parentMap: Record<string, string>;
 }) {
-	const items = useNavigationTreeStore((s) => s.items);
-	const parentMap = useNavigationTreeStore((s) => s.parentMap);
-
 	const { minDepth, maxDepth } = getInsertionConfig(id, level, open, items, parentMap);
 
 	return (
@@ -134,7 +142,7 @@ function NavigationTreeFolderRow({
 					minDepth={minDepth}
 					maxDepth={maxDepth}
 					onAdd={(targetDepth) => {
-						const parentId = targetDepth > level ? id : parentMap[id];
+						const parentId = resolveInsertionParent(id, level, targetDepth, parentMap);
 						const parentName = parentId ? items[parentId]?.name : undefined;
 						console.log(`Вставить в "${parentName}" после "${data.name}"`);
 					}}
