@@ -8,7 +8,7 @@ import { SideMenuItemContent } from "./SideMenuItemContent";
 import { NavigationIndicator } from "./NavigationIndicator";
 import { SidebarInsertionLine } from "./sidebar-insertion-line/SidebarInsertionLine";
 import { useNavigationTreeStore } from "../../store/navigationTreeStore";
-import { getInsertionConfig, resolveInsertionParent } from "../../utils/navigationTreeUtils";
+import { useInsertionProps } from "../../hooks/useInsertionProps";
 
 interface NavigationTreeItemProps {
 	id: string;
@@ -22,7 +22,7 @@ export function NavigationTreeItem({ id, level }: NavigationTreeItemProps) {
 	const toggleExpanded = useNavigationTreeStore((s) => s.toggleExpanded);
 	const select = useNavigationTreeStore((s) => s.select);
 	const items = useNavigationTreeStore((s) => s.items);
-	const parentMap = useNavigationTreeStore((s) => s.parentMap);
+	const { minDepth, maxDepth, getParentId } = useInsertionProps(id, level, false);
 
 	if (!data) return null;
 
@@ -49,8 +49,6 @@ export function NavigationTreeItem({ id, level }: NavigationTreeItemProps) {
 		);
 	}
 
-	const { minDepth, maxDepth } = getInsertionConfig(id, level, false, items, parentMap);
-
 	return (
 		<div className="relative">
 			<SideMenuItemContent
@@ -65,7 +63,7 @@ export function NavigationTreeItem({ id, level }: NavigationTreeItemProps) {
 				minDepth={minDepth}
 				maxDepth={maxDepth}
 				onAdd={(targetDepth) => {
-					const parentId = resolveInsertionParent(id, level, targetDepth, parentMap);
+					const parentId = getParentId(targetDepth);
 					const parentName = parentId ? items[parentId]?.name : undefined;
 					console.log(`Вставить в "${parentName}" после "${data.name}"`);
 				}}
@@ -96,8 +94,7 @@ function NavigationTreeFolderRow({
 	children: ReactNode;
 }) {
 	const items = useNavigationTreeStore((s) => s.items);
-	const parentMap = useNavigationTreeStore((s) => s.parentMap);
-	const { minDepth, maxDepth } = getInsertionConfig(id, level, open, items, parentMap);
+	const { minDepth, maxDepth, getParentId } = useInsertionProps(id, level, open);
 
 	return (
 		<Collapsible open={open} onOpenChange={onOpenChange} className="flex flex-col gap-0.5">
@@ -131,7 +128,7 @@ function NavigationTreeFolderRow({
 					minDepth={minDepth}
 					maxDepth={maxDepth}
 					onAdd={(targetDepth) => {
-						const parentId = resolveInsertionParent(id, level, targetDepth, parentMap);
+						const parentId = getParentId(targetDepth);
 						const parentName = parentId ? items[parentId]?.name : undefined;
 						console.log(`Вставить в "${parentName}" после "${data.name}"`);
 					}}
