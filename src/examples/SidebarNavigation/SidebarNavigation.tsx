@@ -9,12 +9,12 @@ import {
 } from "ics-ui-kit/components/sidebar";
 import { cn } from "ics-ui-kit/lib/utils";
 import React from "react";
-import { MainContent } from "./MainContent";
-import { NavigationTree } from "./NavigationTree";
-import { SidebarFooter as SidebarFooterContent } from "./SidebarFooter";
-import { SidebarHeader } from "./SidebarHeader";
-import { useSidebarFloating } from "./useSidebarFloating";
-import "./theme.css";
+import { MainContent } from "./components/main-content/MainContent";
+import { NavigationTree } from "./components/sidebar-navigation/NavigationTree";
+import { SidebarFooter as SidebarFooterContent } from "./components/sidebar-footer/SidebarFooter";
+import { useSidebarFloating } from "./hooks/useSidebarFloating";
+import "./styles/theme.css";
+import { SidebarHeader } from "./components/sidebar-header/SidebarHeader";
 
 export function SidebarNavigation() {
 	const [open, setOpen] = React.useState(true);

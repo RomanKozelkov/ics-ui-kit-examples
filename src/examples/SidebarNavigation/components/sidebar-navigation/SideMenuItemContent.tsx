@@ -1,18 +1,14 @@
 import { ReactNode } from "react";
-import { Item } from "./navigationData";
-import {
-	SidebarMenuButton,
-	SidebarMenuItem,
-	SidebarMenuSubButton,
-	SidebarMenuSubItem
-} from "ics-ui-kit/components/sidebar";
+import { Item } from "../../data/navigationData";
+import { SidebarMenuButton, SidebarMenuItem } from "ics-ui-kit/components/sidebar";
 import { NavigationItemCounter } from "./NavigationItemCounter";
 import { NavigationTreeItemActions } from "./NavigationTreeItemActions";
 import { TextOverflowTooltip } from "ics-ui-kit/components/overflow-tooltip";
+import { INDENT_SIDEBAR_ITEM_WIDTH } from "../../utils/constants";
 
 export function SideMenuItemContent({
 	id,
-	isNested,
+	level,
 	data,
 	isSelected,
 	onSelect,
@@ -20,22 +16,22 @@ export function SideMenuItemContent({
 	indicator
 }: {
 	id: string;
-	isNested: boolean;
+	level: number;
 	data: Item;
 	isSelected: boolean;
 	onSelect: (id: string) => void;
 	trigger?: ReactNode;
 	indicator?: ReactNode;
 }) {
-	const ItemWrapper = (isNested ? SidebarMenuSubItem : SidebarMenuItem) as React.ForwardRefExoticComponent<any>;
-	const ButtonComponent = (
-		isNested ? SidebarMenuSubButton : SidebarMenuButton
-	) as React.ForwardRefExoticComponent<any>;
+	const paddingLeft = (level - 1) * INDENT_SIDEBAR_ITEM_WIDTH;
 
 	return (
-		<ItemWrapper className="relative hover:cursor-pointer">
+		<SidebarMenuItem
+			className="relative hover:cursor-pointer"
+			style={{ paddingLeft: paddingLeft > 0 ? paddingLeft : undefined }}
+		>
 			{indicator}
-			<ButtonComponent
+			<SidebarMenuButton
 				type="button"
 				onClick={() => onSelect(id)}
 				isActive={isSelected}
@@ -44,7 +40,7 @@ export function SideMenuItemContent({
 				<TextOverflowTooltip>{data.name}</TextOverflowTooltip>
 				{data.badge != null && <NavigationItemCounter>{data.badge}</NavigationItemCounter>}
 				<NavigationTreeItemActions trigger={trigger} />
-			</ButtonComponent>
-		</ItemWrapper>
+			</SidebarMenuButton>
+		</SidebarMenuItem>
 	);
 }

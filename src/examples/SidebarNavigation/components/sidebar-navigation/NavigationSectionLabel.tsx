@@ -1,6 +1,6 @@
 import { SidebarGroupLabel } from "ics-ui-kit/components/sidebar";
 import { NavigationItemCounter } from "./NavigationItemCounter";
-import type { Item } from "./navigationData";
+import type { Item } from "../../data/navigationData";
 import { TextOverflowTooltip } from "ics-ui-kit/components/overflow-tooltip";
 import { Layers3 } from "lucide-react";
 import { Icon } from "ics-ui-kit/components/icon";
