@@ -9,26 +9,28 @@ import { NavigationIndicator } from "./NavigationIndicator";
 import { SidebarInsertionLine } from "./sidebar-insertion-line/SidebarInsertionLine";
 import { useNavigationTreeStore } from "../../store/navigationTreeStore";
 import { useInsertionProps } from "../../hooks/useInsertionProps";
+import { useInsertionHover } from "../../hooks/useInsertionHover";
+import { useShowsInsertionLine } from "../../hooks/useShowsInsertionLine";
 import { SidebarMenuSub } from "ics-ui-kit/components/sidebar";
 import { VerticalLineSegment } from "./sidebar-insertion-line/VerticalLineSegment";
 
 interface NavigationTreeItemProps {
 	id: string;
 	level: number;
-	showVerticalLine?: boolean;
 }
 
-export function NavigationTreeItem({ id, level, showVerticalLine }: NavigationTreeItemProps) {
+export function NavigationTreeItem({ id, level }: NavigationTreeItemProps) {
 	const data = useNavigationTreeStore((s) => s.items[id]);
 	const open = useNavigationTreeStore((s) => s.expanded.has(id));
 	const isSelected = useNavigationTreeStore((s) => s.selectedId === id);
 	const toggleExpanded = useNavigationTreeStore((s) => s.toggleExpanded);
 	const select = useNavigationTreeStore((s) => s.select);
 	const items = useNavigationTreeStore((s) => s.items);
-	const setHover = useNavigationTreeStore((s) => s.setHover);
 	const isNested = level > 1;
 
 	const { minDepth, maxDepth, getParentId } = useInsertionProps(id, level, false);
+	const handleParentHover = useInsertionHover(getParentId);
+	const showsLine = useShowsInsertionLine(id);
 
 	if (!data) return null;
 
@@ -47,20 +49,17 @@ export function NavigationTreeItem({ id, level, showVerticalLine }: NavigationTr
 				isSelected={isSelected}
 				onSelect={select}
 				indicator={indicator}
-				showVerticalLine={showVerticalLine}
-				childIds={childIds}
-			/>
+			>
+				{childIds.map((childId) => (
+					<NavigationTreeItem key={childId} id={childId} level={level + 1} />
+				))}
+			</NavigationTreeFolderRow>
 		);
 	}
 
-	const handleParentHover = (depth: number | null) => {
-		if (depth === null) setHover(null, null);
-		else setHover(getParentId(depth), getParentId(depth + 1));
-	};
-
 	return (
 		<div className="relative">
-			{showVerticalLine && <VerticalLineSegment />}
+			{showsLine && <VerticalLineSegment />}
 			<SideMenuItemContent
 				id={id}
 				isNested={isNested}
@@ -93,8 +92,7 @@ function NavigationTreeFolderRow({
 	isSelected,
 	onSelect,
 	indicator,
-	showVerticalLine,
-	childIds
+	children
 }: {
 	id: string;
 	level: number;
@@ -104,27 +102,18 @@ function NavigationTreeFolderRow({
 	isSelected: boolean;
 	onSelect: (id: string) => void;
 	indicator?: ReactNode;
-	showVerticalLine?: boolean;
-	childIds: string[];
+	children: ReactNode;
 }) {
 	const items = useNavigationTreeStore((s) => s.items);
-	const hoveredParentId = useNavigationTreeStore((s) => s.hoveredParentId);
-	const hoveredAnchorId = useNavigationTreeStore((s) => s.hoveredAnchorId);
-	const setHover = useNavigationTreeStore((s) => s.setHover);
+	const isHoveredParent = useNavigationTreeStore((s) => s.hoveredParentId === id);
 	const { minDepth, maxDepth, getParentId } = useInsertionProps(id, level, open);
+	const handleParentHover = useInsertionHover(getParentId);
+	const showsLine = useShowsInsertionLine(id);
 	const isNested = level > 1;
-	const isHoveredParent = hoveredParentId === id;
-	const anchorIndex = hoveredAnchorId ? childIds.indexOf(hoveredAnchorId) : -1;
-	const showChildLine = (i: number) => isHoveredParent && anchorIndex >= 0 && i <= anchorIndex;
-
-	const handleParentHover = (depth: number | null) => {
-		if (depth === null) setHover(null, null);
-		else setHover(getParentId(depth), getParentId(depth + 1));
-	};
 
 	return (
 		<Collapsible open={open} onOpenChange={onOpenChange} className="relative flex flex-col gap-0.5">
-			{showVerticalLine && <VerticalLineSegment />}
+			{showsLine && <VerticalLineSegment />}
 			<div className="relative">
 				<SideMenuItemContent
 					id={id}
@@ -167,14 +156,7 @@ function NavigationTreeFolderRow({
 			<CollapsibleContent className="data-[state=open]:!overflow-visible">
 				<div className="ml-6">
 					<SidebarMenuSub className="ml-0 gap-0 border-none p-0 [&>*:not(:last-child)]:pb-0.5">
-						{childIds.map((childId, i) => (
-							<NavigationTreeItem
-								key={childId}
-								id={childId}
-								level={level + 1}
-								showVerticalLine={showChildLine(i)}
-							/>
-						))}
+						{children}
 					</SidebarMenuSub>
 				</div>
 			</CollapsibleContent>
