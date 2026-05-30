@@ -10,6 +10,7 @@ import {
 import { NavigationItemCounter } from "./NavigationItemCounter";
 import { NavigationTreeItemActions } from "./NavigationTreeItemActions";
 import { TextOverflowTooltip } from "ics-ui-kit/components/overflow-tooltip";
+import { useNavigationTreeStore } from "../../store/navigationTreeStore";
 
 export function SideMenuItemContent({
 	id,
@@ -18,8 +19,7 @@ export function SideMenuItemContent({
 	isSelected,
 	onSelect,
 	trigger,
-	indicator,
-	isInsertionHovered
+	indicator
 }: {
 	id: string;
 	isNested: boolean;
@@ -28,10 +28,10 @@ export function SideMenuItemContent({
 	onSelect: (id: string) => void;
 	trigger?: ReactNode;
 	indicator?: ReactNode;
-	isInsertionHovered?: boolean;
 }) {
 	const ItemWrapper = isNested ? SidebarMenuSubItem : SidebarMenuItem;
 	const ButtonComponent = isNested ? SidebarMenuSubButton : SidebarMenuButton;
+	const isInsertionTarget = useNavigationTreeStore((s) => s.hoveredParentId === id);
 
 	return (
 		<ItemWrapper className="relative hover:cursor-pointer">
@@ -42,7 +42,7 @@ export function SideMenuItemContent({
 				isActive={isSelected}
 				className={cn(
 					"group/nav h-7 py-1.5 pr-1.5 data-[active=true]:font-medium",
-					isInsertionHovered && "bg-secondary-bg-hover"
+					isInsertionTarget && "bg-secondary-bg-hover"
 				)}
 			>
 				<TextOverflowTooltip>{data.name}</TextOverflowTooltip>

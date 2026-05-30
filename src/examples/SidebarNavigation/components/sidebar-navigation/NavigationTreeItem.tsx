@@ -105,7 +105,6 @@ function NavigationTreeFolderRow({
 	children: ReactNode;
 }) {
 	const items = useNavigationTreeStore((s) => s.items);
-	const isHoveredParent = useNavigationTreeStore((s) => s.hoveredParentId === id);
 	const { minDepth, maxDepth, getParentId } = useInsertionProps(id, level, open);
 	const handleParentHover = useInsertionHover(getParentId);
 	const showsLine = useShowsInsertionLine(id);
@@ -121,7 +120,6 @@ function NavigationTreeFolderRow({
 					data={data}
 					isSelected={isSelected}
 					onSelect={onSelect}
-					isInsertionHovered={isHoveredParent}
 					indicator={indicator}
 					trigger={
 						<CollapsibleTrigger asChild>
