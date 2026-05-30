@@ -9,7 +9,10 @@ import { NavigationIndicator } from "./NavigationIndicator";
 import { SidebarInsertionLine } from "./sidebar-insertion-line/SidebarInsertionLine";
 import { useNavigationTreeStore } from "../../store/navigationTreeStore";
 import { useInsertionProps } from "../../hooks/useInsertionProps";
+import { useInsertionHover } from "../../hooks/useInsertionHover";
+import { useShowsInsertionLine } from "../../hooks/useShowsInsertionLine";
 import { SidebarMenuSub } from "ics-ui-kit/components/sidebar";
+import { VerticalLineSegment } from "./sidebar-insertion-line/VerticalLineSegment";
 
 interface NavigationTreeItemProps {
 	id: string;
@@ -26,6 +29,8 @@ export function NavigationTreeItem({ id, level }: NavigationTreeItemProps) {
 	const isNested = level > 1;
 
 	const { minDepth, maxDepth, getParentId } = useInsertionProps(id, level, false);
+	const handleParentHover = useInsertionHover(getParentId);
+	const showsLine = useShowsInsertionLine(id);
 
 	if (!data) return null;
 
@@ -54,6 +59,7 @@ export function NavigationTreeItem({ id, level }: NavigationTreeItemProps) {
 
 	return (
 		<div className="relative">
+			{showsLine && <VerticalLineSegment />}
 			<SideMenuItemContent
 				id={id}
 				isNested={isNested}
@@ -71,6 +77,7 @@ export function NavigationTreeItem({ id, level }: NavigationTreeItemProps) {
 					const parentName = parentId ? items[parentId]?.name : undefined;
 					console.log(`Вставить в "${parentName}" после "${data.name}"`);
 				}}
+				onParentHover={handleParentHover}
 			/>
 		</div>
 	);
@@ -99,10 +106,13 @@ function NavigationTreeFolderRow({
 }) {
 	const items = useNavigationTreeStore((s) => s.items);
 	const { minDepth, maxDepth, getParentId } = useInsertionProps(id, level, open);
+	const handleParentHover = useInsertionHover(getParentId);
+	const showsLine = useShowsInsertionLine(id);
 	const isNested = level > 1;
 
 	return (
-		<Collapsible open={open} onOpenChange={onOpenChange} className="flex flex-col gap-0.5">
+		<Collapsible open={open} onOpenChange={onOpenChange} className="relative flex flex-col gap-0.5">
+			{showsLine && <VerticalLineSegment />}
 			<div className="relative">
 				<SideMenuItemContent
 					id={id}
@@ -138,10 +148,15 @@ function NavigationTreeFolderRow({
 						const parentName = parentId ? items[parentId]?.name : undefined;
 						console.log(`Вставить в "${parentName}" после "${data.name}"`);
 					}}
+					onParentHover={handleParentHover}
 				/>
 			</div>
 			<CollapsibleContent className="data-[state=open]:!overflow-visible">
-				<SidebarMenuSub className="gap-0.5 border-none py-0">{children}</SidebarMenuSub>
+				<div className="ml-6">
+					<SidebarMenuSub className="ml-0 gap-0 border-none p-0 [&>*:not(:last-child)]:pb-0.5">
+						{children}
+					</SidebarMenuSub>
+				</div>
 			</CollapsibleContent>
 		</Collapsible>
 	);

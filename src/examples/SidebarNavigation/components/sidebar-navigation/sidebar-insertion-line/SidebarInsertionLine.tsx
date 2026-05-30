@@ -12,20 +12,24 @@ export type SidebarInsertionLineProps = {
 	maxDepth: number;
 	level: number;
 	onAdd: (depth: number) => void;
+	onParentHover?: (depth: number | null) => void;
 };
 
 export const SidebarInsertionLine = React.forwardRef<HTMLDivElement, SidebarInsertionLineProps>(
-	({ className, minDepth, maxDepth, level, onAdd }, ref) => {
+	({ className, minDepth, maxDepth, level, onAdd, onParentHover }, ref) => {
 		const levelOffset = level - 1;
 		const [hoverDepth, setHoverDepth] = useState<number | null>(null);
 
 		const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
 			const rect = e.currentTarget.getBoundingClientRect();
-			setHoverDepth(depthFromMouseX(e.clientX - rect.left, maxDepth, minDepth, levelOffset));
+			const depth = depthFromMouseX(e.clientX - rect.left, maxDepth, minDepth, levelOffset);
+			setHoverDepth(depth);
+			onParentHover?.(depth);
 		};
 
 		const handleMouseLeave = () => {
 			setHoverDepth(null);
+			onParentHover?.(null);
 		};
 
 		const count = maxDepth - minDepth + 1;

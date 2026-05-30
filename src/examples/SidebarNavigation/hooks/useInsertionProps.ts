@@ -4,7 +4,7 @@ import { useNavigationTreeStore } from "../store/navigationTreeStore";
 type InsertionProps = {
 	minDepth: number;
 	maxDepth: number;
-	getParentId: (targetDepth: number) => string | undefined;
+	getParentId: (targetDepth: number) => string | null;
 };
 
 function buildParentMap(items: Record<string, Item>): Record<string, string> {
@@ -58,7 +58,7 @@ export function useInsertionProps(id: string, level: number, isOpenFolder: boole
 				curId = pid;
 				curDepth--;
 			}
-			return parentMap[curId];
+			return parentMap[curId] ?? null;
 		}
 	};
 }
