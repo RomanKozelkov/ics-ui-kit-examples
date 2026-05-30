@@ -1,11 +1,6 @@
 import { ROOT_ID } from "../data/navigationData";
 import { useNavigationTreeStore } from "../store/navigationTreeStore";
 
-/**
- * Returns true if this item lies on the visual path between the currently
- * hovered insertion parent and the hover anchor — i.e. should render
- * the vertical connector line on its row.
- */
 export function useShowsInsertionLine(id: string): boolean {
 	return useNavigationTreeStore((s) => {
 		const { hoveredParentId, hoveredAnchorId, items } = s;

@@ -1,5 +1,5 @@
-import { Item } from "../data/navigationData";
 import { useNavigationTreeStore } from "../store/navigationTreeStore";
+import { getParentMap } from "../utils/parentMap";
 
 type InsertionProps = {
 	minDepth: number;
@@ -7,19 +7,9 @@ type InsertionProps = {
 	getParentId: (targetDepth: number) => string | null;
 };
 
-function buildParentMap(items: Record<string, Item>): Record<string, string> {
-	const map: Record<string, string> = {};
-	for (const [id, item] of Object.entries(items)) {
-		for (const childId of item.children ?? []) {
-			map[childId] = id;
-		}
-	}
-	return map;
-}
-
 export function useInsertionProps(id: string, level: number, isOpenFolder: boolean): InsertionProps {
 	const items = useNavigationTreeStore((s) => s.items);
-	const parentMap = buildParentMap(items);
+	const parentMap = getParentMap(items);
 
 	if (isOpenFolder) {
 		return {
