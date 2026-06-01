@@ -1,6 +1,6 @@
 import { useNavigationTreeStore } from "../store/navigationTreeStore";
 
-export function useItemState(id: string) {
+export function useNavigationItem(id: string) {
 	const data = useNavigationTreeStore((s) => s.items[id]);
 	const open = useNavigationTreeStore((s) => s.expanded.has(id));
 	const isSelected = useNavigationTreeStore((s) => s.selectedId === id);

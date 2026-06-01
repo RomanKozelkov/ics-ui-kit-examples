@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import { useNavigationTreeStore } from "../store/navigationTreeStore";
 import { getParentMap } from "../utils/getParentMap";
 import { ROOT_ID } from "../data/navigationData";
@@ -18,7 +19,7 @@ export function useInsertionLine(id: string, level: number, isFolder: boolean, o
 	});
 
 	const isOpenFolder = isFolder && open;
-	const parentMap = getParentMap(items);
+	const parentMap = useMemo(() => getParentMap(items), [items]);
 
 	let minDepth = 1;
 	let maxDepth: number;

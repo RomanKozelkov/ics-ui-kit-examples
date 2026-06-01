@@ -1,4 +1,4 @@
-import { useItemState } from "../../hooks/useItemState";
+import { useNavigationItem } from "../../hooks/useNavigationItem";
 import { useItemDndState } from "../../hooks/useItemDndState";
 import { useInsertionLine } from "../../hooks/useInsertionLine";
 import { NavigationIndicator } from "./NavigationIndicator";
@@ -18,7 +18,7 @@ interface NavigationTreeItemProps {
 }
 
 export function NavigationTreeItem({ id, level }: NavigationTreeItemProps) {
-	const { data, open, isSelected, toggleExpanded, select } = useItemState(id);
+	const { data, open, isSelected, toggleExpanded, select } = useNavigationItem(id);
 	const {
 		isDragging,
 		isInsertionTarget,
