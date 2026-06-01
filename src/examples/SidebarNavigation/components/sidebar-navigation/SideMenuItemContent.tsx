@@ -10,50 +10,49 @@ import {
 import { NavigationItemCounter } from "./NavigationItemCounter";
 import { NavigationTreeItemActions } from "./NavigationTreeItemActions";
 import { TextOverflowTooltip } from "ics-ui-kit/components/overflow-tooltip";
-import { useNavigationTreeStore } from "../../store/navigationTreeStore";
-import { useDraggable } from "@dnd-kit/core";
+import type { DraggableAttributes, DraggableSyntheticListeners } from "@dnd-kit/core";
 
 export function SideMenuItemContent({
-	id,
 	isNested,
 	data,
 	isSelected,
 	onSelect,
 	trigger,
-	indicator
+	indicator,
+	isDragging,
+	isHighlighted,
+	draggableRef,
+	dragListeners,
+	dragAttributes
 }: {
-	id: string;
 	isNested: boolean;
 	data: Item;
 	isSelected: boolean;
-	onSelect: (id: string) => void;
+	onSelect: () => void;
 	trigger?: ReactNode;
 	indicator?: ReactNode;
+	isDragging?: boolean;
+	isHighlighted?: boolean;
+	draggableRef?: (el: HTMLElement | null) => void;
+	dragListeners?: DraggableSyntheticListeners;
+	dragAttributes?: DraggableAttributes;
 }) {
 	const ItemWrapper = isNested ? SidebarMenuSubItem : SidebarMenuItem;
 	const ButtonComponent = isNested ? SidebarMenuSubButton : SidebarMenuButton;
 
-	const isInsertionTarget = useNavigationTreeStore((s) => s.hoveredParentId === id);
-	const isDragging = useNavigationTreeStore((s) => s.draggingId === id);
-	const isDragTarget = useNavigationTreeStore(
-		(s) => (s.dragTarget?.anchorId === id && s.dragTarget.mode === "into") || s.dragTarget?.parentId === id
-	);
-
-	const { attributes, listeners, setNodeRef: setDraggableRef } = useDraggable({ id });
-
 	return (
-		<ItemWrapper ref={setDraggableRef} className={cn("relative hover:cursor-pointer", isDragging && "opacity-50")}>
+		<ItemWrapper ref={draggableRef} className={cn("relative hover:cursor-pointer", isDragging && "opacity-50")}>
 			{indicator}
 			<ButtonComponent
 				type="button"
-				onClick={() => onSelect(id)}
+				onClick={onSelect}
 				isActive={isSelected}
 				className={cn(
 					"group/nav h-7 py-1.5 pr-1.5 data-[active=true]:font-medium",
-					(isInsertionTarget || isDragTarget) && "bg-secondary-bg-hover"
+					isHighlighted && "bg-secondary-bg-hover"
 				)}
-				{...listeners}
-				{...attributes}
+				{...dragListeners}
+				{...dragAttributes}
 			>
 				<TextOverflowTooltip>{data.name}</TextOverflowTooltip>
 				{data.badge != null && <NavigationItemCounter>{data.badge}</NavigationItemCounter>}
