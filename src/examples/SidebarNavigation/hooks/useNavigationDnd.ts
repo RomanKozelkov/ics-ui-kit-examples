@@ -10,6 +10,8 @@ import { getDropMode } from "../utils/getDropMode";
 export function useNavigationDnd() {
 	const setDragging = useNavigationTreeStore((s) => s.setDragging);
 	const setDragTarget = useNavigationTreeStore((s) => s.setDragTarget);
+	const items = useNavigationTreeStore((s) => s.items);
+	const expanded = useNavigationTreeStore((s) => s.expanded);
 
 	const autoExpandTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 	const autoExpandTargetRef = useRef<string | null>(null);
@@ -33,7 +35,6 @@ export function useNavigationDnd() {
 	const onDragMove = ({ active, over }: DragMoveEvent) => {
 		const draggedId = String(active.id);
 		const overId = over ? String(over.id) : null;
-		const { items, expanded } = useNavigationTreeStore.getState();
 
 		if (!overId || overId === draggedId || isDescendant(items, draggedId, overId)) {
 			setDragTarget(null);

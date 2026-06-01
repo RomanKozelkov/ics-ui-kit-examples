@@ -52,13 +52,12 @@ export function NavigationTreeItem({ id, level }: NavigationTreeItemProps) {
 
 		return (
 			<Collapsible
-				ref={setDroppableRef}
 				open={open}
 				onOpenChange={(next) => toggleExpanded(id, next)}
 				className={cn("relative flex flex-col gap-0.5", isDragging && "opacity-50")}
 			>
 				{showsLine && <VerticalLineSegment />}
-				<div className="relative">
+				<div ref={setDroppableRef} className="relative">
 					<SideMenuItemContent
 						isNested={isNested}
 						data={data}
