@@ -11,7 +11,6 @@ export function useNavigationDnd() {
 	const setDragging = useNavigationTreeStore((s) => s.setDragging);
 	const setDragTarget = useNavigationTreeStore((s) => s.setDragTarget);
 
-	const pointerYRef = useRef(0);
 	const autoExpandTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 	const autoExpandTargetRef = useRef<string | null>(null);
 
@@ -25,10 +24,6 @@ export function useNavigationDnd() {
 			autoExpandTimerRef.current = null;
 		}
 		autoExpandTargetRef.current = null;
-	};
-
-	const onPointerMove = (e: React.PointerEvent) => {
-		pointerYRef.current = e.clientY;
 	};
 
 	const onDragStart = ({ active }: { active: { id: string | number } }) => {
@@ -48,7 +43,10 @@ export function useNavigationDnd() {
 
 		const rect = over?.rect;
 		if (!rect) return;
-		const mode = getDropMode(pointerYRef.current, rect);
+		const translatedRect = active.rect.current.translated;
+		if (!translatedRect) return;
+		const pointerY = translatedRect.top + translatedRect.height / 2;
+		const mode = getDropMode(pointerY, rect);
 
 		const parentMap = getParentMap(items);
 		const parentId = mode === "after" ? (parentMap[overId] ?? null) : null;
@@ -93,5 +91,5 @@ export function useNavigationDnd() {
 		setDragTarget(null);
 	};
 
-	return { sensors, onPointerMove, onDragStart, onDragMove, onDragEnd, onDragCancel };
+	return { sensors, onDragStart, onDragMove, onDragEnd, onDragCancel };
 }

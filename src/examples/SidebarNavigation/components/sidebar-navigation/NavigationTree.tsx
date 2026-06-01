@@ -16,7 +16,7 @@ export function NavigationTree() {
 	const draggingId = useNavigationTreeStore((s) => s.draggingId);
 	const groupIds = items[ROOT_ID]?.children ?? [];
 
-	const { sensors, onPointerMove, onDragStart, onDragMove, onDragEnd, onDragCancel } = useNavigationDnd();
+	const { sensors, onDragStart, onDragMove, onDragEnd, onDragCancel } = useNavigationDnd();
 
 	return (
 		<DndContext
@@ -27,7 +27,7 @@ export function NavigationTree() {
 			onDragEnd={onDragEnd}
 			onDragCancel={onDragCancel}
 		>
-			<div className="relative mt-4 flex flex-col gap-3" onPointerMove={onPointerMove}>
+			<div className="relative mt-4 flex flex-col gap-3">
 				{groupIds.map((groupId, index) => {
 					const groupData = items[groupId];
 					if (!groupData) return null;
