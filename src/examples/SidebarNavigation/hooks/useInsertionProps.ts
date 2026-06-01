@@ -1,5 +1,5 @@
 import { useNavigationTreeStore } from "../store/navigationTreeStore";
-import { getParentMap } from "../utils/parentMap";
+import { getParentMap } from "../utils/getParentMap";
 
 type InsertionProps = {
 	minDepth: number;
