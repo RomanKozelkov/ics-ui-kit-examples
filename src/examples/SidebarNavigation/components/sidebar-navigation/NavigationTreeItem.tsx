@@ -1,13 +1,15 @@
-import { SideMenuItemContent } from "./SideMenuItemContent";
+import { useNavigationTreeStore } from "../../store/navigationTreeStore";
+import { NavigationTreeFolderRow } from "./NavigationTreeFolderRow";
 import { NavigationIndicator } from "./NavigationIndicator";
+import { SideMenuItemContent } from "./SideMenuItemContent";
 import { SidebarInsertionLine } from "./sidebar-insertion-line/SidebarInsertionLine";
 import { VerticalLineSegment } from "./sidebar-insertion-line/VerticalLineSegment";
-import { NavigationTreeFolderRow } from "./NavigationTreeFolderRow";
-import { useNavigationTreeStore } from "../../store/navigationTreeStore";
+import { DragInsertionLine } from "./sidebar-drag-drop/DragInsertionLine";
 import { useInsertionProps } from "../../hooks/useInsertionProps";
 import { useInsertionHover } from "../../hooks/useInsertionHover";
-import { useShowsInsertionLine } from "../../hooks/useShowsInsertionLine";
 import { useInsertionAdd } from "../../hooks/useInsertionAdd";
+import { useShowsInsertionLine } from "../../hooks/useShowsInsertionLine";
+import { useDroppable } from "@dnd-kit/core";
 
 interface NavigationTreeItemProps {
 	id: string;
@@ -27,6 +29,9 @@ export function NavigationTreeItem({ id, level }: NavigationTreeItemProps) {
 	const handleAdd = useInsertionAdd(id, getParentId);
 	const showsLine = useShowsInsertionLine(id);
 
+	const isDropAfter = useNavigationTreeStore((s) => s.dragTarget?.anchorId === id && s.dragTarget.mode === "after");
+	const { setNodeRef } = useDroppable({ id });
+
 	if (!data) return null;
 
 	const childIds = data.children ?? [];
@@ -44,6 +49,7 @@ export function NavigationTreeItem({ id, level }: NavigationTreeItemProps) {
 				isSelected={isSelected}
 				onSelect={select}
 				indicator={indicator}
+				droppableRef={setNodeRef}
 			>
 				{childIds.map((childId) => (
 					<NavigationTreeItem key={childId} id={childId} level={level + 1} />
@@ -53,7 +59,7 @@ export function NavigationTreeItem({ id, level }: NavigationTreeItemProps) {
 	}
 
 	return (
-		<div className="relative">
+		<div ref={setNodeRef} className="relative">
 			{showsLine && <VerticalLineSegment />}
 			<SideMenuItemContent
 				id={id}
@@ -70,6 +76,7 @@ export function NavigationTreeItem({ id, level }: NavigationTreeItemProps) {
 				onAdd={handleAdd}
 				onParentHover={handleParentHover}
 			/>
+			{isDropAfter && <DragInsertionLine />}
 		</div>
 	);
 }

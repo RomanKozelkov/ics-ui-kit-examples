@@ -4,7 +4,6 @@ import { initialExpanded, initialItems, initialSelected, Item } from "../data/na
 export type DragTarget = {
 	anchorId: string;
 	parentId: string | null;
-	depth: number;
 	mode: "after" | "into";
 } | null;
 

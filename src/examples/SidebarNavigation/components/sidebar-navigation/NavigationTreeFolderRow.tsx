@@ -12,7 +12,8 @@ import { useInsertionProps } from "../../hooks/useInsertionProps";
 import { useInsertionHover } from "../../hooks/useInsertionHover";
 import { useInsertionAdd } from "../../hooks/useInsertionAdd";
 import { useShowsInsertionLine } from "../../hooks/useShowsInsertionLine";
-
+import { useNavigationTreeStore } from "../../store/navigationTreeStore";
+import { DragInsertionLine } from "./sidebar-drag-drop/DragInsertionLine";
 interface NavigationTreeFolderRowProps {
 	id: string;
 	level: number;
@@ -23,6 +24,7 @@ interface NavigationTreeFolderRowProps {
 	onSelect: (id: string) => void;
 	indicator?: ReactNode;
 	children: ReactNode;
+	droppableRef: (el: HTMLElement | null) => void;
 }
 
 export function NavigationTreeFolderRow({
@@ -34,7 +36,8 @@ export function NavigationTreeFolderRow({
 	isSelected,
 	onSelect,
 	indicator,
-	children
+	children,
+	droppableRef
 }: NavigationTreeFolderRowProps) {
 	const { minDepth, maxDepth, getParentId } = useInsertionProps(id, level, open);
 	const handleParentHover = useInsertionHover(getParentId);
@@ -42,8 +45,18 @@ export function NavigationTreeFolderRow({
 	const showsLine = useShowsInsertionLine(id);
 	const isNested = level > 1;
 
+	const isDragging = useNavigationTreeStore((s) => s.draggingId === id);
+	const dropMode = useNavigationTreeStore((s) => s.dragTarget?.anchorId === id && s.dragTarget.mode);
+	const showsHeaderLine = dropMode === "after" || (dropMode === "into" && !open);
+	const showsChildrenLine = dropMode === "into" && open;
+
 	return (
-		<Collapsible open={open} onOpenChange={onOpenChange} className="relative flex flex-col gap-0.5">
+		<Collapsible
+			ref={droppableRef}
+			open={open}
+			onOpenChange={onOpenChange}
+			className={cn("relative flex flex-col gap-0.5", isDragging && "opacity-50")}
+		>
 			{showsLine && <VerticalLineSegment />}
 			<div className="relative">
 				<SideMenuItemContent
@@ -78,12 +91,14 @@ export function NavigationTreeFolderRow({
 					onAdd={handleAdd}
 					onParentHover={handleParentHover}
 				/>
+				{showsHeaderLine && <DragInsertionLine />}
 			</div>
 			<CollapsibleContent className="data-[state=open]:!overflow-visible">
-				<div className="ml-6">
+				<div className="relative ml-6">
 					<SidebarMenuSub className="ml-0 gap-0 border-none p-0 [&>*:not(:last-child)]:pb-0.5">
 						{children}
 					</SidebarMenuSub>
+					{showsChildrenLine && <DragInsertionLine />}
 				</div>
 			</CollapsibleContent>
 		</Collapsible>
