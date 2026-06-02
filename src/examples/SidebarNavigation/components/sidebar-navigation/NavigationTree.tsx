@@ -1,9 +1,9 @@
 import { SidebarGroup, SidebarGroupContent, SidebarMenu } from "ics-ui-kit/components/sidebar";
 import { NavigationTreeItem } from "./NavigationTreeItem";
 import { NavigationSectionLabel } from "./NavigationSectionLabel";
+import { NavigationGroupLabel } from "./NavigationGroupLabel";
 import { ROOT_ID } from "../../data/navigationData";
 import { Layers, Layers2, Layers3 } from "lucide-react";
-import { SidebarInsertionLine } from "./sidebar-insertion-line/SidebarInsertionLine";
 import { useNavigationTreeStore } from "../../store/navigationTreeStore";
 import { DndContext, DragOverlay, pointerWithin } from "@dnd-kit/core";
 import { NavigationDragPreview } from "./sidebar-drag-drop/NavigationDragPreview";
@@ -35,17 +35,7 @@ export function NavigationTree() {
 					const childIds = groupData.children ?? [];
 					return (
 						<SidebarGroup key={groupId} className="py-0 pr-4 group-data-[variant=floating]:pr-2.5">
-							<div className="relative">
-								<NavigationSectionLabel data={groupData} icon={groupIcons[index]} />
-								<SidebarInsertionLine
-									minDepth={1}
-									maxDepth={1}
-									level={1}
-									onAdd={() => {
-										console.log(`Вставить в "${groupData.name}" первым элементом`);
-									}}
-								/>
-							</div>
+							<NavigationGroupLabel groupId={groupId} groupData={groupData} icon={groupIcons[index]} />
 							<SidebarGroupContent>
 								<SidebarMenu className="gap-0.5 pb-0.5">
 									{childIds.map((childId) => (
