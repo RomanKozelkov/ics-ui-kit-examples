@@ -45,7 +45,14 @@ export const SidebarInsertionLine = React.forwardRef<HTMLDivElement, SidebarInse
 					</React.Fragment>
 				))}
 
-				<InsertionTailLine style={{ left: tailLeft }} isSolid={isTailSolid} />
+				<InsertionTailLine
+					style={{ left: tailLeft }}
+					className={
+						isTailSolid
+							? "bg-primary-fg"
+							: "[background:linear-gradient(90deg,hsl(var(--muted))_0%,rgba(113,113,122,0.00)_100%)]"
+					}
+				/>
 			</div>
 		);
 	}
