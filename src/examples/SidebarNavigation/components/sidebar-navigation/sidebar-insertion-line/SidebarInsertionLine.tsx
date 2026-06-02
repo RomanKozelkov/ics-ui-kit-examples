@@ -1,10 +1,9 @@
 import { cn } from "ics-ui-kit/lib/utils";
-import React, { useState } from "react";
-import { INSERTION_BUTTON_SIZE } from "../../../utils/constants";
-import { iconLeft, depthFromMouseX } from "../../../utils/sidebarInsertionLineUtils";
+import React from "react";
 import { InsertionDepthIcon } from "./InsertionDepthIcon";
 import { InsertionConnectorLine } from "./InsertionConnectorLine";
 import { InsertionTailLine } from "./InsertionTailLine";
+import { useInsertionLine } from "./useInsertionLine";
 
 export type SidebarInsertionLineProps = {
 	className?: string;
@@ -17,23 +16,12 @@ export type SidebarInsertionLineProps = {
 
 export const SidebarInsertionLine = React.forwardRef<HTMLDivElement, SidebarInsertionLineProps>(
 	({ className, minDepth, maxDepth, level, onAdd, onParentHover }, ref) => {
-		const levelOffset = level - 1;
-		const [hoverDepth, setHoverDepth] = useState<number | null>(null);
-
-		const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-			const rect = e.currentTarget.getBoundingClientRect();
-			const depth = depthFromMouseX(e.clientX - rect.left, maxDepth, minDepth, levelOffset);
-			setHoverDepth(depth);
-			onParentHover?.(depth);
-		};
-
-		const handleMouseLeave = () => {
-			setHoverDepth(null);
-			onParentHover?.(null);
-		};
-
-		const count = maxDepth - minDepth + 1;
-		const activeDepth = hoverDepth ?? maxDepth;
+		const { items, tailLeft, handleMouseMove, handleMouseLeave } = useInsertionLine({
+			minDepth,
+			maxDepth,
+			levelOffset: level - 1,
+			onParentHover
+		});
 
 		return (
 			<div
@@ -43,34 +31,21 @@ export const SidebarInsertionLine = React.forwardRef<HTMLDivElement, SidebarInse
 				onMouseMove={handleMouseMove}
 				onMouseLeave={handleMouseLeave}
 			>
-				{Array.from({ length: count }, (_, i) => {
-					const d = minDepth + i;
-					const isHidden = hoverDepth === null || d > hoverDepth;
-					const isPlaceholder = d < activeDepth;
-					const prevLeft = i > 0 ? iconLeft(minDepth + i - 1, levelOffset) : null;
-					const connectorStyle =
-						prevLeft !== null
-							? { left: prevLeft + INSERTION_BUTTON_SIZE, opacity: isHidden ? 0 : undefined }
-							: undefined;
+				{items.map(({ depth, isHidden, isPlaceholder, iconLeft, connectorLeft }) => (
+					<React.Fragment key={depth}>
+						{connectorLeft !== null && (
+							<InsertionConnectorLine style={{ left: connectorLeft }} isHidden={isHidden} />
+						)}
+						<InsertionDepthIcon
+							isHidden={isHidden}
+							isPlaceholder={isPlaceholder}
+							style={{ left: iconLeft }}
+							onClick={() => onAdd(depth)}
+						/>
+					</React.Fragment>
+				))}
 
-					return (
-						<React.Fragment key={d}>
-							{connectorStyle && <InsertionConnectorLine style={connectorStyle} />}
-							<InsertionDepthIcon
-								isHidden={isHidden}
-								isPlaceholder={isPlaceholder}
-								style={{ left: iconLeft(d, levelOffset) }}
-								onClick={() => onAdd(d)}
-							/>
-						</React.Fragment>
-					);
-				})}
-
-				<InsertionTailLine
-					style={{
-						left: iconLeft(activeDepth, levelOffset) + INSERTION_BUTTON_SIZE
-					}}
-				/>
+				<InsertionTailLine style={{ left: tailLeft }} />
 			</div>
 		);
 	}
