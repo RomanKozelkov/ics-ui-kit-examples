@@ -18,7 +18,7 @@ export function InsertionDepthIcon({
 			role="button"
 			tabIndex={0}
 			className={cn(
-				"group/depth-icon absolute top-1/2 h-4 w-4 -translate-y-1/2 cursor-pointer transition-opacity duration-150"
+				"group/depth-icon absolute top-1/2 h-3 w-3 -translate-y-1/2 cursor-pointer transition-opacity duration-150"
 			)}
 			style={style}
 			onClick={onClick}
@@ -27,7 +27,7 @@ export function InsertionDepthIcon({
 				icon={CircleFadingPlus}
 				size="sm"
 				className={cn(
-					"insertion-icon absolute h-4 w-4 p-0.5 text-muted group-hover/depth-icon:opacity-0",
+					"insertion-icon absolute h-3 w-3 text-muted group-hover/depth-icon:opacity-0",
 					isHidden ? "pointer-events-none opacity-0" : "opacity-100",
 					isPlaceholder && "text-primary-border"
 				)}
@@ -35,7 +35,7 @@ export function InsertionDepthIcon({
 			<Icon
 				icon={CirclePlus}
 				size="sm"
-				className="insertion-icon absolute h-4 w-4 p-0.5 text-primary-fg opacity-0 group-hover/depth-icon:opacity-100"
+				className="insertion-icon absolute h-3 w-3 text-primary-fg opacity-0 group-hover/depth-icon:opacity-100"
 			/>
 		</div>
 	);

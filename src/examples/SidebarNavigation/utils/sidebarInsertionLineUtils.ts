@@ -8,5 +8,5 @@ export function depthFromMouseX(offsetX: number, maxDepth: number, minDepth: num
 
 // возвращает CSS left для иконки на заданной глубине — центрирует иконку по линии отступа
 export function iconLeft(depth: number, levelOffset = 0): number {
-	return (depth - 1 - levelOffset) * SIDEBAR_MENU_SUB_INDENT - INSERTION_BUTTON_SIZE / 2 - 0.5;
+	return (depth - 1 - levelOffset) * SIDEBAR_MENU_SUB_INDENT - INSERTION_BUTTON_SIZE / 2 + 0.5;
 }
