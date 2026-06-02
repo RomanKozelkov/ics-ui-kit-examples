@@ -3,7 +3,7 @@ import React from "react";
 import { InsertionDepthIcon } from "./InsertionDepthIcon";
 import { InsertionConnectorLine } from "./InsertionConnectorLine";
 import { InsertionTailLine } from "./InsertionTailLine";
-import { useInsertionLine } from "./useInsertionLine";
+import { useInsertionLine } from "../../../hooks/useInsertionLine";
 
 export type SidebarInsertionLineProps = {
 	className?: string;

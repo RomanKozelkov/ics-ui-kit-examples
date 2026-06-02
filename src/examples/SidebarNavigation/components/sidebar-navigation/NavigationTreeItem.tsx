@@ -1,6 +1,6 @@
 import { useNavigationItem } from "../../hooks/useNavigationItem";
 import { useItemDndState } from "../../hooks/useItemDndState";
-import { useInsertionLine } from "../../hooks/useInsertionLine";
+import { useInsertionLineState } from "../../hooks/useInsertionLineState";
 import { NavigationIndicator } from "./NavigationIndicator";
 import { SideMenuItemContent } from "./SideMenuItemContent";
 import { SidebarInsertionLine } from "./sidebar-insertion-line/SidebarInsertionLine";
@@ -32,7 +32,7 @@ export function NavigationTreeItem({ id, level }: NavigationTreeItemProps) {
 	} = useItemDndState(id);
 
 	const isFolder = (data?.children?.length ?? 0) > 0;
-	const { minDepth, maxDepth, handleAdd, handleParentHover, showsLine } = useInsertionLine(
+	const { minDepth, maxDepth, handleAdd, handleParentHover, showsLine } = useInsertionLineState(
 		id,
 		level,
 		isFolder,
