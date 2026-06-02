@@ -16,7 +16,7 @@ export type SidebarInsertionLineProps = {
 
 export const SidebarInsertionLine = React.forwardRef<HTMLDivElement, SidebarInsertionLineProps>(
 	({ className, minDepth, maxDepth, level, onAdd, onParentHover }, ref) => {
-		const { items, tailLeft, handleMouseMove, handleMouseLeave } = useInsertionLine({
+		const { items, tailLeft, isTailSolid, handleMouseMove, handleMouseLeave } = useInsertionLine({
 			minDepth,
 			maxDepth,
 			levelOffset: level - 1,
@@ -45,7 +45,7 @@ export const SidebarInsertionLine = React.forwardRef<HTMLDivElement, SidebarInse
 					</React.Fragment>
 				))}
 
-				<InsertionTailLine style={{ left: tailLeft }} />
+				<InsertionTailLine style={{ left: tailLeft }} isSolid={isTailSolid} />
 			</div>
 		);
 	}

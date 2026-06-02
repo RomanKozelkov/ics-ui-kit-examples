@@ -19,16 +19,21 @@ type Options = {
 
 export function useInsertionLine({ minDepth, maxDepth, levelOffset, onParentHover }: Options) {
 	const [hoverDepth, setHoverDepth] = useState<number | null>(null);
+	const [isOverTail, setIsOverTail] = useState(false);
 
 	const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
 		const rect = e.currentTarget.getBoundingClientRect();
-		const depth = depthFromMouseX(e.clientX - rect.left, maxDepth, minDepth, levelOffset);
+		const offsetX = e.clientX - rect.left;
+		const depth = depthFromMouseX(offsetX, maxDepth, minDepth, levelOffset);
+		const maxIconRightEdge = iconLeft(maxDepth, levelOffset) + INSERTION_BUTTON_SIZE;
 		setHoverDepth(depth);
+		setIsOverTail(offsetX > maxIconRightEdge);
 		onParentHover?.(depth);
 	};
 
 	const handleMouseLeave = () => {
 		setHoverDepth(null);
+		setIsOverTail(false);
 		onParentHover?.(null);
 	};
 
@@ -48,5 +53,7 @@ export function useInsertionLine({ minDepth, maxDepth, levelOffset, onParentHove
 
 	const tailLeft = iconLeft(activeDepth, levelOffset) + INSERTION_BUTTON_SIZE;
 
-	return { items, tailLeft, handleMouseMove, handleMouseLeave };
+	const isTailSolid = hoverDepth !== null && !isOverTail;
+
+	return { items, tailLeft, isTailSolid, handleMouseMove, handleMouseLeave };
 }
