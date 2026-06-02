@@ -27,7 +27,7 @@ export const SidebarInsertionLine = React.forwardRef<HTMLDivElement, SidebarInse
 			<div
 				ref={ref}
 				data-sidebar="sidebar-insertion-line"
-				className={cn("group/insertion absolute inset-x-0 bottom-0 z-10 h-2 translate-y-1/2", className)}
+				className={cn("group/insertion absolute inset-x-0 bottom-0 z-10 h-2", className)}
 				onMouseMove={handleMouseMove}
 				onMouseLeave={handleMouseLeave}
 			>

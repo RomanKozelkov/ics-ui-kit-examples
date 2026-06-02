@@ -26,6 +26,7 @@ export function NavigationGroupLabel({ groupId, groupData, icon }: NavigationGro
 				minDepth={1}
 				maxDepth={1}
 				level={1}
+				className="-bottom-[0.1875rem]"
 				onAdd={() => {
 					console.log(`Вставить в "${groupData.name}" первым элементом`);
 				}}

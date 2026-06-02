@@ -17,6 +17,7 @@ export function useInsertionLineState(id: string, level: number, isFolder: boole
 		const anchorIndex = siblings.indexOf(hoveredAnchorId);
 		return anchorIndex >= 0 && myIndex <= anchorIndex;
 	});
+	const isAnchor = useNavigationTreeStore((s) => s.hoveredAnchorId === id);
 
 	const isOpenFolder = isFolder && open;
 	const parentMap = useMemo(() => getParentMap(items), [items]);
@@ -69,5 +70,5 @@ export function useInsertionLineState(id: string, level: number, isFolder: boole
 		console.log(`Вставить в "${parentName}" после "${items[id]?.name}"`);
 	};
 
-	return { minDepth, maxDepth, handleAdd, handleParentHover, showsLine };
+	return { minDepth, maxDepth, handleAdd, handleParentHover, showsLine, isAnchor };
 }

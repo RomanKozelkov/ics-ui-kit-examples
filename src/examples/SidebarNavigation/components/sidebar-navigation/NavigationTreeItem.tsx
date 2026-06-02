@@ -32,7 +32,7 @@ export function NavigationTreeItem({ id, level }: NavigationTreeItemProps) {
 	} = useItemDndState(id);
 
 	const isFolder = (data?.children?.length ?? 0) > 0;
-	const { minDepth, maxDepth, handleAdd, handleParentHover, showsLine } = useInsertionLineState(
+	const { minDepth, maxDepth, handleAdd, handleParentHover, showsLine, isAnchor } = useInsertionLineState(
 		id,
 		level,
 		isFolder,
@@ -56,7 +56,7 @@ export function NavigationTreeItem({ id, level }: NavigationTreeItemProps) {
 				onOpenChange={(next) => toggleExpanded(id, next)}
 				className={cn("relative flex flex-col gap-0.5", isDragging && "opacity-50")}
 			>
-				{showsLine && <VerticalLineSegment />}
+				{showsLine && <VerticalLineSegment className={isAnchor && "bottom-1"} />}
 				<div ref={setDroppableRef} className="relative">
 					<SideMenuItemContent
 						isNested={isNested}
@@ -92,12 +92,13 @@ export function NavigationTreeItem({ id, level }: NavigationTreeItemProps) {
 						level={level}
 						onAdd={handleAdd}
 						onParentHover={handleParentHover}
+						className="-bottom-[0.3125rem]"
 					/>
 					{showsHeaderLine && <DragInsertionLine />}
 				</div>
 				<CollapsibleContent className="data-[state=open]:!overflow-visible">
 					<div className="relative ml-6">
-						<SidebarMenuSub className="ml-0 gap-0 border-none p-0 [&>*:not(:last-child)]:pb-0.5">
+						<SidebarMenuSub className="ml-0 gap-0 border-none p-0 [&>*:not(:first-child)]:pt-0.5">
 							{childIds.map((childId) => (
 								<NavigationTreeItem key={childId} id={childId} level={level + 1} />
 							))}
@@ -111,7 +112,7 @@ export function NavigationTreeItem({ id, level }: NavigationTreeItemProps) {
 
 	return (
 		<div ref={setDroppableRef} className="relative">
-			{showsLine && <VerticalLineSegment />}
+			{showsLine && <VerticalLineSegment className={isAnchor && "bottom-1"} />}
 			<SideMenuItemContent
 				isNested={isNested}
 				data={data}
@@ -130,6 +131,7 @@ export function NavigationTreeItem({ id, level }: NavigationTreeItemProps) {
 				level={level}
 				onAdd={handleAdd}
 				onParentHover={handleParentHover}
+				className="-bottom-[0.3125rem]"
 			/>
 			{isDropAfter && <DragInsertionLine />}
 		</div>

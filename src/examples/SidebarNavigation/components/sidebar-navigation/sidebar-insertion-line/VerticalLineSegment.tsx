@@ -1,5 +1,12 @@
-export function VerticalLineSegment() {
+import { cn } from "ics-ui-kit/lib/utils";
+
+export function VerticalLineSegment({ className }: { className?: string }) {
 	return (
-		<span className="pointer-events-none absolute inset-y-0 -top-0.5 bottom-0.5 left-0 z-10 w-px bg-primary-border" />
+		<span
+			className={cn(
+				"pointer-events-none absolute -top-0.5 bottom-0 left-0 z-10 w-px bg-primary-border",
+				className
+			)}
+		/>
 	);
 }
