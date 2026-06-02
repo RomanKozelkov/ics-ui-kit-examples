@@ -56,7 +56,7 @@ export function NavigationTreeItem({ id, level }: NavigationTreeItemProps) {
 				onOpenChange={(next) => toggleExpanded(id, next)}
 				className={cn("relative flex flex-col gap-0.5", isDragging && "opacity-50")}
 			>
-				{showsLine && <VerticalLineSegment className={isAnchor && "bottom-1"} />}
+				{showsLine && <VerticalLineSegment className={isAnchor ? "bottom-1" : undefined} />}
 				<div ref={setDroppableRef} className="relative">
 					<SideMenuItemContent
 						isNested={isNested}
@@ -112,7 +112,7 @@ export function NavigationTreeItem({ id, level }: NavigationTreeItemProps) {
 
 	return (
 		<div ref={setDroppableRef} className="relative">
-			{showsLine && <VerticalLineSegment className={isAnchor && "bottom-1"} />}
+			{showsLine && <VerticalLineSegment className={isAnchor ? "bottom-1" : undefined} />}
 			<SideMenuItemContent
 				isNested={isNested}
 				data={data}
