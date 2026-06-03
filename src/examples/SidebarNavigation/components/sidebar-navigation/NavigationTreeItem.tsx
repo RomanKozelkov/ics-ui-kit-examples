@@ -103,7 +103,7 @@ export function NavigationTreeItem({ id, level }: NavigationTreeItemProps) {
 								<NavigationTreeItem key={childId} id={childId} level={level + 1} />
 							))}
 						</SidebarMenuSub>
-						{showsChildrenLine && <DragInsertionLine />}
+						{showsChildrenLine && <DragInsertionLine className="-top-0.5 -translate-y-1/2" />}
 					</div>
 				</CollapsibleContent>
 			</Collapsible>

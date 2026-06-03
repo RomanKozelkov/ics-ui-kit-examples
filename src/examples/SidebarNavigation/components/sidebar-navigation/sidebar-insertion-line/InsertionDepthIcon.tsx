@@ -27,7 +27,7 @@ export function InsertionDepthIcon({
 				icon={CircleFadingPlus}
 				size="sm"
 				className={cn(
-					"absolute h-3 w-3 text-muted group-hover/depth-icon:opacity-0",
+					"absolute text-muted group-hover/depth-icon:opacity-0",
 					isHidden ? "pointer-events-none opacity-0" : "opacity-100",
 					isPlaceholder && "text-primary-border"
 				)}
@@ -35,7 +35,7 @@ export function InsertionDepthIcon({
 			<Icon
 				icon={CirclePlus}
 				size="sm"
-				className="absolute h-3 w-3 text-primary-fg opacity-0 group-hover/depth-icon:opacity-100"
+				className="absolute text-primary-fg opacity-0 group-hover/depth-icon:opacity-100"
 			/>
 		</div>
 	);
