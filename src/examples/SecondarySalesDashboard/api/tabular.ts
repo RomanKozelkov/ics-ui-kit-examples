@@ -1,0 +1,125 @@
+import type { TabularColumnRef, TabularFilter } from "../../../shared/api";
+import type { Metric, Period } from "../stores/useFiltersStore";
+
+export type PeriodRange = { startId: number; endId: number };
+
+export const MEASURE_FIELD = {
+	unit: "[Secondary Sales, unit]",
+	rub: "[Secondary Sales, INV RUB]",
+	usd: "[Secondary Sales, USD conversion]"
+} as const;
+
+export const GROUP_FIELD = {
+	counterparty: "Client[Client]",
+	brand: "Product[Product Brand]",
+	region: "Client Location[Client Location Region FIAS]"
+} as const;
+
+export const YEAR_FIELD = "Calendar[Year]" as const;
+
+export function getValueColumn(metric: Metric): TabularColumnRef {
+	if (metric === "Units") {
+		return { column: { table: "Secondary Sales~Tabular", name: "Secondary Sales, unit" } };
+	}
+	if (metric === "USD") {
+		return { column: { table: "Secondary Sales~Tabular", name: "Secondary Sales, USD conversion" } };
+	}
+	return { column: { table: "Secondary Sales~Tabular", name: "Secondary Sales, INV RUB" } };
+}
+
+export function getValueField(metric: Metric): string {
+	if (metric === "Units") return MEASURE_FIELD.unit;
+	return metric === "USD" ? MEASURE_FIELD.usd : MEASURE_FIELD.rub;
+}
+
+export function generatePeriodIds(year: number, period: Period): number[] | null {
+	if (period === "FY") return null;
+
+	const today = new Date();
+	const currentMonth = today.getMonth();
+	const currentDay = today.getDate();
+
+	let startMonth: number;
+	switch (period) {
+		case "QTD":
+			startMonth = Math.floor(currentMonth / 3) * 3;
+			break;
+		case "MTD":
+			startMonth = currentMonth;
+			break;
+		default:
+			startMonth = 0;
+	}
+
+	const ids: number[] = [];
+	for (const y of [year, year - 1]) {
+		const start = new Date(y, startMonth, 1);
+		const end = new Date(y, currentMonth, currentDay);
+		for (let d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {
+			const m = String(d.getMonth() + 1).padStart(2, "0");
+			const day = String(d.getDate()).padStart(2, "0");
+			ids.push(Number(`${d.getFullYear()}${m}${day}`));
+		}
+	}
+	return ids;
+}
+
+type BuildFilterInput = {
+	year: number;
+	sourceType: string;
+	bindType: string;
+	brandValues?: string[];
+	counterpartyValues?: string[];
+	periodIds: number[] | null;
+};
+
+export function buildTableFilter(input: BuildFilterInput): TabularFilter {
+	const main: TabularFilter[] = [
+		{
+			op: "in",
+			column: { table: "Calendar~Tabular", name: "Year" },
+			list: [input.year - 1, input.year]
+		},
+		{
+			op: "eq",
+			column: { table: "Source Type~Tabular", name: "Source Type" },
+			value: input.sourceType
+		},
+		{
+			op: "eq",
+			column: { table: "Bind Type~Tabular", name: "Bind Type" },
+			value: input.bindType
+		}
+	];
+
+	if (input.brandValues && input.brandValues.length > 0) {
+		main.push({
+			op: "in",
+			column: { table: "Product~Tabular", name: "Product Brand" },
+			list: input.brandValues
+		});
+	}
+	if (input.counterpartyValues && input.counterpartyValues.length > 0) {
+		main.push({
+			op: "in",
+			column: { table: "Client~Tabular", name: "Client" },
+			list: input.counterpartyValues
+		});
+	}
+
+	const mainGroup: TabularFilter = { op: "and", groups: main };
+
+	if (!input.periodIds) return mainGroup;
+
+	return {
+		op: "and",
+		groups: [
+			mainGroup,
+			{
+				op: "in",
+				column: { table: "Calendar~Tabular", name: "ID" },
+				list: input.periodIds
+			}
+		]
+	};
+}
