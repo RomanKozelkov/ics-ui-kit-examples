@@ -6,6 +6,7 @@ export type InsertionItem = {
 	depth: number;
 	isHidden: boolean;
 	isPlaceholder: boolean;
+	isActive: boolean;
 	iconLeft: number;
 	connectorLeft: number | null;
 };
@@ -46,6 +47,7 @@ export function useInsertionLine({ minDepth, maxDepth, levelOffset, onParentHove
 			depth,
 			isHidden: hoverDepth === null || depth > hoverDepth,
 			isPlaceholder: depth < activeDepth,
+			isActive: hoverDepth !== null && depth === hoverDepth && !isOverTail,
 			iconLeft: iconLeft(depth, levelOffset),
 			connectorLeft: prevLeft !== null ? prevLeft + INSERTION_BUTTON_SIZE : null,
 		};
@@ -55,5 +57,7 @@ export function useInsertionLine({ minDepth, maxDepth, levelOffset, onParentHove
 
 	const isTailSolid = hoverDepth !== null && !isOverTail;
 
-	return { items, tailLeft, isTailSolid, handleMouseMove, handleMouseLeave };
+	const clickableDepth = hoverDepth !== null && !isOverTail ? hoverDepth : null;
+
+	return { items, tailLeft, isTailSolid, clickableDepth, handleMouseMove, handleMouseLeave };
 }

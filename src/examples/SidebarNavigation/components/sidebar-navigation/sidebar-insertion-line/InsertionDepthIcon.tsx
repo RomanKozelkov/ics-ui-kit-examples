@@ -5,37 +5,32 @@ import { Icon } from "ics-ui-kit/components/icon";
 export function InsertionDepthIcon({
 	isHidden,
 	isPlaceholder,
-	style,
-	onClick
+	isActive,
+	style
 }: {
 	isHidden: boolean;
 	isPlaceholder: boolean;
+	isActive: boolean;
 	style?: React.CSSProperties;
-	onClick?: () => void;
 }) {
 	return (
 		<div
-			role="button"
-			tabIndex={0}
-			className={cn(
-				"group/depth-icon absolute top-1/2 h-3 w-3 -translate-y-1/2 cursor-pointer transition-opacity duration-150"
-			)}
+			className="absolute top-1/2 h-3 w-3 -translate-y-1/2 transition-opacity duration-150"
 			style={style}
-			onClick={onClick}
 		>
 			<Icon
 				icon={CircleFadingPlus}
 				size="sm"
 				className={cn(
-					"absolute text-muted group-hover/depth-icon:opacity-0",
-					isHidden ? "pointer-events-none opacity-0" : "opacity-100",
+					"absolute text-muted",
+					isHidden || isActive ? "opacity-0" : "opacity-100",
 					isPlaceholder && "text-primary-border"
 				)}
 			/>
 			<Icon
 				icon={CirclePlus}
 				size="sm"
-				className="absolute text-primary-fg opacity-0 group-hover/depth-icon:opacity-100"
+				className={cn("absolute text-primary-fg", isActive ? "opacity-100" : "opacity-0")}
 			/>
 		</div>
 	);

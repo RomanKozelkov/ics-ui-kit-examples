@@ -16,31 +16,40 @@ export type SidebarInsertionLineProps = {
 
 export const SidebarInsertionLine = React.forwardRef<HTMLDivElement, SidebarInsertionLineProps>(
 	({ className, minDepth, maxDepth, level, onAdd, onParentHover }, ref) => {
-		const { items, tailLeft, isTailSolid, handleMouseMove, handleMouseLeave } = useInsertionLine({
+		const { items, tailLeft, isTailSolid, clickableDepth, handleMouseMove, handleMouseLeave } = useInsertionLine({
 			minDepth,
 			maxDepth,
 			levelOffset: level - 1,
 			onParentHover
 		});
 
+		const handleClick = () => {
+			if (clickableDepth) onAdd(clickableDepth);
+		};
+
 		return (
 			<div
 				ref={ref}
 				data-sidebar="sidebar-insertion-line"
-				className={cn("group/insertion absolute inset-x-0 bottom-0 z-10 h-2", className)}
+				className={cn(
+					"group/insertion absolute inset-x-0 bottom-0 z-10 h-2",
+					clickableDepth && "cursor-pointer",
+					className
+				)}
 				onMouseMove={handleMouseMove}
 				onMouseLeave={handleMouseLeave}
+				onClick={handleClick}
 			>
-				{items.map(({ depth, isHidden, isPlaceholder, iconLeft, connectorLeft }) => (
+				{items.map(({ depth, isHidden, isPlaceholder, isActive, iconLeft, connectorLeft }) => (
 					<React.Fragment key={depth}>
-						{connectorLeft !== null && (
+						{connectorLeft && (
 							<InsertionConnectorLine style={{ left: connectorLeft }} isHidden={isHidden} />
 						)}
 						<InsertionDepthIcon
 							isHidden={isHidden}
 							isPlaceholder={isPlaceholder}
+							isActive={isActive}
 							style={{ left: iconLeft }}
-							onClick={() => onAdd(depth)}
 						/>
 					</React.Fragment>
 				))}
