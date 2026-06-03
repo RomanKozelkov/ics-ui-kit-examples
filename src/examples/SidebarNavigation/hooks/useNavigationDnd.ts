@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useMemo, useRef } from "react";
 import { PointerSensor, useSensor, useSensors } from "@dnd-kit/core";
 import type { DragMoveEvent, DragEndEvent } from "@dnd-kit/core";
 import { useNavigationTreeStore } from "../store/navigationTreeStore";
@@ -12,6 +12,7 @@ export function useNavigationDnd() {
 	const setDragTarget = useNavigationTreeStore((s) => s.setDragTarget);
 	const items = useNavigationTreeStore((s) => s.items);
 	const expanded = useNavigationTreeStore((s) => s.expanded);
+	const parentMap = useMemo(() => getParentMap(items), [items]);
 
 	const autoExpandTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 	const autoExpandTargetRef = useRef<string | null>(null);
@@ -49,7 +50,6 @@ export function useNavigationDnd() {
 		const pointerY = translatedRect.top + translatedRect.height / 2;
 		const mode = getDropMode(pointerY, rect);
 
-		const parentMap = getParentMap(items);
 		const parentId = mode === "after" ? (parentMap[overId] ?? null) : null;
 
 		setDragTarget({ anchorId: overId, parentId, mode });
