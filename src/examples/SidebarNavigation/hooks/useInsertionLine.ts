@@ -27,9 +27,10 @@ export function useInsertionLine({ minDepth, maxDepth, levelOffset, onParentHove
 		const offsetX = e.clientX - rect.left;
 		const depth = depthFromMouseX(offsetX, maxDepth, minDepth, levelOffset);
 		const maxIconRightEdge = iconLeft(maxDepth, levelOffset) + INSERTION_BUTTON_SIZE;
+		const overTail = offsetX > maxIconRightEdge;
 		setHoverDepth(depth);
-		setIsOverTail(offsetX > maxIconRightEdge);
-		onParentHover?.(depth);
+		setIsOverTail(overTail);
+		onParentHover?.(overTail ? null : depth);
 	};
 
 	const handleMouseLeave = () => {
