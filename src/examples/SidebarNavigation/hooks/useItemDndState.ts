@@ -3,7 +3,9 @@ import { useNavigationTreeStore } from "../store/navigationTreeStore";
 
 export function useItemDndState(id: string) {
 	const isDragging = useNavigationTreeStore((s) => s.draggingId === id);
-	const isInsertionTarget = useNavigationTreeStore((s) => s.hoveredParentId === id);
+	const isInsertionTarget = useNavigationTreeStore(
+		(s) => s.hoveredParentId === id && s.hoveredParentId !== s.hoveredAnchorId
+	);
 	const isDragTarget = useNavigationTreeStore(
 		(s) => (s.dragTarget?.anchorId === id && s.dragTarget.mode === "into") || s.dragTarget?.parentId === id
 	);
