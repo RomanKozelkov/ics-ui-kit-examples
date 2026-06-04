@@ -1,30 +1,18 @@
-import { Fragment } from "react";
-import { FieldSegmentedToggleGroup } from "../../../../shared/components/FieldSegmentedToggleGroup";
-import {
-	SegmentedToggleDivider,
-	SegmentedToggleItem
-} from "../../../../shared/components/SegmentedToggle";
+import { SegmentedFilter } from "../../../../shared/bi-dashboard/filters/SegmentedFilter";
 import { useFiltersStore, type Metric } from "../../stores/useFiltersStore";
 
-const METRICS: Metric[] = ["RUB", "USD", "Units"];
+const OPTIONS = (["RUB", "USD", "Units"] satisfies Metric[]).map((m) => ({ value: m }));
 
 export function FilterMetric() {
 	const metric = useFiltersStore((s) => s.metric);
 	const setMetric = useFiltersStore((s) => s.setMetric);
 
 	return (
-		<FieldSegmentedToggleGroup
+		<SegmentedFilter
 			label="Метрика"
-			type="single"
 			value={metric}
-			onValueChange={(v) => v && setMetric(v as Metric)}
-		>
-			{METRICS.map((m, i) => (
-				<Fragment key={m}>
-					{i > 0 && <SegmentedToggleDivider />}
-					<SegmentedToggleItem value={m}>{m}</SegmentedToggleItem>
-				</Fragment>
-			))}
-		</FieldSegmentedToggleGroup>
+			options={OPTIONS}
+			onChange={(v) => setMetric(v as Metric)}
+		/>
 	);
 }

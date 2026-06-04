@@ -1,5 +1,7 @@
-import type { Metric } from "../stores/useFiltersStore";
 import { getNumberFormatter } from "./getNumberFormatter";
+
+/** Метрика значения: валюта (`RUB`/`USD`) либо натуральные единицы (`Units`). */
+export type Metric = "RUB" | "USD" | "Units";
 
 export type FormatMode = "compact" | "full";
 

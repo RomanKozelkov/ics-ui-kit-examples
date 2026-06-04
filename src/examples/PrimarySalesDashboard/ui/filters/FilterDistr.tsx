@@ -1,36 +1,19 @@
-import { useState } from "react";
+import { DictionaryFilter } from "../../../../shared/bi-dashboard/filters/DictionaryFilter";
 import { fetchDistributors } from "../../api/fetchers";
-import { STALE_TIMES } from "../../api/queryConfig";
 import { primarySalesKeys } from "../../api/queryKeys";
-import { FilterField } from "../components/FilterField";
 import { useFiltersStore } from "../../stores/useFiltersStore";
-import { useFilterOptions } from "../../../../shared/hooks/useFilterOptions";
-import { MultiSelectControlled } from "../../../../shared/components/MultiSelectControlled";
 
 export function FilterDistr() {
 	const counterparties = useFiltersStore((s) => s.counterparties);
 	const setCounterparties = useFiltersStore((s) => s.setCounterparties);
 
-	const [open, setOpen] = useState(false);
-	const { options, isLoading, error, onSearch } = useFilterOptions({
-		open,
-		queryKey: primarySalesKeys.distributors,
-		queryFn: fetchDistributors,
-		staleTime: STALE_TIMES.dictionaries
-	});
-
 	return (
-		<FilterField label="Дистрибьюторы">
-			<MultiSelectControlled
-				value={counterparties}
-				options={options}
-				isLoading={isLoading}
-				error={error}
-				onChange={setCounterparties}
-				onSearch={onSearch}
-				open={open}
-				onOpenChange={setOpen}
-			/>
-		</FilterField>
+		<DictionaryFilter
+			label="Дистрибьюторы"
+			value={counterparties}
+			onChange={setCounterparties}
+			queryKey={primarySalesKeys.distributors}
+			queryFn={fetchDistributors}
+		/>
 	);
 }

@@ -1,7 +1,8 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
+import type { Metric } from "../../../shared/bi-dashboard/format";
 
-export type Metric = "RUB" | "USD" | "Units";
+export type { Metric };
 // FY — полный год, YTD — с начала года, QTD — с начала квартала, MTD — с начала месяца
 export type Period = "FY" | "YTD" | "QTD" | "MTD";
 export type SourceType = "MDLP" | "Sales";

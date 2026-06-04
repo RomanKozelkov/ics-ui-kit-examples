@@ -3,7 +3,7 @@ import { Icon } from "ics-ui-kit/components/icon";
 import { cn } from "ics-ui-kit/lib/utils";
 import { TrendingDown, TrendingUp } from "lucide-react";
 import { ReactNode } from "react";
-import { StaleOverlay } from "../../../../shared/components/StaleOverlay";
+import { StaleOverlay } from "../../components/StaleOverlay";
 
 type MetricCardProps = {
 	title: string;

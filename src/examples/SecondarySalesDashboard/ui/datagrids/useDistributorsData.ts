@@ -3,7 +3,7 @@ import { useShallow } from "zustand/react/shallow";
 import { useFiltersStore } from "../../stores/useFiltersStore";
 import { secondarySalesKeys } from "../../api/queryKeys";
 import { fetchDistributorsData } from "../../api/fetchers";
-import { aggregateRanking, pickMeasureField, type RankingRow } from "./aggregateRanking";
+import { aggregateRanking, pickMeasureField, type RankingRow } from "../../../../shared/bi-dashboard/ranking/aggregateRanking";
 
 export type DistributorRow = RankingRow;
 

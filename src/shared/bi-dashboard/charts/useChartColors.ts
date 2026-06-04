@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { tokenToHsla, useThemeToken, useThemeTokensRecord } from "../../../../shared/theme";
+import { tokenToHsla, useThemeTokensRecord } from "../../theme";
 
 const TOKENS = [
 	"--muted",
