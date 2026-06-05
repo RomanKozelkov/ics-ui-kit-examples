@@ -7,6 +7,7 @@ import {
 	SidebarRail,
 	SidebarSeparator
 } from "ics-ui-kit/components/sidebar";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "ics-ui-kit/components/tooltip";
 import { cn } from "ics-ui-kit/lib/utils";
 import React from "react";
 import { MainContent } from "./components/main-content/MainContent";
@@ -74,7 +75,16 @@ export function SidebarNavigation() {
 					<SidebarFooter>
 						<SidebarFooterContent />
 					</SidebarFooter>
-					<SidebarRail className="[[data-state=expanded]_&]:hidden" />
+					<TooltipProvider delayDuration={700}>
+						<Tooltip>
+							<TooltipTrigger asChild>
+								<SidebarRail className="[[data-state=expanded]_&]:hidden" />
+							</TooltipTrigger>
+							<TooltipContent side="right" focus="high">
+								Раскрыть боковую панель
+							</TooltipContent>
+						</Tooltip>
+					</TooltipProvider>
 				</Sidebar>
 				<SidebarInset>
 					<MainContent />

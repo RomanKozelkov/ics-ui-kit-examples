@@ -9,7 +9,7 @@ import {
 } from "ics-ui-kit/components/sidebar";
 import { NavigationItemCounter } from "./NavigationItemCounter";
 import { NavigationTreeItemActions } from "./NavigationTreeItemActions";
-import { TextOverflowTooltip } from "ics-ui-kit/components/overflow-tooltip";
+import { OverflowTooltip, TextOverflowTooltip } from "ics-ui-kit/components/overflow-tooltip";
 import type { DraggableAttributes, DraggableSyntheticListeners } from "@dnd-kit/core";
 
 export function SideMenuItemContent({
@@ -54,7 +54,9 @@ export function SideMenuItemContent({
 				{...dragListeners}
 				{...dragAttributes}
 			>
-				<TextOverflowTooltip>{data.name}</TextOverflowTooltip>
+				<OverflowTooltip className="inline-block max-w-full truncate" focus="high">
+					{data.name}
+				</OverflowTooltip>
 				{data.badge != null && <NavigationItemCounter>{data.badge}</NavigationItemCounter>}
 				<NavigationTreeItemActions trigger={trigger} />
 			</ButtonComponent>

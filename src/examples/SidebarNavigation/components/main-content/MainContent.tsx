@@ -1,4 +1,12 @@
 import { SidebarRail, SidebarTrigger, useSidebar } from "ics-ui-kit/components/sidebar";
+import {
+	Tooltip,
+	TooltipContent,
+	TooltipProvider,
+	TooltipShortcut,
+	TooltipText,
+	TooltipTrigger
+} from "ics-ui-kit/components/tooltip";
 import { cn } from "ics-ui-kit/lib/utils";
 import { IconButton } from "ics-ui-kit/components/button";
 import { Search } from "lucide-react";
@@ -28,14 +36,30 @@ export function MainContent() {
 							"bg-sidebar-bg p-1 shadow-soft-base"
 						)}
 					>
-						<SidebarTrigger className="size-7 h-auto rounded-md p-1.5" {...sidebarTriggerFloatingProps} />
-						<IconButton
-							icon={Search}
-							size="xs"
-							variant="ghost"
-							className="shrink-0 rounded-md p-1.5"
-							iconClassName="size-4"
-						/>
+						<Tooltip>
+							<TooltipTrigger asChild>
+								<SidebarTrigger
+									className="size-7 h-auto rounded-md p-1.5"
+									{...sidebarTriggerFloatingProps}
+								/>
+							</TooltipTrigger>
+							<TooltipContent focus="high">Показать боковую панель</TooltipContent>
+						</Tooltip>
+						<Tooltip>
+							<TooltipTrigger asChild>
+								<IconButton
+									icon={Search}
+									size="xs"
+									variant="ghost"
+									className="shrink-0 rounded-md p-1.5"
+									iconClassName="size-4"
+								/>
+							</TooltipTrigger>
+							<TooltipContent focus="high" className="flex flex-row gap-2">
+								<TooltipText>Поиск</TooltipText>
+								<TooltipShortcut>⌘/</TooltipShortcut>
+							</TooltipContent>
+						</Tooltip>
 					</div>
 
 					<div className={cn("w-full rounded-t-2xl bg-secondary-bg py-2.5 pl-14 pr-4")}>
@@ -45,7 +69,12 @@ export function MainContent() {
 			) : (
 				<div className="h-14 w-full rounded-t-2xl rounded-tr-none border border-r-0 border-secondary-border bg-secondary-bg py-2.5 pl-3.5 pr-2">
 					<div className="flex items-center gap-3.5">
-						<SidebarTrigger className="h-auto rounded-md p-1.5" />
+						<Tooltip>
+							<TooltipTrigger asChild>
+								<SidebarTrigger className="h-auto rounded-md p-1.5" />
+							</TooltipTrigger>
+							<TooltipContent focus="high">Скрыть боковую панель</TooltipContent>
+						</Tooltip>
 						<Divider orientation="vertical" className="h-4 shrink-0" />
 						<BreadcrumbListComponent />
 					</div>
@@ -57,7 +86,18 @@ export function MainContent() {
 					isCollapsed && "border-0"
 				)}
 			>
-				{!isCollapsed && <SidebarRail className="left-0 cursor-w-resize" />}
+				{!isCollapsed && (
+					<TooltipProvider delayDuration={700}>
+						<Tooltip>
+							<TooltipTrigger asChild>
+								<SidebarRail className="left-0 cursor-w-resize" />
+							</TooltipTrigger>
+							<TooltipContent side="right" focus="high">
+								Скрыть боковую панель
+							</TooltipContent>
+						</Tooltip>
+					</TooltipProvider>
+				)}
 			</div>
 		</div>
 	);
