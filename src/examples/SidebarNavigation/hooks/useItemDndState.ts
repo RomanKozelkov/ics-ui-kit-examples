@@ -8,7 +8,6 @@ export function useItemDndState(id: string) {
 		(s) => (s.dragTarget?.anchorId === id && s.dragTarget.mode === "into") || s.dragTarget?.parentId === id
 	);
 	const dropMode = useNavigationTreeStore((s) => s.dragTarget?.anchorId === id && s.dragTarget.mode);
-	const isDropAfter = useNavigationTreeStore((s) => s.dragTarget?.anchorId === id && s.dragTarget.mode === "after");
 
 	const { setNodeRef: setDroppableRef } = useDroppable({ id });
 	const { attributes, listeners, setNodeRef: setDraggableRef } = useDraggable({ id });
@@ -18,7 +17,6 @@ export function useItemDndState(id: string) {
 		isInsertionTarget,
 		isDragTarget,
 		dropMode,
-		isDropAfter,
 		setDroppableRef,
 		setDraggableRef,
 		dragListeners: listeners,

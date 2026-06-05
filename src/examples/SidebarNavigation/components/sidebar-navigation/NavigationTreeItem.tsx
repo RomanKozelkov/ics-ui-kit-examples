@@ -11,6 +11,7 @@ import { SidebarMenuSub } from "ics-ui-kit/components/sidebar";
 import { Icon } from "ics-ui-kit/components/icon";
 import { ChevronRight } from "lucide-react";
 import { cn } from "ics-ui-kit/lib/utils";
+import { useState } from "react";
 
 interface NavigationTreeItemProps {
 	id: string;
@@ -18,13 +19,13 @@ interface NavigationTreeItemProps {
 }
 
 export function NavigationTreeItem({ id, level }: NavigationTreeItemProps) {
+	const [animating, setAnimating] = useState(false);
 	const { data, open, isSelected, toggleExpanded, select } = useNavigationItem(id);
 	const {
 		isDragging,
 		isInsertionTarget,
 		isDragTarget,
 		dropMode,
-		isDropAfter,
 		setDroppableRef,
 		setDraggableRef,
 		dragListeners,
@@ -54,7 +55,7 @@ export function NavigationTreeItem({ id, level }: NavigationTreeItemProps) {
 			<Collapsible
 				open={open}
 				onOpenChange={(next) => toggleExpanded(id, next)}
-				className={cn("relative flex flex-col gap-0.5", isDragging && "opacity-50")}
+				className={cn("relative flex flex-col", isDragging && "opacity-50")}
 			>
 				{showsLine && <VerticalLineSegment className={isAnchor ? "bottom-[0.3125rem]" : undefined} />}
 				<div ref={setDroppableRef} className="relative">
@@ -96,8 +97,12 @@ export function NavigationTreeItem({ id, level }: NavigationTreeItemProps) {
 					/>
 					{showsHeaderLine && <DragInsertionLine />}
 				</div>
-				<CollapsibleContent className="data-[state=open]:!overflow-visible">
-					<div className="relative ml-6">
+				<CollapsibleContent
+					className={cn(!animating && "data-[state=open]:!overflow-visible")}
+					onAnimationStart={() => setAnimating(true)}
+					onAnimationEnd={() => setAnimating(false)}
+				>
+					<div className="relative ml-6 pt-0.5">
 						<SidebarMenuSub className="ml-0 gap-0 border-none p-0 [&>*:not(:first-child)]:pt-0.5">
 							{childIds.map((childId) => (
 								<NavigationTreeItem key={childId} id={childId} level={level + 1} />
@@ -133,7 +138,7 @@ export function NavigationTreeItem({ id, level }: NavigationTreeItemProps) {
 				onParentHover={handleParentHover}
 				className="-bottom-[0.3125rem]"
 			/>
-			{isDropAfter && <DragInsertionLine />}
+			{dropMode && <DragInsertionLine className={dropMode === "into" ? "left-6" : undefined} />}
 		</div>
 	);
 }

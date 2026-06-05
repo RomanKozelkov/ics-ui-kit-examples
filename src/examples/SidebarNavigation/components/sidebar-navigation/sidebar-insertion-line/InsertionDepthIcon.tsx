@@ -15,14 +15,14 @@ export function InsertionDepthIcon({
 }) {
 	return (
 		<div
-			className="absolute top-1/2 h-3 w-3 -translate-y-1/2 transition-opacity duration-150"
+			className="absolute top-1/2 h-3 w-3 -translate-y-1/2"
 			style={style}
 		>
 			<Icon
 				icon={CircleFadingPlus}
 				size="sm"
 				className={cn(
-					"absolute text-muted",
+					"absolute text-muted transition-opacity duration-[160ms]",
 					isHidden || isActive ? "opacity-0" : "opacity-100",
 					isPlaceholder && "text-primary-border"
 				)}
@@ -30,7 +30,7 @@ export function InsertionDepthIcon({
 			<Icon
 				icon={CirclePlus}
 				size="sm"
-				className={cn("absolute text-primary-fg", isActive ? "opacity-100" : "opacity-0")}
+				className={cn("absolute text-primary-fg transition-opacity duration-[160ms]", isActive ? "opacity-100" : "opacity-0")}
 			/>
 		</div>
 	);
