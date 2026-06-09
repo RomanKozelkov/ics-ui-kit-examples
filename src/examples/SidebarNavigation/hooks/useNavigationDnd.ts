@@ -13,6 +13,7 @@ export function useNavigationDnd() {
 	const items = useNavigationTreeStore((s) => s.items);
 	const expanded = useNavigationTreeStore((s) => s.expanded);
 	const parentMap = useMemo(() => getParentMap(items), [items]);
+	const dragTarget = useNavigationTreeStore((s) => s.dragTarget);
 
 	const groupsContainerRef = useRef<HTMLDivElement>(null);
 	const autoExpandTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -109,7 +110,6 @@ export function useNavigationDnd() {
 	};
 
 	const onDragEnd = ({ active }: DragEndEvent) => {
-		const { dragTarget, items } = useNavigationTreeStore.getState();
 		if (dragTarget) {
 			const movedName = items[String(active.id)]?.name ?? String(active.id);
 			const anchorName = items[dragTarget.anchorId]?.name ?? dragTarget.anchorId;
