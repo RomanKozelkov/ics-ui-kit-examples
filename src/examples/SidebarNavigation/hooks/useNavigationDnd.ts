@@ -1,4 +1,4 @@
-import { useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import { PointerSensor, useSensor, useSensors } from "@dnd-kit/core";
 import type { DragStartEvent, DragMoveEvent, DragEndEvent } from "@dnd-kit/core";
 import { useNavigationTreeStore } from "../store/navigationTreeStore";
@@ -18,6 +18,13 @@ export function useNavigationDnd() {
 	const groupsContainerRef = useRef<HTMLDivElement>(null);
 	const autoExpandTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 	const autoExpandTargetRef = useRef<string | null>(null);
+	const pointerYRef = useRef<number>(0);
+
+	useEffect(() => {
+		const onPointerMove = (e: PointerEvent) => { pointerYRef.current = e.clientY; };
+		window.addEventListener("pointermove", onPointerMove);
+		return () => window.removeEventListener("pointermove", onPointerMove);
+	}, []);
 
 	const sensors = useSensors(
 		useSensor(PointerSensor, { activationConstraint: { distance: DRAG_ACTIVATION_DISTANCE } })
@@ -46,10 +53,9 @@ export function useNavigationDnd() {
 	};
 
 	const onDragMove = ({ active, over }: DragMoveEvent) => {
+		const pointerY = pointerYRef.current;
+
 		if (!over) {
-			const pointerY = active.rect.current.translated
-				? active.rect.current.translated.top + active.rect.current.translated.height / 2
-				: -Infinity;
 			const isBelowContainer =
 				pointerY >= (groupsContainerRef.current?.getBoundingClientRect().bottom ?? Infinity);
 
@@ -94,10 +100,6 @@ export function useNavigationDnd() {
 			return;
 		}
 
-		const translatedRect = active.rect.current.translated;
-		if (!translatedRect) return;
-
-		const pointerY = translatedRect.top + translatedRect.height / 2;
 		const mode = getDropMode(pointerY, over.rect);
 		const parentId = mode === "after" ? (parentMap[overId] ?? null) : null;
 		setDragTarget({ anchorId: overId, parentId, mode });
