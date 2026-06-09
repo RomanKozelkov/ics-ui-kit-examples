@@ -4,7 +4,7 @@ import { initialExpanded, initialItems, initialSelected, Item } from "../data/na
 export type DragTarget = {
 	anchorId: string;
 	parentId: string | null;
-	mode: "after" | "into" | "last-child";
+	mode: "after" | "into" | "last-child" | "first-child";
 } | null;
 
 type NavigationTreeStore = {

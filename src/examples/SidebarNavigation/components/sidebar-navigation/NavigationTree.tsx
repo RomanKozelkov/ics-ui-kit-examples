@@ -1,7 +1,7 @@
 import { SidebarGroup, SidebarGroupContent, SidebarMenu } from "ics-ui-kit/components/sidebar";
 import { NavigationTreeItem } from "./NavigationTreeItem";
 import { NavigationSectionLabel } from "./NavigationSectionLabel";
-import { NavigationGroupLabel } from "./NavigationGroupLabel";
+import { NavigationGroupFirstSlot } from "./NavigationGroupFirstSlot";
 import { NavigationGroupLastSlot } from "./NavigationGroupLastSlot";
 import { ROOT_ID } from "../../data/navigationData";
 import { Layers, Layers2, Layers3 } from "lucide-react";
@@ -36,7 +36,8 @@ export function NavigationTree() {
 					const childIds = groupData.children ?? [];
 					return (
 						<SidebarGroup key={groupId} className="py-0 pr-4 group-data-[variant=floating]:pr-2.5">
-							<NavigationGroupLabel groupId={groupId} groupData={groupData} icon={groupIcons[index]} />
+							<NavigationSectionLabel data={groupData} icon={groupIcons[index]} />
+							<NavigationGroupFirstSlot groupId={groupId} groupName={groupData.name} />
 							<SidebarGroupContent>
 								<SidebarMenu className="gap-0.5 pb-0.5">
 									{childIds.map((childId) => (

@@ -49,11 +49,16 @@ export function useNavigationDnd() {
 		const draggedId = String(active.id);
 		const overId = String(over.id);
 
-		if (overId.endsWith("__last")) {
-			const groupId = overId.slice(0, -"__last".length);
+		const isFirstSlot = overId.endsWith("__first");
+		const isLastSlot = overId.endsWith("__last");
+
+		if (isFirstSlot || isLastSlot) {
+			const mode = isFirstSlot ? "first-child" : "last-child";
+			const suffix = isFirstSlot ? "__first" : "__last";
+			const groupId = overId.slice(0, -suffix.length);
 			const invalid = draggedId === groupId || isDescendant(items, draggedId, groupId);
 			cancelAutoExpand();
-			setDragTarget(invalid ? null : { anchorId: overId, parentId: groupId, mode: "last-child" });
+			setDragTarget(invalid ? null : { anchorId: overId, parentId: groupId, mode });
 			return;
 		}
 
@@ -88,8 +93,10 @@ export function useNavigationDnd() {
 				dragTarget.mode === "into"
 					? `"${movedName}" → внутрь "${anchorName}"`
 					: dragTarget.mode === "last-child"
-						? `"${movedName}" → последним в "${parentName ?? anchorName}"`
-						: `"${movedName}" → после "${anchorName}"`;
+						? `"${movedName}" → последним в "${parentName}"`
+						: dragTarget.mode === "first-child"
+							? `"${movedName}" → первым в "${parentName}"`
+							: `"${movedName}" → после "${anchorName}"`;
 			console.log("Drop:", label);
 		}
 		cancelAutoExpand();
