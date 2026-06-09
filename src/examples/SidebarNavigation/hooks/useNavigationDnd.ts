@@ -1,6 +1,6 @@
 import { useMemo, useRef } from "react";
 import { PointerSensor, useSensor, useSensors } from "@dnd-kit/core";
-import type { DragMoveEvent, DragEndEvent } from "@dnd-kit/core";
+import type { DragStartEvent, DragMoveEvent, DragEndEvent } from "@dnd-kit/core";
 import { useNavigationTreeStore } from "../store/navigationTreeStore";
 import { isDescendant } from "../utils/isDescendant";
 import { getParentMap } from "../utils/getParentMap";
@@ -12,8 +12,10 @@ export function useNavigationDnd() {
 	const setDragTarget = useNavigationTreeStore((s) => s.setDragTarget);
 	const items = useNavigationTreeStore((s) => s.items);
 	const expanded = useNavigationTreeStore((s) => s.expanded);
+	const dragTarget = useNavigationTreeStore((s) => s.dragTarget);
 	const parentMap = useMemo(() => getParentMap(items), [items]);
 
+	const groupsContainerRef = useRef<HTMLDivElement>(null);
 	const autoExpandTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 	const autoExpandTargetRef = useRef<string | null>(null);
 
@@ -39,12 +41,32 @@ export function useNavigationDnd() {
 		}, AUTO_EXPAND_DELAY_MS);
 	};
 
-	const onDragStart = ({ active }: { active: { id: string | number } }) => {
+	const onDragStart = ({ active }: DragStartEvent) => {
 		setDragging(String(active.id));
 	};
 
 	const onDragMove = ({ active, over }: DragMoveEvent) => {
 		if (!over) {
+			const pointerY = active.rect.current.translated
+				? active.rect.current.translated.top + active.rect.current.translated.height / 2
+				: -Infinity;
+			const isBelowContainer =
+				pointerY >= (groupsContainerRef.current?.getBoundingClientRect().bottom ?? Infinity);
+
+			if (isBelowContainer) {
+				const groupIds = items["__root"]?.children ?? [];
+				const lastGroupId = groupIds[groupIds.length - 1];
+				const draggedId = String(active.id);
+				if (lastGroupId) {
+					const invalid = draggedId === lastGroupId || isDescendant(items, draggedId, lastGroupId);
+					setDragTarget(
+						invalid ? null : { anchorId: `${lastGroupId}__last`, parentId: lastGroupId, mode: "last-child" }
+					);
+					cancelAutoExpand();
+					return;
+				}
+			}
+
 			setDragTarget(null);
 			cancelAutoExpand();
 			return;
@@ -88,7 +110,6 @@ export function useNavigationDnd() {
 	};
 
 	const onDragEnd = ({ active }: DragEndEvent) => {
-		const { dragTarget, items } = useNavigationTreeStore.getState();
 		if (dragTarget) {
 			const movedName = items[String(active.id)]?.name ?? String(active.id);
 			const anchorName = items[dragTarget.anchorId]?.name ?? dragTarget.anchorId;
@@ -114,5 +135,5 @@ export function useNavigationDnd() {
 		setDragTarget(null);
 	};
 
-	return { sensors, onDragStart, onDragMove, onDragEnd, onDragCancel };
+	return { sensors, groupsContainerRef, onDragStart, onDragMove, onDragEnd, onDragCancel };
 }

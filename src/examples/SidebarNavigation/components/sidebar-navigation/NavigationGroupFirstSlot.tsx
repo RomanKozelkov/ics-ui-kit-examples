@@ -26,7 +26,7 @@ export function NavigationGroupFirstSlot({ groupId, groupName }: NavigationGroup
 					console.log(`Вставить в "${groupName}" первым элементом`);
 				}}
 			/>
-			<div ref={setNodeRef} className="absolute inset-x-0 z-10 h-2">
+			<div ref={setNodeRef} className="pointer-events-none absolute inset-x-0 z-10 h-2">
 				{isDropTarget && <DragInsertionLine className="bottom-auto top-0 -translate-y-1/2" />}
 			</div>
 		</div>
