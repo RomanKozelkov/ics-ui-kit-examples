@@ -2,6 +2,7 @@ import { SidebarGroup, SidebarGroupContent, SidebarMenu } from "ics-ui-kit/compo
 import { NavigationTreeItem } from "./NavigationTreeItem";
 import { NavigationSectionLabel } from "./NavigationSectionLabel";
 import { NavigationGroupLabel } from "./NavigationGroupLabel";
+import { NavigationGroupLastSlot } from "./NavigationGroupLastSlot";
 import { ROOT_ID } from "../../data/navigationData";
 import { Layers, Layers2, Layers3 } from "lucide-react";
 import { useNavigationTreeStore } from "../../store/navigationTreeStore";
@@ -43,6 +44,7 @@ export function NavigationTree() {
 									))}
 								</SidebarMenu>
 							</SidebarGroupContent>
+							<NavigationGroupLastSlot groupId={groupId} />
 						</SidebarGroup>
 					);
 				})}
