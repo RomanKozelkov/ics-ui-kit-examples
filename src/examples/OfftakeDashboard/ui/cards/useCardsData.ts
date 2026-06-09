@@ -5,11 +5,8 @@ import { useFiltersStore } from "../../stores/useFiltersStore";
 import { offtakeKeys } from "../../api/queryKeys";
 import { fetchCards, type CardsRaw } from "../../api/fetchers";
 
-export type CardView = {
-	current: number | null;
-	previous: number | null;
-	yoy: number | null;
-};
+export type { CardView } from "../../../../shared/bi-dashboard/ui/MetricValueCard";
+import type { CardView } from "../../../../shared/bi-dashboard/ui/MetricValueCard";
 
 const FIELD_BY_METRIC: Record<Metric, keyof CardsRaw["rows"][number]> = {
 	RUB: "valueRub",

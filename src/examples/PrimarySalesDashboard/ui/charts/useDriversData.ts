@@ -3,11 +3,12 @@ import { useShallow } from "zustand/react/shallow";
 import { useFiltersStore } from "../../stores/useFiltersStore";
 import { primarySalesKeys } from "../../api/queryKeys";
 import { fetchBrandsData, fetchDistributorsByBrandData } from "../../api/fetchers";
-import { pickMeasureField, type MeasureField } from "../datagrids/aggregateRanking";
+import { pickMeasureField, type MeasureField } from "../../../../shared/bi-dashboard/ranking/aggregateRanking";
 
 export type DriversView = "products" | "distributors";
 
-export type DriverRow = { name: string; cy: number; py: number; diff: number; pct: number | null };
+export type { DriverRow } from "../../../../shared/bi-dashboard/charts/GrowthDriversChart";
+import type { DriverRow } from "../../../../shared/bi-dashboard/charts/GrowthDriversChart";
 
 type InputRow = { name: string; year: number; units: number; valueUsd: number; valueRub: number };
 type RawData = { year: number; rows: InputRow[] };

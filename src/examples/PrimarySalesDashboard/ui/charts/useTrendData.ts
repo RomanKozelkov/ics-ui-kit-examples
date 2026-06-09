@@ -3,17 +3,13 @@ import { useShallow } from "zustand/react/shallow";
 import { useFiltersStore } from "../../stores/useFiltersStore";
 import { primarySalesKeys } from "../../api/queryKeys";
 import { fetchTrendData, type TrendDataRaw } from "../../api/fetchers";
-import { pickMeasureField, type MeasureField } from "../datagrids/aggregateRanking";
+import { pickMeasureField, type MeasureField } from "../../../../shared/bi-dashboard/ranking/aggregateRanking";
 
 const MONTHS_EN = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 const MONTHS_RU = ["Янв", "Фев", "Мар", "Апр", "Май", "Июн", "Июл", "Авг", "Сен", "Окт", "Ноя", "Дек"];
 
-export type TrendChartData = {
-	months: string[];
-	cy: Array<number | null>;
-	py: Array<number | null>;
-	yoy: Array<number | null>;
-};
+export type { TrendChartData } from "../../../../shared/bi-dashboard/charts/TrendChart";
+import type { TrendChartData } from "../../../../shared/bi-dashboard/charts/TrendChart";
 
 function aggregate(raw: TrendDataRaw, field: MeasureField): TrendChartData {
 	const cyMap: Record<string, number> = {};
