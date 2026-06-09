@@ -4,9 +4,9 @@ import type { SearchSelectOption } from "ics-ui-kit/components/search-select";
 import { FilterField } from "../ui/FilterField";
 import { useFilterOptions } from "../../hooks/useFilterOptions";
 import { MultiSelectControlled } from "../../components/MultiSelectControlled";
+import { STALE_TIMES } from "../api/queryConfig";
 
-/** Справочники меняются редко — кэшируем загруженные опции на 5 минут. */
-const DEFAULT_STALE_TIME = 5 * 60 * 1000;
+const DEFAULT_STALE_TIME = STALE_TIMES.dictionaries;
 
 type DictionaryFilterProps<T extends SearchSelectOption> = {
 	label: string;
