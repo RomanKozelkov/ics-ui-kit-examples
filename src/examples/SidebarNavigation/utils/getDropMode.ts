@@ -1,10 +1,10 @@
-import { DROP_AFTER_ZONE_RATIO } from "./constants";
+import { DROP_AFTER_ZONE_PX } from "./constants";
 
-// Нижние `ratio` высоты элемента — зона "after" (после), верхняя — "into" (внутрь)
+// Последние DROP_AFTER_ZONE_PX пикселей элемента — зона "after", остальное — "into"
 export function getDropMode(
 	pointerY: number,
 	rect: { top: number; height: number },
-	ratio = DROP_AFTER_ZONE_RATIO
+	afterZonePx = DROP_AFTER_ZONE_PX
 ): "into" | "after" {
-	return pointerY - rect.top > rect.height * ratio ? "after" : "into";
+	return pointerY - rect.top >= rect.height - afterZonePx ? "after" : "into";
 }

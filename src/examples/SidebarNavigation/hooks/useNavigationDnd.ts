@@ -35,23 +35,24 @@ export function useNavigationDnd() {
 
 	const onDragMove = ({ active, over }: DragMoveEvent) => {
 		const draggedId = String(active.id);
-		const overId = over ? String(over.id) : null;
 
-		if (!overId || overId === draggedId || isDescendant(items, draggedId, overId)) {
+		if (!over) return;
+
+		const overId = String(over.id);
+
+		if (overId === draggedId || isDescendant(items, draggedId, overId)) {
 			setDragTarget(null);
 			cancelAutoExpand();
 			return;
 		}
 
-		const rect = over?.rect;
-		if (!rect) return;
+		const rect = over.rect;
 		const translatedRect = active.rect.current.translated;
 		if (!translatedRect) return;
 		const pointerY = translatedRect.top + translatedRect.height / 2;
 		const mode = getDropMode(pointerY, rect);
 
 		const parentId = mode === "after" ? (parentMap[overId] ?? null) : null;
-
 		setDragTarget({ anchorId: overId, parentId, mode });
 
 		const isFolder = (items[overId]?.children?.length ?? 0) > 0;
