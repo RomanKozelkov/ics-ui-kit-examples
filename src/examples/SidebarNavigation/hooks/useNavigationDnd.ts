@@ -44,7 +44,11 @@ export function useNavigationDnd() {
 	};
 
 	const onDragMove = ({ active, over }: DragMoveEvent) => {
-		if (!over) return;
+		if (!over) {
+			setDragTarget(null);
+			cancelAutoExpand();
+			return;
+		}
 
 		const draggedId = String(active.id);
 		const overId = String(over.id);
