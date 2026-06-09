@@ -1,36 +1,19 @@
-import { useState } from "react";
-import { useFiltersStore } from "../../stores/useFiltersStore";
+import { DictionaryFilter } from "../../../../shared/bi-dashboard/filters/DictionaryFilter";
 import { fetchBrands } from "../../api/fetchers";
-import { FilterField } from "../components/FilterField";
 import { secondarySalesKeys } from "../../api/queryKeys";
-import { STALE_TIMES } from "../../api/queryConfig";
-import { useFilterOptions } from "../../../../shared/hooks/useFilterOptions";
-import { MultiSelectControlled } from "../../../../shared/components/MultiSelectControlled";
+import { useFiltersStore } from "../../stores/useFiltersStore";
 
 export function FilterBrand() {
 	const brands = useFiltersStore((s) => s.brands);
 	const setBrands = useFiltersStore((s) => s.setBrands);
 
-	const [open, setOpen] = useState(false);
-	const { options, isLoading, error, onSearch } = useFilterOptions({
-		open,
-		queryKey: secondarySalesKeys.brands,
-		queryFn: fetchBrands,
-		staleTime: STALE_TIMES.dictionaries
-	});
-
 	return (
-		<FilterField label="Бренды">
-			<MultiSelectControlled
-				value={brands}
-				options={options}
-				isLoading={isLoading}
-				error={error}
-				onChange={setBrands}
-				onSearch={onSearch}
-				open={open}
-				onOpenChange={setOpen}
-			/>
-		</FilterField>
+		<DictionaryFilter
+			label="Бренды"
+			value={brands}
+			onChange={setBrands}
+			queryKey={secondarySalesKeys.brands}
+			queryFn={fetchBrands}
+		/>
 	);
 }

@@ -3,7 +3,7 @@ import { useState } from "react";
 import { SecondarySalesCard } from "./ui/cards/Card";
 import { GrowthDriversChart } from "./ui/charts/ChartGrowthDrivers";
 import { TrendChart } from "./ui/charts/TrendChart";
-import { DashboardHeader } from "./ui/components/DashboardHeader";
+import { DashboardHeader } from "../../shared/bi-dashboard/ui/DashboardHeader";
 import { DataGridTopBrands } from "./ui/datagrids/DataGridTopBrands";
 import { DataGridTopDistributors } from "./ui/datagrids/DataGridTopDistributors";
 import { DataGridTopRegions } from "./ui/datagrids/DataGridTopRegions";

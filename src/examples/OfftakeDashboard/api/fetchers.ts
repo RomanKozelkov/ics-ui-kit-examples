@@ -2,273 +2,127 @@ import {
 	createMdtApiClient,
 	type TabularColumnRef,
 	type TabularFilter,
+	type TabularRawRow,
 	type TabularRequest
 } from "../../../shared/api";
-import type { FiltersState, Period } from "../stores/useFiltersStore";
-import {
-	GROUP_FIELD,
-	MEASURE_FIELD,
-	YEAR_FIELD
-} from "./tabular";
+import { inFilter } from "../../../shared/bi-dashboard/api/filters";
+import { buildPeriodFilter } from "../../../shared/bi-dashboard/api/period";
+import { column, keyOf, SCHEMA } from "../../../shared/bi-dashboard/api/schema";
+import type { Scope } from "./scopes";
+import type { FiltersState } from "../stores/useFiltersStore";
 
 const API_URL = "https://modules-dev.ics-it.ru/typification/api/v2";
 const mdtApi = createMdtApiClient(API_URL);
 
 export type FilterOption = { value: string; label: string };
 
-export async function fetchDistributors(search: string): Promise<FilterOption[]> {
+/** Колонки меры (unit/usd/rub) дашборда для tabular `select`. */
+const MEASURE_COLS: TabularColumnRef[] = [
+	column(SCHEMA.offtake, "unit"),
+	column(SCHEMA.offtake, "usd"),
+	column(SCHEMA.offtake, "rub")
+];
+const YEAR_COL = column(SCHEMA.calendar, "year");
+const MONTH_COL = column(SCHEMA.calendar, "month");
+const CLIENT_COL = column(SCHEMA.client, "client");
+const BRAND_COL = column(SCHEMA.product, "brand");
+const CONTRACT_COL = column(SCHEMA.clientContract, "isContracted");
+const CHANNEL_COL = column(SCHEMA.clientEcom, "filter");
+const REGION_COL = column(SCHEMA.clientLocation, "region");
+const MONTH_RESP_FIELD = SCHEMA.calendar.fields.month.get as string;
+
+/** Ключи ответа для парсинга строк tabular (мера/группировка/год). */
+const MEASURE_FIELD = {
+	unit: keyOf(SCHEMA.offtake.fields.unit),
+	usd: keyOf(SCHEMA.offtake.fields.usd),
+	rub: keyOf(SCHEMA.offtake.fields.rub)
+} as const;
+const GROUP_FIELD = {
+	counterparty: keyOf(SCHEMA.client.fields.client),
+	brand: keyOf(SCHEMA.product.fields.brand),
+	region: keyOf(SCHEMA.clientLocation.fields.region)
+} as const;
+const YEAR_FIELD = keyOf(SCHEMA.calendar.fields.year);
+
+/** Загрузка опций справочника по плоскому tabular-объекту (distinct по одному полю). */
+async function fetchDictionary(table: string, path: string, search: string): Promise<FilterOption[]> {
 	const query: any = {
-		table: "Client~Tabular",
-		orderBy: [{ path: "Client", orderType: "asc" }],
+		table,
+		orderBy: [{ path, orderType: "asc" }],
 		distinct: true,
-		select: [{ path: "Client" }],
+		select: [{ path }],
 		take: 1000000
 	};
-
 	if (search) {
-		query.filter = {
-			op: "contains",
-			path: "Client",
-			value: search.trim().toLowerCase()
-		};
+		query.filter = { op: "contains", path, value: search.trim().toLowerCase() };
 	}
-
-	const data = await mdtApi.rawFetch<{ payload: { rows: any[] } }>(query);
-
-	return data.payload.rows.map((item: any) => ({
-		value: item.Client,
-		label: item.Client
-	}));
+	const data = await mdtApi.rawFetch<{ payload: { rows: TabularRawRow[] } }>(query);
+	return data.payload.rows.map((item) => {
+		const value = String(item[path] ?? "");
+		return { value, label: value };
+	});
 }
 
-export async function fetchBrands(search: string): Promise<FilterOption[]> {
-	const query: any = {
-		table: "Product~Tabular",
-		orderBy: [{ path: "Product Brand", orderType: "asc" }],
-		distinct: true,
-		select: [{ path: "Product Brand" }],
-		take: 1000000
-	};
-
-	if (search) {
-		query.filter = {
-			op: "contains",
-			path: "Product Brand",
-			value: search.trim().toLowerCase()
-		};
-	}
-
-	const data = await mdtApi.rawFetch<{ payload: { rows: any[] } }>(query);
-
-	return data.payload.rows.map((item: any) => ({
-		value: item["Product Brand"],
-		label: item["Product Brand"]
-	}));
+export function fetchDistributors(search: string): Promise<FilterOption[]> {
+	return fetchDictionary(SCHEMA.client.table, SCHEMA.client.fields.client.name, search);
 }
 
-export async function fetchContracts(search: string): Promise<FilterOption[]> {
-	const query: any = {
-		table: "Client Contract~Tabular",
-		orderBy: [{ path: "Client is Contracted", orderType: "asc" }],
-		distinct: true,
-		select: [{ path: "Client is Contracted" }],
-		take: 1000000
-	};
-
-	if (search) {
-		query.filter = {
-			op: "contains",
-			path: "Client is Contracted",
-			value: search.trim().toLowerCase()
-		};
-	}
-
-	const data = await mdtApi.rawFetch<{ payload: { rows: any[] } }>(query);
-
-	return data.payload.rows.map((item: any) => ({
-		value: item["Client is Contracted"],
-		label: item["Client is Contracted"]
-	}));
+export function fetchBrands(search: string): Promise<FilterOption[]> {
+	return fetchDictionary(SCHEMA.product.table, SCHEMA.product.fields.brand.name, search);
 }
 
-export async function fetchSalesChannels(search: string): Promise<FilterOption[]> {
-	const query: any = {
-		table: "Client Ecom Typed Filter~Tabular",
-		orderBy: [{ path: "Filter", orderType: "asc" }],
-		distinct: true,
-		select: [{ path: "Filter" }],
-		take: 1000000
-	};
+export function fetchContracts(search: string): Promise<FilterOption[]> {
+	return fetchDictionary(SCHEMA.clientContract.table, SCHEMA.clientContract.fields.isContracted.name, search);
+}
 
-	if (search) {
-		query.filter = {
-			op: "contains",
-			path: "Filter",
-			value: search.trim().toLowerCase()
-		};
-	}
-
-	const data = await mdtApi.rawFetch<{ payload: { rows: any[] } }>(query);
-
-	return data.payload.rows.map((item: any) => ({
-		value: item.Filter,
-		label: item.Filter
-	}));
+export function fetchSalesChannels(search: string): Promise<FilterOption[]> {
+	return fetchDictionary(SCHEMA.clientEcom.table, SCHEMA.clientEcom.fields.filter.name, search);
 }
 
 type DashboardFilterInput = Pick<FiltersState, "counterparties" | "contracts" | "salesChannels" | "brands">;
 
+/** Дашборд-фильтры Offtake: клиенты / контракты / каналы продаж / бренды. */
 function appendDashboardFilters(main: TabularFilter[], input: DashboardFilterInput) {
 	if (input.counterparties.length > 0) {
-		main.push({
-			op: "in",
-			column: { table: "Client~Tabular", name: "Client" },
-			list: input.counterparties.map((c) => c.value)
-		});
+		main.push(inFilter(CLIENT_COL, input.counterparties.map((c) => c.value)));
 	}
 	if (input.contracts.length > 0) {
-		main.push({
-			op: "in",
-			column: { table: "Client Contract~Tabular", name: "Client is Contracted" },
-			list: input.contracts.map((c) => c.value)
-		});
+		main.push(inFilter(CONTRACT_COL, input.contracts.map((c) => c.value)));
 	}
 	if (input.salesChannels.length > 0) {
-		main.push({
-			op: "in",
-			column: { table: "Client Ecom Typed Filter~Tabular", name: "Filter" },
-			list: input.salesChannels.map((c) => c.value)
-		});
+		main.push(inFilter(CHANNEL_COL, input.salesChannels.map((c) => c.value)));
 	}
 	if (input.brands.length > 0) {
-		main.push({
-			op: "in",
-			column: { table: "Product~Tabular", name: "Product Brand" },
-			list: input.brands.map((b) => b.value)
-		});
+		main.push(inFilter(BRAND_COL, input.brands.map((b) => b.value)));
 	}
 }
 
-type CardsFetcherInput = Pick<
-	FiltersState,
-	"year" | "sourceType" | "bindType" | "period" | "counterparties" | "contracts" | "salesChannels" | "brands"
->;
+type CardsFetcherInput = Scope;
 
-const CALENDAR_ID = { table: "Calendar~Tabular", name: "ID" } as const;
-
-export type PeriodRange = { startId: number; endId: number };
-
-function yyyymmdd(d: Date): number {
-	const m = String(d.getMonth() + 1).padStart(2, "0");
-	const day = String(d.getDate()).padStart(2, "0");
-	return Number(`${d.getFullYear()}${m}${day}`);
+/** Базовые фильтры запроса данных: источник, тип привязки, два года, период + дашборд-фильтры. */
+function baseFilters(input: CardsFetcherInput): TabularFilter[] {
+	const main: TabularFilter[] = [
+		{ op: "eq", column: column(SCHEMA.sourceType, "sourceType").column, value: input.sourceType },
+		{ op: "eq", column: column(SCHEMA.bindType, "bindType").column, value: input.bindType },
+		{ op: "in", column: YEAR_COL.column, list: [input.year - 1, input.year] }
+	];
+	const periodFilter = buildPeriodFilter(input.year, input.period);
+	if (periodFilter) main.push(periodFilter);
+	appendDashboardFilters(main, input);
+	return main;
 }
 
-export function generatePeriodRanges(year: number, period: Period): PeriodRange[] | null {
-	if (period === "FY") return null;
-
-	const today = new Date();
-	const currentMonth = today.getMonth();
-	const currentDay = today.getDate();
-
-	let startMonth: number;
-	switch (period) {
-		case "QTD":
-			startMonth = Math.floor(currentMonth / 3) * 3;
-			break;
-		case "MTD":
-			startMonth = currentMonth;
-			break;
-		default:
-			startMonth = 0;
-	}
-
-	const ranges: PeriodRange[] = [];
-	for (const y of [year, year - 1]) {
-		const start = new Date(y, startMonth, 1);
-		const end = new Date(y, currentMonth, currentDay);
-		ranges.push({ startId: yyyymmdd(start), endId: yyyymmdd(end) });
-	}
-	return ranges;
-}
-
-// Как должно быть: диапазонный фильтр через or(and(ge, le)).
-// Бэкенд такой формат не принимает — оставлено для справки.
-export function buildPeriodFilter(ranges: PeriodRange[]): TabularFilter {
-	return {
-		op: "or",
-		groups: ranges.map((r) => ({
-			op: "and" as const,
-			groups: [
-				{ op: "ge" as const, column: { ...CALENDAR_ID }, value: r.startId },
-				{ op: "le" as const, column: { ...CALENDAR_ID }, value: r.endId }
-			]
-		}))
-	};
-}
-
-function expandRangeToIds(range: PeriodRange): number[] {
-	const startY = Math.floor(range.startId / 10000);
-	const startM = Math.floor((range.startId % 10000) / 100) - 1;
-	const startD = range.startId % 100;
-	const endY = Math.floor(range.endId / 10000);
-	const endM = Math.floor((range.endId % 10000) / 100) - 1;
-	const endD = range.endId % 100;
-
-	const ids: number[] = [];
-	const cursor = new Date(startY, startM, startD);
-	const end = new Date(endY, endM, endD);
-	while (cursor <= end) {
-		ids.push(yyyymmdd(cursor));
-		cursor.setDate(cursor.getDate() + 1);
-	}
-	return ids;
-}
-
-export function buildPeriodIdsFilter(ranges: PeriodRange[]): TabularFilter {
-	const list = ranges.flatMap(expandRangeToIds);
-	return {
-		op: "in",
-		column: { ...CALENDAR_ID },
-		list
-	};
-}
+export type CardsRaw = {
+	year: number;
+	rows: Array<{ year: number; units: number; valueUsd: number; valueRub: number }>;
+};
 
 function buildCardsRequest(input: CardsFetcherInput): TabularRequest {
-	const main: TabularFilter[] = [
-		{
-			op: "eq",
-			column: { table: "Source Type~Tabular", name: "Source Type" },
-			value: input.sourceType
-		},
-		{
-			op: "eq",
-			column: { table: "Bind Type~Tabular", name: "Bind Type" },
-			value: input.bindType
-		},
-		{
-			op: "in",
-			column: { table: "Calendar~Tabular", name: "Year" },
-			list: [input.year - 1, input.year]
-		}
-	];
-
-	const ranges = generatePeriodRanges(input.year, input.period);
-	if (ranges) {
-		main.push(buildPeriodIdsFilter(ranges));
-	}
-	appendDashboardFilters(main, input);
-
 	return {
-		select: [
-			{ column: { table: "Offtake~Tabular", name: "Offtake, unit" } },
-			{ column: { table: "Offtake~Tabular", name: "Offtake, USD conversion" } },
-			{ column: { table: "Offtake~Tabular", name: "Offtake, INV RUB" } },
-			{ column: { table: "Calendar~Tabular", name: "Year" } }
-		],
+		select: [...MEASURE_COLS, YEAR_COL],
 		take: 1000000,
 		skip: 0,
-		filter: { op: "and", groups: main }
+		filter: { op: "and", groups: baseFilters(input) }
 	};
 }
 
@@ -291,47 +145,14 @@ export type DistributorsRaw = {
 	rows: Array<{ name: string; year: number; units: number; valueUsd: number; valueRub: number }>;
 };
 
-type DistributorsFetcherInput = Pick<
-	FiltersState,
-	"year" | "sourceType" | "bindType" | "period" | "counterparties" | "contracts" | "salesChannels" | "brands"
->;
+type DistributorsFetcherInput = CardsFetcherInput;
 
 function buildDistributorsRequest(input: DistributorsFetcherInput): TabularRequest {
-	const main: TabularFilter[] = [
-		{
-			op: "eq",
-			column: { table: "Source Type~Tabular", name: "Source Type" },
-			value: input.sourceType
-		},
-		{
-			op: "eq",
-			column: { table: "Bind Type~Tabular", name: "Bind Type" },
-			value: input.bindType
-		},
-		{
-			op: "in",
-			column: { table: "Calendar~Tabular", name: "Year" },
-			list: [input.year - 1, input.year]
-		}
-	];
-
-	const ranges = generatePeriodRanges(input.year, input.period);
-	if (ranges) {
-		main.push(buildPeriodIdsFilter(ranges));
-	}
-	appendDashboardFilters(main, input);
-
 	return {
-		select: [
-			{ column: { table: "Offtake~Tabular", name: "Offtake, unit" } },
-			{ column: { table: "Offtake~Tabular", name: "Offtake, USD conversion" } },
-			{ column: { table: "Offtake~Tabular", name: "Offtake, INV RUB" } },
-			{ column: { table: "Client~Tabular", name: "Client" } },
-			{ column: { table: "Calendar~Tabular", name: "Year" } }
-		],
+		select: [...MEASURE_COLS, CLIENT_COL, YEAR_COL],
 		take: 1000000,
 		skip: 0,
-		filter: { op: "and", groups: main }
+		filter: { op: "and", groups: baseFilters(input) }
 	};
 }
 
@@ -355,52 +176,14 @@ export type RegionsRaw = {
 	rows: Array<{ name: string; year: number; units: number; valueUsd: number; valueRub: number }>;
 };
 
-type RegionsFetcherInput = Pick<
-	FiltersState,
-	"year" | "sourceType" | "bindType" | "period" | "counterparties" | "contracts" | "salesChannels" | "brands"
->;
-
-const REGION_COL: TabularColumnRef = {
-	column: { table: "Client Location~Tabular", name: "Client Location Region FIAS" }
-};
+type RegionsFetcherInput = CardsFetcherInput;
 
 function buildRegionsRequest(input: RegionsFetcherInput): TabularRequest {
-	const main: TabularFilter[] = [
-		{
-			op: "eq",
-			column: { table: "Source Type~Tabular", name: "Source Type" },
-			value: input.sourceType
-		},
-		{
-			op: "eq",
-			column: { table: "Bind Type~Tabular", name: "Bind Type" },
-			value: input.bindType
-		},
-		{
-			op: "in",
-			column: { table: "Calendar~Tabular", name: "Year" },
-			list: [input.year - 1, input.year]
-		}
-	];
-
-	appendDashboardFilters(main, input);
-
-	const ranges = generatePeriodRanges(input.year, input.period);
-	if (ranges) {
-		main.push(buildPeriodIdsFilter(ranges));
-	}
-
 	return {
-		select: [
-			{ column: { table: "Offtake~Tabular", name: "Offtake, unit" } },
-			{ column: { table: "Offtake~Tabular", name: "Offtake, USD conversion" } },
-			{ column: { table: "Offtake~Tabular", name: "Offtake, INV RUB" } },
-			REGION_COL,
-			{ column: { table: "Calendar~Tabular", name: "Year" } }
-		],
+		select: [...MEASURE_COLS, REGION_COL, YEAR_COL],
 		take: 1000000,
 		skip: 0,
-		filter: { op: "and", groups: main }
+		filter: { op: "and", groups: baseFilters(input) }
 	};
 }
 
@@ -424,52 +207,14 @@ export type BrandsRaw = {
 	rows: Array<{ name: string; year: number; units: number; valueUsd: number; valueRub: number }>;
 };
 
-type BrandsFetcherInput = Pick<
-	FiltersState,
-	"year" | "sourceType" | "bindType" | "period" | "counterparties" | "contracts" | "salesChannels" | "brands"
->;
-
-const BRAND_COL: TabularColumnRef = {
-	column: { table: "Product~Tabular", name: "Product Brand" }
-};
+type BrandsFetcherInput = CardsFetcherInput;
 
 function buildBrandsRequest(input: BrandsFetcherInput): TabularRequest {
-	const main: TabularFilter[] = [
-		{
-			op: "eq",
-			column: { table: "Source Type~Tabular", name: "Source Type" },
-			value: input.sourceType
-		},
-		{
-			op: "eq",
-			column: { table: "Bind Type~Tabular", name: "Bind Type" },
-			value: input.bindType
-		},
-		{
-			op: "in",
-			column: { table: "Calendar~Tabular", name: "Year" },
-			list: [input.year - 1, input.year]
-		}
-	];
-
-	appendDashboardFilters(main, input);
-
-	const ranges = generatePeriodRanges(input.year, input.period);
-	if (ranges) {
-		main.push(buildPeriodIdsFilter(ranges));
-	}
-
 	return {
-		select: [
-			{ column: { table: "Offtake~Tabular", name: "Offtake, unit" } },
-			{ column: { table: "Offtake~Tabular", name: "Offtake, USD conversion" } },
-			{ column: { table: "Offtake~Tabular", name: "Offtake, INV RUB" } },
-			BRAND_COL,
-			{ column: { table: "Calendar~Tabular", name: "Year" } }
-		],
+		select: [...MEASURE_COLS, BRAND_COL, YEAR_COL],
 		take: 1000000,
 		skip: 0,
-		filter: { op: "and", groups: main }
+		filter: { op: "and", groups: baseFilters(input) }
 	};
 }
 
@@ -488,53 +233,14 @@ export async function fetchBrandsData(input: BrandsFetcherInput): Promise<Brands
 	return { year: input.year, rows };
 }
 
-type TrendFetcherInput = Pick<
-	FiltersState,
-	"year" | "sourceType" | "bindType" | "period" | "counterparties" | "contracts" | "salesChannels" | "brands"
->;
-
-const MONTH_COL: TabularColumnRef = {
-	column: { table: "Calendar~Tabular", name: "Month" }
-};
-const MONTH_RESP_FIELD = "Calendar[Month]" as const;
+type TrendFetcherInput = CardsFetcherInput;
 
 function buildTrendDataRequest(input: TrendFetcherInput): TabularRequest {
-	const main: TabularFilter[] = [
-		{
-			op: "eq",
-			column: { table: "Source Type~Tabular", name: "Source Type" },
-			value: input.sourceType
-		},
-		{
-			op: "eq",
-			column: { table: "Bind Type~Tabular", name: "Bind Type" },
-			value: input.bindType
-		},
-		{
-			op: "in",
-			column: { table: "Calendar~Tabular", name: "Year" },
-			list: [input.year - 1, input.year]
-		}
-	];
-
-	appendDashboardFilters(main, input);
-
-	const ranges = generatePeriodRanges(input.year, input.period);
-	if (ranges) {
-		main.push(buildPeriodIdsFilter(ranges));
-	}
-
 	return {
-		select: [
-			{ column: { table: "Offtake~Tabular", name: "Offtake, unit" } },
-			{ column: { table: "Offtake~Tabular", name: "Offtake, USD conversion" } },
-			{ column: { table: "Offtake~Tabular", name: "Offtake, INV RUB" } },
-			MONTH_COL,
-			{ column: { table: "Calendar~Tabular", name: "Year" } }
-		],
+		select: [...MEASURE_COLS, MONTH_COL, YEAR_COL],
 		take: 1000000,
 		skip: 0,
-		filter: { op: "and", groups: main }
+		filter: { op: "and", groups: baseFilters(input) }
 	};
 }
 
@@ -558,48 +264,14 @@ export async function fetchTrendData(input: TrendFetcherInput): Promise<TrendDat
 	return { year: input.year, rows };
 }
 
-type DistributorsByBrandInput = Pick<
-	FiltersState,
-	"year" | "sourceType" | "bindType" | "period" | "counterparties" | "contracts" | "salesChannels" | "brands"
->;
+type DistributorsByBrandInput = CardsFetcherInput;
 
 function buildDistributorsByBrandRequest(input: DistributorsByBrandInput): TabularRequest {
-	const main: TabularFilter[] = [
-		{
-			op: "eq",
-			column: { table: "Source Type~Tabular", name: "Source Type" },
-			value: input.sourceType
-		},
-		{
-			op: "eq",
-			column: { table: "Bind Type~Tabular", name: "Bind Type" },
-			value: input.bindType
-		},
-		{
-			op: "in",
-			column: { table: "Calendar~Tabular", name: "Year" },
-			list: [input.year - 1, input.year]
-		}
-	];
-
-	appendDashboardFilters(main, input);
-
-	const ranges = generatePeriodRanges(input.year, input.period);
-	if (ranges) {
-		main.push(buildPeriodIdsFilter(ranges));
-	}
-
 	return {
-		select: [
-			{ column: { table: "Offtake~Tabular", name: "Offtake, unit" } },
-			{ column: { table: "Offtake~Tabular", name: "Offtake, USD conversion" } },
-			{ column: { table: "Offtake~Tabular", name: "Offtake, INV RUB" } },
-			{ column: { table: "Client~Tabular", name: "Client" } },
-			{ column: { table: "Calendar~Tabular", name: "Year" } }
-		],
+		select: [...MEASURE_COLS, CLIENT_COL, YEAR_COL],
 		take: 1000000,
 		skip: 0,
-		filter: { op: "and", groups: main }
+		filter: { op: "and", groups: baseFilters(input) }
 	};
 }
 
@@ -618,10 +290,7 @@ export async function fetchDistributorsByBrandData(input: DistributorsByBrandInp
 	return { year: input.year, rows };
 }
 
-type RegionsByBrandInput = Pick<
-	FiltersState,
-	"year" | "sourceType" | "bindType" | "period" | "counterparties" | "contracts" | "salesChannels" | "brands"
->;
+type RegionsByBrandInput = CardsFetcherInput;
 
 export async function fetchRegionsByBrandData(input: RegionsByBrandInput): Promise<RegionsRaw> {
 	return fetchRegionsData(input);
