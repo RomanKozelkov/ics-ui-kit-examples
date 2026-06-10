@@ -6,7 +6,7 @@ import { NavigationGroupLastSlot } from "./NavigationGroupLastSlot";
 import { ROOT_ID } from "../../data/navigationData";
 import { Layers, Layers2, Layers3 } from "lucide-react";
 import { useNavigationTreeStore } from "../../store/navigationTreeStore";
-import { DndContext, DragOverlay, pointerWithin } from "@dnd-kit/core";
+import { DndContext, DragOverlay, MeasuringStrategy, pointerWithin } from "@dnd-kit/core";
 import { NavigationDragPreview } from "./sidebar-drag-drop/NavigationDragPreview";
 import { useNavigationDnd } from "../../hooks/useNavigationDnd";
 
@@ -23,6 +23,7 @@ export function NavigationTree() {
 		<DndContext
 			sensors={sensors}
 			collisionDetection={pointerWithin}
+			measuring={{ droppable: { strategy: MeasuringStrategy.Always, frequency: 100 } }}
 			onDragStart={onDragStart}
 			onDragMove={onDragMove}
 			onDragEnd={onDragEnd}

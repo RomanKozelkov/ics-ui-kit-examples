@@ -21,7 +21,9 @@ export function useNavigationDnd() {
 	const pointerYRef = useRef<number>(0);
 
 	useEffect(() => {
-		const onPointerMove = (e: PointerEvent) => { pointerYRef.current = e.clientY; };
+		const onPointerMove = (e: PointerEvent) => {
+			pointerYRef.current = e.clientY;
+		};
 		window.addEventListener("pointermove", onPointerMove);
 		return () => window.removeEventListener("pointermove", onPointerMove);
 	}, []);
