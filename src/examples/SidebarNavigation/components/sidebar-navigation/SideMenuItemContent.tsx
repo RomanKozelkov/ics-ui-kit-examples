@@ -54,11 +54,14 @@ export function SideMenuItemContent({
 				{...dragListeners}
 				{...dragAttributes}
 			>
-				<OverflowTooltip className="inline-block max-w-full truncate" focus="high">
-					{data.name}
-				</OverflowTooltip>
-				{data.badge != null && <NavigationItemCounter>{data.badge}</NavigationItemCounter>}
-				<NavigationTreeItemActions trigger={trigger} />
+				<span className="flex min-w-0 flex-1 items-center gap-2">
+					<OverflowTooltip className="inline-block min-w-0 truncate" focus="high">
+						{data.name}
+					</OverflowTooltip>
+					{data.badge != null && <NavigationItemCounter>{data.badge}</NavigationItemCounter>}
+					{trigger}
+				</span>
+				<NavigationTreeItemActions />
 			</ButtonComponent>
 		</ItemWrapper>
 	);

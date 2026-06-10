@@ -1,6 +1,7 @@
 import { useMemo } from "react";
 import { useNavigationTreeStore } from "../store/navigationTreeStore";
 import { getParentMap } from "../utils/getParentMap";
+import { getMinInsertionDepth, getParentIdAtDepth } from "../utils/sidebarInsertionLineUtils";
 import { ROOT_ID } from "../data/navigationData";
 
 export function useInsertionLineState(id: string, level: number, isFolder: boolean, open: boolean) {
@@ -22,42 +23,13 @@ export function useInsertionLineState(id: string, level: number, isFolder: boole
 	const isOpenFolder = isFolder && open;
 	const parentMap = useMemo(() => getParentMap(items), [items]);
 
-	let minDepth = 1;
-	let maxDepth: number;
-	let getParentId: (targetDepth: number) => string | null;
+	const minDepth = isOpenFolder ? level + 1 : getMinInsertionDepth(id, level, items, parentMap);
+	const maxDepth = level + 1;
 
-	if (isOpenFolder) {
-		minDepth = level + 1;
-		maxDepth = level + 1;
-		getParentId = () => id;
-	} else {
-		let curId = id;
-		let curLevel = level;
-		while (curLevel > 1) {
-			const pid = parentMap[curId];
-			if (!pid) break;
-			const siblings = items[pid]?.children ?? [];
-			if (siblings.at(-1) !== curId) {
-				minDepth = curLevel;
-				break;
-			}
-			curId = pid;
-			curLevel--;
-		}
-		maxDepth = level + 1;
-		getParentId = (targetDepth) => {
-			if (targetDepth > level) return id;
-			let cur = id;
-			let depth = level;
-			while (depth > targetDepth) {
-				const pid = parentMap[cur];
-				if (!pid) break;
-				cur = pid;
-				depth--;
-			}
-			return parentMap[cur] ?? null;
-		};
-	}
+	const getParentId = (targetDepth: number): string | null => {
+		if (isOpenFolder) return id;
+		return getParentIdAtDepth(id, level, targetDepth, parentMap);
+	};
 
 	const handleParentHover = (depth: number | null) => {
 		if (depth === null) setHover(null, null);

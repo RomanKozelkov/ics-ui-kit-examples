@@ -15,7 +15,7 @@ export function NavigationGroupLastSlot({ groupId }: NavigationGroupLastSlotProp
 	);
 
 	return (
-		<div ref={setNodeRef} className="pointer-events-none absolute inset-x-0 -bottom-1 z-10 h-2">
+		<div ref={setNodeRef} className="pointer-events-none absolute inset-x-2 -bottom-1 z-10 h-2">
 			{isDropTarget && <DragInsertionLine />}
 		</div>
 	);
