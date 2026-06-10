@@ -33,12 +33,8 @@ export function NavigationTreeItem({ id, level }: NavigationTreeItemProps) {
 	} = useItemDndState(id);
 
 	const isFolder = (data?.children?.length ?? 0) > 0;
-	const { minDepth, maxDepth, handleAdd, handleParentHover, showsLine, isAnchor } = useInsertionLineState(
-		id,
-		level,
-		isFolder,
-		open
-	);
+	const { minDepth, maxDepth, handleAdd, handleParentHover, showsLine, isAnchor, showsDragLine, isDragAnchor } =
+		useInsertionLineState(id, level, isFolder, open);
 
 	if (!data) return null;
 
@@ -58,7 +54,9 @@ export function NavigationTreeItem({ id, level }: NavigationTreeItemProps) {
 				className={cn("relative flex flex-col", isDragging && "opacity-50")}
 			>
 				{showsLine && <VerticalLineSegment className={isAnchor ? "bottom-[0.3125rem]" : undefined} />}
+				{showsDragLine && !isDragAnchor && level > 1 && <VerticalLineSegment />}
 				<div ref={setDroppableRef} className="relative">
+					{showsDragLine && isDragAnchor && level > 1 && <VerticalLineSegment className="bottom-[0.3125rem]" />}
 					<SideMenuItemContent
 						isNested={isNested}
 						data={data}
@@ -118,6 +116,7 @@ export function NavigationTreeItem({ id, level }: NavigationTreeItemProps) {
 	return (
 		<div ref={setDroppableRef} className="relative">
 			{showsLine && <VerticalLineSegment className={isAnchor ? "bottom-[0.3125rem]" : undefined} />}
+			{showsDragLine && level > 1 && <VerticalLineSegment className={isDragAnchor ? "bottom-[0.3125rem]" : undefined} />}
 			<SideMenuItemContent
 				isNested={isNested}
 				data={data}
