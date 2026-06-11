@@ -6,17 +6,26 @@ export function InsertionDepthIcon({
 	isHidden,
 	isPlaceholder,
 	isActive,
-	style
+	style,
+	onClick,
+	onMouseEnter,
+	onMouseLeave,
 }: {
 	isHidden: boolean;
 	isPlaceholder: boolean;
 	isActive: boolean;
 	style?: React.CSSProperties;
+	onClick?: () => void;
+	onMouseEnter?: () => void;
+	onMouseLeave?: () => void;
 }) {
 	return (
 		<div
 			className="absolute top-1/2 h-3 w-3 -translate-y-1/2"
 			style={style}
+			onClick={onClick}
+			onMouseEnter={onMouseEnter}
+			onMouseLeave={onMouseLeave}
 		>
 			<Icon
 				icon={CircleFadingPlus}

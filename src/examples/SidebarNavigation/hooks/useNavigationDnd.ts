@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef } from "react";
+import type { RefObject } from "react";
 import { PointerSensor, useSensor, useSensors } from "@dnd-kit/core";
 import type { DragStartEvent, DragMoveEvent, DragEndEvent } from "@dnd-kit/core";
 import { useNavigationTreeStore } from "../store/navigationTreeStore";
@@ -7,7 +8,7 @@ import { getParentMap } from "../utils/getParentMap";
 import { DRAG_ACTIVATION_DISTANCE, AUTO_EXPAND_DELAY_MS } from "../utils/constants";
 import { getDropMode } from "../utils/getDropMode";
 
-export function useNavigationDnd() {
+export function useNavigationDnd(containerRef: RefObject<HTMLDivElement | null>) {
 	const setDragging = useNavigationTreeStore((s) => s.setDragging);
 	const setDragTarget = useNavigationTreeStore((s) => s.setDragTarget);
 	const items = useNavigationTreeStore((s) => s.items);
@@ -15,7 +16,7 @@ export function useNavigationDnd() {
 	const parentMap = useMemo(() => getParentMap(items), [items]);
 	const dragTarget = useNavigationTreeStore((s) => s.dragTarget);
 
-	const groupsContainerRef = useRef<HTMLDivElement>(null);
+	const groupsContainerRef = containerRef;
 	const autoExpandTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 	const autoExpandTargetRef = useRef<string | null>(null);
 	const pointerYRef = useRef<number>(0);
@@ -139,5 +140,5 @@ export function useNavigationDnd() {
 		setDragTarget(null);
 	};
 
-	return { sensors, groupsContainerRef, onDragStart, onDragMove, onDragEnd, onDragCancel };
+	return { sensors, onDragStart, onDragMove, onDragEnd, onDragCancel };
 }

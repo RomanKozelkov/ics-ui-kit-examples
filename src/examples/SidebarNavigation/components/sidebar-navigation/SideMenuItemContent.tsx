@@ -48,7 +48,7 @@ export function SideMenuItemContent({
 				onClick={onSelect}
 				isActive={isSelected}
 				className={cn(
-					"group/nav h-7 py-1.5 pr-1.5 data-[active=true]:font-medium",
+					"group/nav h-7 gap-1 py-1.5 pr-1.5 data-[active=true]:font-medium",
 					isHighlighted && "bg-secondary-bg-hover"
 				)}
 				{...dragListeners}

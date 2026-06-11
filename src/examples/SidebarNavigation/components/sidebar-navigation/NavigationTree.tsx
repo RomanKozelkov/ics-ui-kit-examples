@@ -9,6 +9,9 @@ import { useNavigationTreeStore } from "../../store/navigationTreeStore";
 import { DndContext, DragOverlay, MeasuringStrategy, pointerWithin } from "@dnd-kit/core";
 import { NavigationDragPreview } from "./sidebar-drag-drop/NavigationDragPreview";
 import { useNavigationDnd } from "../../hooks/useNavigationDnd";
+import { useHoverBelowContainer } from "../../hooks/useHoverBelowContainer";
+import { AfterContainerInsertionLine } from "./sidebar-insertion-line/AfterContainerInsertionLine";
+import { useRef } from "react";
 
 const groupIcons = [Layers2, Layers3, Layers];
 
@@ -17,7 +20,9 @@ export function NavigationTree() {
 	const draggingId = useNavigationTreeStore((s) => s.draggingId);
 	const groupIds = items[ROOT_ID]?.children ?? [];
 
-	const { sensors, groupsContainerRef, onDragStart, onDragMove, onDragEnd, onDragCancel } = useNavigationDnd();
+	const containerRef = useRef<HTMLDivElement | null>(null);
+	const { sensors, onDragStart, onDragMove, onDragEnd, onDragCancel } = useNavigationDnd(containerRef);
+	const { isHoverBelow } = useHoverBelowContainer(containerRef);
 
 	return (
 		<DndContext
@@ -29,7 +34,7 @@ export function NavigationTree() {
 			onDragEnd={onDragEnd}
 			onDragCancel={onDragCancel}
 		>
-			<div ref={groupsContainerRef} className="relative mt-4 flex flex-col gap-3">
+			<div ref={containerRef} className="relative mt-4 flex flex-col gap-3">
 				{groupIds.map((groupId, index) => {
 					const groupData = items[groupId];
 					if (!groupData) return null;
@@ -51,6 +56,10 @@ export function NavigationTree() {
 					);
 				})}
 			</div>
+			<AfterContainerInsertionLine
+				isVisible={isHoverBelow && !draggingId}
+				onAdd={() => console.log("Вставить новую секцию")}
+			/>
 			<DragOverlay>
 				{draggingId && items[draggingId] && <NavigationDragPreview name={items[draggingId].name} />}
 			</DragOverlay>
