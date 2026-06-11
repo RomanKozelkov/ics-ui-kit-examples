@@ -7,7 +7,7 @@ export function DragInsertionLine({ className }: { className?: string }) {
 		<div
 			data-sidebar="drag-insertion-line"
 			className={cn(
-				"pointer-events-none absolute inset-x-0 bottom-0 z-20 flex h-3 translate-y-1/2 flex-row items-center border-none bg-transparent p-0",
+				"pointer-events-none absolute -left-[3.5px] bottom-0 right-0 z-20 flex h-3 translate-y-1/2 flex-row items-center border-none bg-transparent p-0",
 				className
 			)}
 		>
