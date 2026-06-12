@@ -1,0 +1,89 @@
+/* Тема для react-calendar-timeline под дизайн ICS UI Kit.
+   Базовые стили берём из react-calendar-timeline/style.css, тут только переопределяем. */
+
+.promo-rct .rct-outer {
+	border-radius: 8px;
+}
+
+/* Корень и шапка */
+.promo-rct .rct-header-root {
+	background: var(--primary-bg, #fff);
+	border-bottom: 1px solid var(--border, #e5e7eb);
+}
+
+.promo-rct .rct-calendar-header {
+	border: none;
+}
+
+.promo-rct .rct-dateHeader {
+	border-left: 1px solid var(--border, #e5e7eb);
+	border-bottom: none;
+	background: transparent;
+	color: var(--primary-fg, #111);
+	font-size: 11px;
+}
+
+.promo-rct .rct-dateHeader-primary {
+	border-left: 1px solid var(--border, #e5e7eb);
+	color: var(--primary-fg, #111);
+	background: transparent;
+	font-weight: 600;
+}
+
+/* Сайдбар групп */
+.promo-rct .rct-sidebar {
+	border-right: 1px solid var(--border, #e5e7eb);
+	background: var(--primary-bg, #fff);
+}
+
+.promo-rct .rct-sidebar .rct-sidebar-row {
+	border-bottom: 1px solid var(--border, #e5e7eb);
+	padding: 0;
+	background: transparent;
+}
+
+/* Горизонтальные строки-разделители */
+.promo-rct .rct-horizontal-lines .rct-hl-even,
+.promo-rct .rct-horizontal-lines .rct-hl-odd {
+	border-bottom: 1px solid var(--border, #e5e7eb);
+	background: transparent;
+}
+
+/* Вертикальные линии (колонки дней) */
+.promo-rct .rct-vertical-lines .rct-vl {
+	border-left: 1px solid transparent;
+}
+
+.promo-rct .rct-vertical-lines .rct-vl.promo-col-weekend {
+	background: color-mix(in srgb, var(--muted, #6b7280) 14%, transparent);
+}
+
+.promo-rct .rct-vertical-lines .rct-vl.promo-col-week-start {
+	border-left: 1px solid var(--border, #e5e7eb);
+}
+
+/* Полоски промо: позиционирование задаёт библиотека, фон — наш renderer */
+.promo-rct .rct-item {
+	background: transparent !important;
+	border: none !important;
+}
+
+/* Засечка дня (когда номера скрыты) */
+.promo-day-tick {
+	display: block;
+	width: 1px;
+	height: 8px;
+	margin: 0 auto;
+	background: var(--border, #d1d5db);
+}
+
+/* Акцентная вертикальная линия «сегодня» */
+.promo-today-line {
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	width: 2px;
+	background: var(--info, #2563eb);
+	z-index: 40;
+	pointer-events: none;
+}

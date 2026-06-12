@@ -23,6 +23,9 @@ dependencies:
   '@tanstack/react-start':
     specifier: ^1.167.16
     version: 1.168.25(react-dom@19.2.7)(react@19.2.7)(vite@8.0.16)
+  dnd-timeline:
+    specifier: ^3.1.1
+    version: 3.1.1(react-dom@19.2.7)(react@19.2.7)
   echarts:
     specifier: ^6.0.0
     version: 6.1.0
@@ -44,6 +47,9 @@ dependencies:
   react:
     specifier: ^19.2.4
     version: 19.2.7
+  react-calendar-timeline:
+    specifier: 0.30.0-beta.18
+    version: 0.30.0-beta.18(dayjs@1.11.21)(interactjs@1.10.27)(react-dom@19.2.7)(react@19.2.7)
   react-dom:
     specifier: ^19.2.4
     version: 19.2.7(react@19.2.7)
@@ -377,6 +383,10 @@ packages:
     dependencies:
       '@standard-schema/utils': 0.3.0
       react-hook-form: 7.78.0(react@19.2.7)
+    dev: false
+
+  /@interactjs/types@1.10.27:
+    resolution: {integrity: sha512-BUdv0cvs4H5ODuwft2Xp4eL8Vmi3LcihK42z0Ft/FbVJZoRioBsxH+LlsBdK4tAie7PqlKGy+1oyOncu1nQ6eA==}
     dev: false
 
   /@jridgewell/gen-mapping@0.3.13:
@@ -2133,6 +2143,10 @@ packages:
       clsx: 2.1.1
     dev: false
 
+  /classnames@2.5.1:
+    resolution: {integrity: sha512-saHYOzhIQs6wy2sVxTM6bUDsQO4F50V9RQ22qBpEdCW+I+/Wmke2HOl6lS6dTpdxVhb88/I6+Hs+438c3lfUow==}
+    dev: false
+
   /clsx@2.1.1:
     resolution: {integrity: sha512-eYm0QWBtUrBWZWG0d386OGAw16Z995PiOVo2B7bjWSbHedGl5e0ZWaq65kOGgUSNesEIDkB9ISbTg/JK9dhCZA==}
     engines: {node: '>=6'}
@@ -2183,6 +2197,10 @@ packages:
     resolution: {integrity: sha512-+1UMbeh68lH1SegH83CGWwpb6OHHbpSgr3+s5Eww5M4CAgswBpoWS0AjTOfEJ33HiYKz1hdj/KTFprzXHmq/6w==}
     dev: false
 
+  /dayjs@1.11.21:
+    resolution: {integrity: sha512-98IT+HOahAisibz/yjKbzuOBwYcjJ7BCLPzARyHiyEBmRz4fatF+KPJszEHXsGYjUG234aH/cOjW1wwTbKUZlA==}
+    dev: false
+
   /debug@4.4.3:
     resolution: {integrity: sha512-RGwwWnwQvkVfavKVt22FGLw+xYSdzARwm0ru6DhTVA3umU5hZc28V3kO4stgYryrTlLpuvgI9GiijltAjNbcqA==}
     engines: {node: '>=6.0'}
@@ -2213,6 +2231,17 @@ packages:
 
   /dlv@1.1.3:
     resolution: {integrity: sha512-+HlytyjlPKnIG8XuRG8WvmBP8xs8P71y+SKKS6ZXWoEgLuePxtDoUEiH7WkdePWrQ5JBpE6aoVqfZfJUQkjXwA==}
+
+  /dnd-timeline@3.1.1(react-dom@19.2.7)(react@19.2.7):
+    resolution: {integrity: sha512-v7rFKSaFcPmtNnT0xc5p6lIs5JC93jFI2km15/FTaauJ4ucw0KzYvyAxhrJ2dzqf7AHx7BaaxFuhUNrcBS5+uA==}
+    dependencies:
+      '@dnd-kit/core': 6.3.1(react-dom@19.2.7)(react@19.2.7)
+      '@dnd-kit/utilities': 3.2.2(react@19.2.7)
+      resize-observer-polyfill: 1.5.1
+    transitivePeerDependencies:
+      - react
+      - react-dom
+    dev: false
 
   /echarts-for-react@3.0.6(echarts@6.1.0)(react@19.2.7):
     resolution: {integrity: sha512-4zqLgTGWS3JvkQDXjzkR1k1CHRdpd6by0988TWMJgnvDytegWLbeP/VNZmMa+0VJx2eD7Y632bi2JquXDgiGJg==}
@@ -2438,6 +2467,12 @@ packages:
       react-dom: 19.2.7(react@19.2.7)
     dev: false
 
+  /interactjs@1.10.27:
+    resolution: {integrity: sha512-y/8RcCftGAF24gSp76X2JS3XpHiUvDQyhF8i7ujemBz77hwiHDuJzftHx7thY8cxGogwGiPJ+o97kWB6eAXnsA==}
+    dependencies:
+      '@interactjs/types': 1.10.27
+    dev: false
+
   /is-binary-path@2.1.0:
     resolution: {integrity: sha512-ZMERYes6pDydyuGidse7OsHxtbI7WVeUEozgR/g7rd0xUimYNlvZRE/K2MgZTjWy725IfelLeVcEM97mmtRGXw==}
     engines: {node: '>=8'}
@@ -2614,6 +2649,10 @@ packages:
   /lines-and-columns@1.2.4:
     resolution: {integrity: sha512-7ylylesZQ/PV29jhEDl3Ufjo6ZX7gCqJr5F7PKrqc93v7fzSymt1BpwEU8nAUXs8qzzvqhbjhK5QZg6Mt/HkBg==}
 
+  /lodash@4.18.1:
+    resolution: {integrity: sha512-dMInicTPVE8d1e5otfwmmjlxkZoUpiVLwyeTdUsi/Caj/gfzzblBcCE5sRHV/AsjuCmxWrte2TNGSYuCeCq+0Q==}
+    dev: false
+
   /lru-cache@5.1.1:
     resolution: {integrity: sha512-KpNARQA3Iwv+jTA0utUVVbrh+Jlrr1Fv0e56GGzAFOXN7dk/FviaDW8LHmK52DlcH4WP2n6gI8vN1aesBFgo9w==}
     dependencies:
@@ -2640,6 +2679,10 @@ packages:
     resolution: {integrity: sha512-vd2F4YUyEXKGcLHoq+TEyCjxueSeHnFxyyjNp80yg0XV4vUhnDer/lvvlqM/arB5bXQN5K2/3oinyCRyx8T2CQ==}
     dependencies:
       '@jridgewell/sourcemap-codec': 1.5.5
+    dev: false
+
+  /memoize-one@6.0.0:
+    resolution: {integrity: sha512-rkpe71W0N0c0Xz6QD0eJETuWAJGnJ9afsl1srmwPrI+yBCkge5EycXXbYRyvL29zZVUWQCY7InPRCv3GDXuZNw==}
     dev: false
 
   /merge2@1.4.1:
@@ -2875,6 +2918,23 @@ packages:
       react-dom: 19.2.7(react@19.2.7)
     dev: false
 
+  /react-calendar-timeline@0.30.0-beta.18(dayjs@1.11.21)(interactjs@1.10.27)(react-dom@19.2.7)(react@19.2.7):
+    resolution: {integrity: sha512-a20SwKBos5U1HzbNEQ884IcizXmKKSV4LT/V6QDfeA9LvXMES1mdYK06g3zJEQeqOL72ZGJ1G9QfhqSPcQwiSA==}
+    peerDependencies:
+      dayjs: ^1.11.10
+      interactjs: 1.10.27
+      react: ^18 || ^19
+      react-dom: ^18 || ^19
+    dependencies:
+      classnames: 2.5.1
+      dayjs: 1.11.21
+      interactjs: 1.10.27
+      lodash: 4.18.1
+      memoize-one: 6.0.0
+      react: 19.2.7
+      react-dom: 19.2.7(react@19.2.7)
+    dev: false
+
   /react-day-picker@9.14.0(react@19.2.7):
     resolution: {integrity: sha512-tBaoDWjPwe0M5pGrum4H0SR6Lyk+BO9oHnp9JbKpGKW2mlraNPgP9BMfsg5pWpwrssARmeqk7YBl2oXutZTaHA==}
     engines: {node: '>=18'}
@@ -3000,6 +3060,10 @@ packages:
   /readdirp@5.0.0:
     resolution: {integrity: sha512-9u/XQ1pvrQtYyMpZe7DXKv2p5CNvyVwzUB6uhLAnQwHMSgKMBR62lc7AHljaeteeHXn11XTAaLLUVZYVZyuRBQ==}
     engines: {node: '>= 20.19.0'}
+    dev: false
+
+  /resize-observer-polyfill@1.5.1:
+    resolution: {integrity: sha512-LwZrotdHOo12nQuZlHEmtuXdqGoOD0OhaxopaNFxWzInpEgaLWoVuAMbTzixuosCx2nEG58ngzW3vxdWoxIgdg==}
     dev: false
 
   /resolve@1.22.12:
