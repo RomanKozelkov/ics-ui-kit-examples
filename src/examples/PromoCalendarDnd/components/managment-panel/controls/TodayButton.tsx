@@ -1,6 +1,6 @@
 import { Button } from "ics-ui-kit/components/button";
 import { CalendarClock } from "lucide-react";
-import { usePanelStore } from "../store/usePanelStore";
+import { usePanelStore } from "../store/panel.store";
 import { useText } from "../../../i18n";
 
 export function TodayButton() {

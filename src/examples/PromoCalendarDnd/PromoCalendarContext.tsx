@@ -6,7 +6,6 @@ export type Locale = "ru" | "en";
 
 export type PromoCalendarConfig = {
 	years: number[];
-	locale: Locale;
 	/** Источник данных. DI: подменяется для прод/тестов. */
 	api: PromoApi;
 	/** Функция перевода. DI: словарь / i18next / стаб. */

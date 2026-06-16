@@ -1,4 +1,4 @@
-import { PromoCalendarTranslations, TextKey } from "./dictionary";
+import { PromoCalendarTranslations } from "./dictionary";
 import { ITranslations, makeDictionary } from "./makeDictionary";
 import { TextFn, TextVars } from "./text";
 

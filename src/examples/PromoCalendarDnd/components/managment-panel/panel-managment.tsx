@@ -1,8 +1,7 @@
 import { YearSelect } from "./controls/YearSelect";
 import { MonthRangeSelect } from "./controls/MonthRangeSelect";
 import { GroupingSelect } from "./controls/GroupingSelect";
-import { SortSelect } from "./controls/SortSelect";
-import { PromoSearch } from "./controls/PromoSearch";
+// import { PromoSearch } from "./controls/PromoSearch";
 import { TodayButton } from "./controls/TodayButton";
 
 /**
@@ -17,8 +16,8 @@ export function ManagementPanel() {
 			<YearSelect />
 			<MonthRangeSelect />
 			<GroupingSelect />
-			<SortSelect />
-			<PromoSearch />
+			{/* <SortSelect /> */}
+			{/* <PromoSearch /> */}
 			<TodayButton />
 		</div>
 	);

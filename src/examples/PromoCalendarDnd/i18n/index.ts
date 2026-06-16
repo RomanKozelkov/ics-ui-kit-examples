@@ -1,4 +1,4 @@
 export { type TextKey } from "./dictionary";
 export { textFromLocalDictionary } from "./dictionaryRu";
-export { type TextFn, type TextVars } from "./text";
+export { type TextFn, type TextVars, textFromKey } from "./text";
 export { TextProvider, useText } from "./TextContext";

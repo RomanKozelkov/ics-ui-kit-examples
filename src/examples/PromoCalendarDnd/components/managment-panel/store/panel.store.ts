@@ -9,30 +9,27 @@ export type SortBy = "startDateAsc" | "nameAsc";
 const clamp = (value: number, min: number, max: number) => Math.min(Math.max(value, min), max);
 
 export type PanelStore = {
-		/** Выбранный год (01.01–31.12 этого года). */
-		year: number;
-		/** Начальный месяц диапазона, 0–11. */
-		monthFrom: number;
-		/** Конечный месяц диапазона, 0–11. */
-		monthTo: number;
-		/** Группировка строк. */
-		grouping: Grouping;
+	/** Выбранный год (01.01–31.12 этого года). */
+	year: number;
+	/** Начальный месяц диапазона, 0–11. */
+	monthFrom: number;
+	/** Конечный месяц диапазона, 0–11. */
+	monthTo: number;
+	/** Группировка строк. */
+	grouping: Grouping;
 
-		setYear: (year: number) => void;
-		setMonthFrom: (monthFrom: number) => void;
-		setMonthTo: (monthTo: number) => void;
-		setGrouping: (grouping: Grouping) => void;
-	
-		/** Триггер прокрутки к текущему дню. Сбрасывается потребителем через resetShowToday. */
-		showToday: boolean;
-		triggerShowToday: () => void;
-		resetShowToday: () => void;
-}
+	setYear: (year: number) => void;
+	setMonthFrom: (monthFrom: number) => void;
+	setMonthTo: (monthTo: number) => void;
+	setGrouping: (grouping: Grouping) => void;
 
+	/** Триггер прокрутки к текущему дню. Сбрасывается потребителем через resetShowToday. */
+	showToday: boolean;
+	triggerShowToday: () => void;
+	resetShowToday: () => void;
+};
 
-export const createPanelStore = ({ years }: {
-	years: number[];
-}) => {
+export const createPanelStore = ({ years }: { years: number[] }) => {
 	const yearMin = years[0];
 	const yearMax = years[years.length - 1];
 
@@ -72,25 +69,6 @@ export const createPanelStore = ({ years }: {
 		)
 	);
 };
-
-export type DateRange = {
-	dateBegin: string; // YYYY-MM-DD
-	dateEnd: string; // YYYY-MM-DD
-};
-
-const pad2 = (n: number) => String(n).padStart(2, "0");
-
-/**
- * Доменный селектор: собирает год + месяцы в единый ISO-период.
- * Логика дат живёт в сторе, потребители получают готовый период, не отдельные поля.
- */
-export function selectDateRange({ year, monthFrom, monthTo }: PanelStore): DateRange {
-	const lastDay = new Date(year, monthTo + 1, 0).getDate();
-	return {
-		dateBegin: `${year}-${pad2(monthFrom + 1)}-01`,
-		dateEnd: `${year}-${pad2(monthTo + 1)}-${pad2(lastDay)}`
-	};
-}
 
 export const PanelStoreContext = createContext<ReturnType<typeof createPanelStore> | null>(null);
 

@@ -1,6 +1,6 @@
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "ics-ui-kit/components/select";
 import { FilterField } from "../../../../../shared/bi-dashboard/ui/FilterField";
-import { usePanelStore, type Grouping } from "../store/usePanelStore";
+import { usePanelStore, type Grouping } from "../store/panel.store";
 import { GROUPING_OPTIONS, isGrouping } from "../data/options";
 import { useText } from "../../../i18n";
 

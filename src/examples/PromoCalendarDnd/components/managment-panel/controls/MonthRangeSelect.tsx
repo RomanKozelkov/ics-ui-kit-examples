@@ -1,12 +1,11 @@
 import { useMemo } from "react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "ics-ui-kit/components/select";
 import { FilterField } from "../../../../../shared/bi-dashboard/ui/FilterField";
-import { usePanelStore } from "../store/usePanelStore";
-import { usePromoCalendarContext } from "../../../PromoCalendarContext";
+import { usePanelStore } from "../store/panel.store";
 import { useText } from "../../../i18n";
 
-function getMonthNames(locale: string): string[] {
-	const f = new Intl.DateTimeFormat(locale, { month: "long" });
+function getMonthNames(): string[] {
+	const f = new Intl.DateTimeFormat("ru", { month: "long" });
 	return Array.from({ length: 12 }, (_, i) => {
 		const name = f.format(new Date(2000, i, 1));
 		return name.charAt(0).toUpperCase() + name.slice(1);
@@ -18,10 +17,9 @@ export function MonthRangeSelect() {
 	const monthTo = usePanelStore((s) => s.monthTo);
 	const setMonthFrom = usePanelStore((s) => s.setMonthFrom);
 	const setMonthTo = usePanelStore((s) => s.setMonthTo);
-	const { locale } = usePromoCalendarContext();
 	const text = useText();
 
-	const months = useMemo(() => getMonthNames(locale), [locale]);
+	const months = useMemo(() => getMonthNames(), []);
 
 	return (
 		<FilterField label={text("panel.months")}>

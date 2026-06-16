@@ -5,3 +5,6 @@ export type TextVars = Record<string, string | number>;
  * Ключ типизирован: только из словаря.
  */
 export type TextFn = (key: TextKey, vars?: TextVars) => string;
+
+/** Заглушка для неподдерживаемых локалей: возвращает сам ключ. */
+export const textFromKey: TextFn = (key) => key;
