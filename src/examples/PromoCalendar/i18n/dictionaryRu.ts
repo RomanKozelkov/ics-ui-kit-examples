@@ -26,9 +26,8 @@ const translationsRu: PromoCalendarTranslations = {
 		searchPlaceholder: "Название промо",
 		today: "Показать текущий день",
 		zoom: "Масштаб",
-		zoomCompact: "Компактно",
-		zoomMedium: "Средне",
-		zoomDetailed: "Детально"
+		zoomIn: "Увеличить масштаб",
+		zoomOut: "Уменьшить масштаб"
 	},
 	promo: {
 		name: "Наименование:",

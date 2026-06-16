@@ -6,6 +6,7 @@ import { useGroupedRows } from "../hooks/useGroupedRows";
 import { useItemDragMonitor } from "../hooks/useItemDragMonitor";
 import { useScrollControl } from "../hooks/useScrollControl";
 import type { TimelineModel } from "../utils/timeline";
+import { GridBackground } from "./GridBackground";
 import { GroupSection } from "./GroupSection";
 import { TimelineHeader } from "./TimelineHeader";
 
@@ -14,23 +15,26 @@ export function CalendarSurface({
 	groups,
 	onItemMoved,
 	elementWidth,
-	dayWidth
+	dayWidth,
+	leftW,
+	isGrouped
 }: {
 	timeline: TimelineModel;
 	groups: ReturnType<typeof useGroupedRows>;
 	onItemMoved: (id: string, startMs: number, endMs: number) => void;
-	/** Ширина timeline-элемента: LEFT_W + totalDays * dayWidth. Задаёт масштаб (px/день). */
+	/** Ширина timeline-элемента: leftW + totalDays * dayWidth. Задаёт масштаб (px/день). */
 	elementWidth: number;
 	dayWidth: number;
+	/** Ширина левой колонки; 0 без группировки. */
+	leftW: number;
+	isGrouped: boolean;
 }) {
 	const { setTimelineRef, style } = useTimelineContext();
 	const { collapsedPaths, onToggle } = useCollapsiblePaths();
 	const scrollRef = useRef<HTMLDivElement>(null);
 
 	useItemDragMonitor(onItemMoved);
-	useScrollControl({ scrollRef, timeline, dayWidth });
-
-	const isGrouped = groups.length > 1 || (groups[0] && groups[0].children.length > 0);
+	useScrollControl({ scrollRef, timeline, dayWidth, leftW });
 
 	return (
 		<div className="relative flex min-h-0 flex-1 flex-col overflow-hidden rounded-lg border border-border bg-primary-bg">
@@ -43,6 +47,7 @@ export function CalendarSurface({
 				>
 					<TimelineHeader timeline={timeline} />
 					<div className="relative">
+						<GridBackground timeline={timeline} />
 						{groups.map((g) => (
 							<GroupSection
 								key={g.path}

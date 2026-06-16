@@ -12,6 +12,11 @@ export type GroupNode = {
 
 const ROOT_PATH = "__root";
 
+/** Дерево считается сгруппированным, если есть >1 узла верхнего уровня или у корня есть дети. */
+export function isGrouped(groups: GroupNode[]): boolean {
+	return groups.length > 1 || (groups[0]?.children.length ?? 0) > 0;
+}
+
 export function buildGroupTree(items: PreparedPromoItem[], groupBy: GroupField[], rootLabel: string): GroupNode[] {
 	if (groupBy.length === 0) {
 		return [

@@ -1,7 +1,7 @@
 import { createContext, useContext } from "react";
 import { createStore, useStore } from "zustand";
 import { persist } from "zustand/middleware";
-import { DAY_WIDTH_DEFAULT, isDayWidth } from "../data/options";
+import { DAY_WIDTH_DEFAULT, clampDayWidth } from "../data/options";
 
 export type Grouping = "none" | "channel" | "client" | "brand";
 
@@ -29,7 +29,8 @@ export type PanelStore = {
 
 	/** Триггер прокрутки к текущему дню. Сбрасывается потребителем через resetShowToday. */
 	showToday: boolean;
-	triggerShowToday: () => void;
+	/** Переключить период на реальный сегодня (год + весь диапазон месяцев) и прокрутить к нему. */
+	goToToday: () => void;
 	resetShowToday: () => void;
 };
 
@@ -52,12 +53,22 @@ export const createPanelStore = ({ years }: { years: number[] }) => {
 				setGrouping: (grouping) => set({ grouping }),
 				setDayWidth: (dayWidth) => set({ dayWidth }),
 				showToday: false,
-				triggerShowToday: () => set({ showToday: true }),
+				// Сегодня — реальная дата: переключаем год/месяцы на текущие (год зажат в доступный
+				// диапазон), затем поднимаем флаг прокрутки. Месяцы раскрываем на весь год.
+				goToToday: () => {
+					const now = new Date();
+					set({
+						year: clamp(now.getFullYear(), yearMin, yearMax),
+						monthFrom: 0,
+						monthTo: 11,
+						showToday: true
+					});
+				},
 				resetShowToday: () => set({ showToday: false })
 			}),
 			{
 				name: "promoManagementPanel:settings",
-				partialize: ({ showToday, triggerShowToday, resetShowToday, ...s }) => s,
+				partialize: ({ showToday, goToToday, resetShowToday, ...s }) => s,
 				// Регидрация из localStorage: зажимаем год и месяцы, чтобы старый/невалидный
 				// persist не «залипал» на значении, которого нет в Select.
 				merge: (persisted, current) => {
@@ -69,8 +80,8 @@ export const createPanelStore = ({ years }: { years: number[] }) => {
 						year: clamp(merged.year, yearMin, yearMax),
 						monthFrom,
 						monthTo: Math.max(monthFrom, monthTo),
-						// Старый/невалидный масштаб из persist → дефолтный пресет.
-						dayWidth: isDayWidth(merged.dayWidth) ? merged.dayWidth : DAY_WIDTH_DEFAULT
+						// Масштаб из persist (в т.ч. непрерывный от Ctrl+колеса) → в границы [MIN,MAX].
+						dayWidth: clampDayWidth(merged.dayWidth)
 					};
 				}
 			}

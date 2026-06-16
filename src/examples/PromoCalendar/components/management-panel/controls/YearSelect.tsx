@@ -1,5 +1,5 @@
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "ics-ui-kit/components/select";
-import { FilterField } from "../../../../../shared/bi-dashboard/ui/FilterField";
+import { Field } from "ics-ui-kit/components/field";
 import { usePanelStore } from "../store/panel.store";
 import { usePromoCalendarContext } from "../../../PromoCalendarContext";
 import { useText } from "../../../i18n";
@@ -14,19 +14,24 @@ export function YearSelect() {
 	const handleYearChange = useCallback((value: string) => setYear(Number(value)), [setYear]);
 
 	return (
-		<FilterField label={text("panel.year")}>
-			<Select value={String(year)} onValueChange={handleYearChange}>
-				<SelectTrigger className="w-28">
-					<SelectValue placeholder={text("panel.year")} />
-				</SelectTrigger>
-				<SelectContent>
-					{years.map((y) => (
-						<SelectItem key={y} value={String(y)}>
-							{y}
-						</SelectItem>
-					))}
-				</SelectContent>
-			</Select>
-		</FilterField>
+		<Field
+			className="w-auto"
+			layout="vertical"
+			title={text("panel.year")}
+			control={({ id }) => (
+				<Select value={String(year)} onValueChange={handleYearChange}>
+					<SelectTrigger id={id} className="w-28">
+						<SelectValue placeholder={text("panel.year")} />
+					</SelectTrigger>
+					<SelectContent>
+						{years.map((y) => (
+							<SelectItem key={y} value={String(y)}>
+								{y}
+							</SelectItem>
+						))}
+					</SelectContent>
+				</Select>
+			)}
+		/>
 	);
 }

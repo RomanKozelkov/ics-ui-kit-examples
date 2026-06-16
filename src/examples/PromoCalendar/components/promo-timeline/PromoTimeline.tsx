@@ -11,6 +11,7 @@ import { usePromoOverrides } from "./hooks/usePromoOverrides";
 import { CalendarSurface } from "./ui/CalendarSurface";
 import { LEFT_W, MS_DAY } from "./utils/constants";
 import { getTimelineModel } from "./utils/timeline";
+import { isGrouped } from "./utils/grouping";
 import type { GroupField } from "./types";
 
 // Можем двигать промо только по горизонтали (y: 0)
@@ -35,9 +36,12 @@ export function PromoTimeline({
 	const timeline = useMemo(() => getTimelineModel(dateBegin, dateEnd), [dateBegin, dateEnd]);
 	// range пиннится на весь период; масштаб задаётся шириной timeline-элемента (см. CalendarSurface).
 	const range = useMemo(() => ({ start: timeline.startMs, end: timeline.endMs }), [timeline]);
-	const elementWidth = LEFT_W + timeline.totalDays * dayWidth;
 	const { items, onItemMoved } = usePromoOverrides(data);
 	const groups = useGroupedRows(items, groupBy);
+	// Без группировки левая колонка пуста — схлопываем до 0, чтобы не резервировать место.
+	const grouped = isGrouped(groups);
+	const leftW = grouped ? LEFT_W : 0;
+	const elementWidth = leftW + timeline.totalDays * dayWidth;
 
 	if (isLoading) return <Loader>{text("calendar.loading")}</Loader>;
 	if (isError) return <ErrorState>{text("calendar.error")}</ErrorState>;
@@ -45,7 +49,7 @@ export function PromoTimeline({
 	return (
 		<DndTimelineContext
 			range={range}
-			sidebarWidth={LEFT_W}
+			sidebarWidth={leftW}
 			onResizeEnd={noop}
 			onRangeChanged={noop}
 			usePanStrategy={useNoopPan}
@@ -58,6 +62,8 @@ export function PromoTimeline({
 				onItemMoved={onItemMoved}
 				elementWidth={elementWidth}
 				dayWidth={dayWidth}
+				leftW={leftW}
+				isGrouped={grouped}
 			/>
 		</DndTimelineContext>
 	);

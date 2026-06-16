@@ -33,9 +33,8 @@ export type PromoCalendarTranslations = {
 		searchPlaceholder: string;
 		today: string;
 		zoom: string;
-		zoomCompact: string;
-		zoomMedium: string;
-		zoomDetailed: string;
+		zoomIn: string;
+		zoomOut: string;
 	};
 	promo: {
 		name: string;

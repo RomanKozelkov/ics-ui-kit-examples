@@ -25,7 +25,21 @@ export type TimelineModel = {
 	totalDays: number;
 };
 
-export function getTimelineModel(startISO: string, endISO: string): TimelineModel {
+/**
+ * Predicate deciding whether a given day is a day off (non-working).
+ * `ms` is the day's UTC midnight timestamp, `dow` is the UTC day of week (0=Sun..6=Sat).
+ * Override to plug in a production calendar (holidays, transferred days, working Saturdays).
+ */
+export type IsDayOff = (ms: number, dow: number) => boolean;
+
+/** Default rule: Saturday and Sunday are days off. */
+export const defaultIsDayOff: IsDayOff = (_ms, dow) => dow === 0 || dow === 6;
+
+export function getTimelineModel(
+	startISO: string,
+	endISO: string,
+	isDayOff: IsDayOff = defaultIsDayOff
+): TimelineModel {
 	const startMs = isoToMsUTC(startISO);
 	const endMs = isoToMsUTC(endISO);
 	const totalDays = Math.round((endMs - startMs) / MS_DAY) + 1;
@@ -44,7 +58,7 @@ export function getTimelineModel(startISO: string, endISO: string): TimelineMode
 			dayIndex: i,
 			day: d.getUTCDate(),
 			dow: dayOfWeek,
-			isWeekend: dayOfWeek === 0 || dayOfWeek === 6,
+			isWeekend: isDayOff(ms, dayOfWeek),
 			ms
 		});
 

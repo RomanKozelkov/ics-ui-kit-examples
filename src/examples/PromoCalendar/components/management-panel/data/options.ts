@@ -22,20 +22,16 @@ export const GROUPING_OPTIONS: { value: Grouping; label: string }[] = [
 // 	{ value: "nameAsc", label: "По наименованию промо" }
 // ];
 
-// Масштаб таймлайна: ширина одного дня в px. value >= 18 (DAY_NUMBER_MIN_PX) показывает числа дней.
-// i18nKey разрешается через text() в момент рендера контрола.
-export const DAY_WIDTH_PRESETS: { value: number; i18nKey: "panel.zoomCompact" | "panel.zoomMedium" | "panel.zoomDetailed" }[] = [
-	{ value: 10, i18nKey: "panel.zoomCompact" },
-	{ value: 20, i18nKey: "panel.zoomMedium" },
-	{ value: 36, i18nKey: "panel.zoomDetailed" }
-];
-
 export const DAY_WIDTH_DEFAULT = 20;
+
+// Границы непрерывного масштаба (Slider, Ctrl+колесо/pinch).
+export const DAY_WIDTH_MIN = 5;
+export const DAY_WIDTH_MAX = 40;
+
+export const clampDayWidth = (v: number) =>
+	Number.isFinite(v) ? Math.min(Math.max(v, DAY_WIDTH_MIN), DAY_WIDTH_MAX) : DAY_WIDTH_DEFAULT;
 
 // Type guards: onValueChange отдаёт string, а сеттеры ждут узкий union — гард вместо слепого каста.
 export const isGrouping = (v: string): v is Grouping => GROUPING_OPTIONS.some((o) => o.value === v);
-
-export const isDayWidth = (v: unknown): v is number =>
-	typeof v === "number" && DAY_WIDTH_PRESETS.some((o) => o.value === v);
 
 // export const isSortBy = (v: string): v is SortBy => SORT_OPTIONS.some((o) => o.value === v);

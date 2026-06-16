@@ -12,4 +12,4 @@ export const GROUP_HEAD_H = 32;
 
 export const MS_DAY = 86_400_000;
 
-export const DAY_NUMBER_MIN_PX = 18;
+export const DAY_GRID_MIN_PX = 25;

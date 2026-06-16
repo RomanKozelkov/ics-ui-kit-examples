@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "ics-ui-kit/components/select";
-import { FilterField } from "../../../../../shared/bi-dashboard/ui/FilterField";
+import { Field } from "ics-ui-kit/components/field";
 import { usePanelStore } from "../store/panel.store";
 import { useText } from "../../../i18n";
 
@@ -22,36 +22,41 @@ export function MonthRangeSelect() {
 	const months = useMemo(() => getMonthNames(), []);
 
 	return (
-		<FilterField label={text("panel.months")}>
-			<div className="flex items-center gap-2">
-				<Select value={String(monthFrom)} onValueChange={(v) => setMonthFrom(Number(v))}>
-					<SelectTrigger className="w-36">
-						<SelectValue placeholder={text("panel.monthFrom")} />
-					</SelectTrigger>
-					<SelectContent>
-						{months.map((m, i) => (
-							<SelectItem key={m} value={String(i)} disabled={i > monthTo}>
-								{m}
-							</SelectItem>
-						))}
-					</SelectContent>
-				</Select>
+		<Field
+			className="w-auto"
+			layout="vertical"
+			title={text("panel.months")}
+			control={() => (
+				<div className="flex items-center gap-2">
+					<Select value={String(monthFrom)} onValueChange={(v) => setMonthFrom(Number(v))}>
+						<SelectTrigger className="w-36">
+							<SelectValue placeholder={text("panel.monthFrom")} />
+						</SelectTrigger>
+						<SelectContent>
+							{months.map((m, i) => (
+								<SelectItem key={m} value={String(i)} disabled={i > monthTo}>
+									{m}
+								</SelectItem>
+							))}
+						</SelectContent>
+					</Select>
 
-				<span className="text-sm text-muted-foreground">—</span>
+					<span className="text-sm text-muted-foreground">—</span>
 
-				<Select value={String(monthTo)} onValueChange={(v) => setMonthTo(Number(v))}>
-					<SelectTrigger className="w-36">
-						<SelectValue placeholder={text("panel.monthTo")} />
-					</SelectTrigger>
-					<SelectContent>
-						{months.map((m, i) => (
-							<SelectItem key={m} value={String(i)} disabled={i < monthFrom}>
-								{m}
-							</SelectItem>
-						))}
-					</SelectContent>
-				</Select>
-			</div>
-		</FilterField>
+					<Select value={String(monthTo)} onValueChange={(v) => setMonthTo(Number(v))}>
+						<SelectTrigger className="w-36">
+							<SelectValue placeholder={text("panel.monthTo")} />
+						</SelectTrigger>
+						<SelectContent>
+							{months.map((m, i) => (
+								<SelectItem key={m} value={String(i)} disabled={i < monthFrom}>
+									{m}
+								</SelectItem>
+							))}
+						</SelectContent>
+					</Select>
+				</div>
+			)}
+		/>
 	);
 }

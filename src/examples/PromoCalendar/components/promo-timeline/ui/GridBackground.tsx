@@ -41,7 +41,7 @@ export function GridBackground({ timeline }: Props) {
 			})}
 			{todayInRange && (
 				<div
-					className="absolute inset-y-0 bg-info"
+					className="absolute inset-y-0 bg-destructive"
 					style={{
 						left: valueToPixels(todayMs - timeline.startMs) + dayPx / 2 - 1,
 						width: 2
