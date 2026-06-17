@@ -9,6 +9,9 @@ const PALETTE = [
 	"#ffd166"
 ] as const;
 
-export function colorForIndex(i: number): string {
-	return PALETTE[i % PALETTE.length];
+/** Цвет привязан к стабильному id промо, а не к позиции в массиве:
+ *  не прыгает при фильтре/reorder/override. */
+export function colorForId(id: number): string {
+	const hash = Math.abs(Math.trunc(id));
+	return PALETTE[hash % PALETTE.length];
 }

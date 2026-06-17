@@ -1,5 +1,6 @@
 import { useCallback, useLayoutEffect, useRef } from "react";
 import type { RefObject } from "react";
+import { useTimelineContext } from "dnd-timeline";
 import { usePanelStore } from "../../management-panel/store/panel.store";
 import { MS_DAY } from "../utils/constants";
 import { todayUTCms } from "../utils/date";
@@ -12,24 +13,32 @@ const clamp = (v: number, min: number, max: number) => Math.min(Math.max(v, min)
  *  - старт/смена периода: скролл к текущему дню, если он в периоде;
  *  - кнопка «Сегодня» (флаг showToday): то же по требованию;
  *  - смена масштаба (dayWidth, пресеты): держим день в центре вьюпорта стабильным.
- * Видимая область таймлайна — правее sticky-сайдбара (ширина leftW; 0 без группировки).
+ * Видимая область таймлайна — правее sticky-сайдбара (ширина sidebarWidth; 0 без группировки).
  */
 export function useScrollControl({
 	scrollRef,
 	timeline,
-	dayWidth,
-	leftW
+	dayWidth
 }: {
 	scrollRef: RefObject<HTMLElement | null>;
 	timeline: TimelineModel;
 	dayWidth: number;
-	leftW: number;
 }) {
+	const { sidebarWidth } = useTimelineContext();
 	const showToday = usePanelStore((s) => s.showToday);
 	const resetShowToday = usePanelStore((s) => s.resetShowToday);
 	const prevDayWidthRef = useRef<number | null>(null);
 
 	const startMs = timeline.startMs;
+
+	// scrollLeft, при котором день `ms` оказывается в центре видимой области (правее сайдбара).
+	const centerTargetPx = useCallback(
+		(ms: number, el: HTMLElement) => {
+			const contentX = ((ms - startMs) / MS_DAY) * dayWidth;
+			return sidebarWidth + contentX - (el.clientWidth + sidebarWidth) / 2;
+		},
+		[startMs, dayWidth, sidebarWidth]
+	);
 
 	// Центрировать день `ms` в видимой области таймлайна.
 	// smooth=true — анимированный скролл (кнопка «Сегодня»); по умолчанию мгновенно.
@@ -37,11 +46,10 @@ export function useScrollControl({
 		(ms: number, smooth = false) => {
 			const el = scrollRef.current;
 			if (!el) return;
-			const contentX = ((ms - startMs) / MS_DAY) * dayWidth;
-			const target = leftW + contentX - (el.clientWidth + leftW) / 2;
+			const target = centerTargetPx(ms, el);
 			el.scrollTo({ left: clamp(target, 0, el.scrollWidth - el.clientWidth), behavior: smooth ? "smooth" : "auto" });
 		},
-		[scrollRef, startMs, dayWidth, leftW]
+		[scrollRef, centerTargetPx]
 	);
 
 	// Старт и смена периода: к сегодня (если в периоде), иначе к началу.
@@ -71,10 +79,9 @@ export function useScrollControl({
 
 		const el = scrollRef.current;
 		if (!el) return;
-		const half = (el.clientWidth - leftW) / 2;
+		// Какой день сейчас в центре (по старому масштабу prev) — его и держим после смены масштаба.
+		const half = (el.clientWidth - sidebarWidth) / 2;
 		const centerMs = startMs + ((el.scrollLeft + half) / prev) * MS_DAY;
-		const nextContentX = ((centerMs - startMs) / MS_DAY) * dayWidth;
-		const target = leftW + nextContentX - (el.clientWidth + leftW) / 2;
-		el.scrollLeft = clamp(target, 0, el.scrollWidth - el.clientWidth);
-	}, [scrollRef, dayWidth, startMs, leftW]);
+		el.scrollLeft = clamp(centerTargetPx(centerMs, el), 0, el.scrollWidth - el.clientWidth);
+	}, [scrollRef, dayWidth, startMs, sidebarWidth, centerTargetPx]);
 }

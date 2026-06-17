@@ -226,7 +226,7 @@ const ANCHORS: PromoCalendarItem[] = [
 export function getStaticPromos(): PromoCalendarItem[] {
 	const rnd = mulberry32(0xc0ffee);
 	const generated: PromoCalendarItem[] = [];
-	for (let i = ANCHORS.length + 1; i <= 100; i++) {
+	for (let i = ANCHORS.length + 1; i <= 1000; i++) {
 		generated.push(buildItem(rnd, i));
 	}
 	return [...ANCHORS, ...generated];

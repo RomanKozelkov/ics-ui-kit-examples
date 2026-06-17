@@ -38,7 +38,7 @@ export type PromoCalendarTranslations = {
 	};
 	promo: {
 		name: string;
-		duration: string;
+		period: string;
 		brand: string;
 		channel: string;
 		daysShort: string;

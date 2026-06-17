@@ -1,5 +1,5 @@
 import { MS_DAY } from "./constants";
-import { isoToMsUTC } from "./date";
+import { isoToMsUTC, inclusiveEndToExclusiveMs, daysBetween } from "./date";
 
 export type TimelineDay = {
 	dayIndex: number;
@@ -41,8 +41,8 @@ export function getTimelineModel(
 	isDayOff: IsDayOff = defaultIsDayOff
 ): TimelineModel {
 	const startMs = isoToMsUTC(startISO);
-	const endMs = isoToMsUTC(endISO);
-	const totalDays = Math.round((endMs - startMs) / MS_DAY) + 1;
+	const endMs = inclusiveEndToExclusiveMs(endISO);
+	const totalDays = daysBetween(startMs, endMs);
 
 	const days: TimelineDay[] = [];
 	const months: TimelineMonth[] = [];
@@ -70,5 +70,5 @@ export function getTimelineModel(
 		segment.dayCount++;
 	}
 
-	return { days, months, startMs, endMs: endMs + MS_DAY, totalDays };
+	return { days, months, startMs, endMs, totalDays };
 }

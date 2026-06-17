@@ -14,7 +14,8 @@ import {
 	type Grouping
 } from "./components/management-panel/store/panel.store";
 import { TextProvider, textFromLocalDictionary } from "./i18n";
-import { useShallowDateRange } from "./components/management-panel/store/panel.selectors";
+import { selectDateRange } from "./components/management-panel/store/panel.selectors";
+import { useShallow } from "zustand/react/shallow";
 
 const defaultConfig: PromoCalendarConfig = {
 	years: [2024, 2025, 2026],
@@ -76,7 +77,7 @@ function PromoCalendarDnd({ config }: { config: PromoCalendarConfig }) {
 }
 
 function CalendarContainer() {
-	const { dateBegin, dateEnd } = useShallowDateRange();
+	const { dateBegin, dateEnd } = usePanelStore(useShallow(selectDateRange));
 	const grouping = usePanelStore((s) => s.grouping);
 	const groupBy = GROUPING_TO_FIELDS[grouping];
 

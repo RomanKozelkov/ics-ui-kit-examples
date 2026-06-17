@@ -3,7 +3,8 @@ import type { GroupField, PreparedPromoItem } from "../types";
 export type GroupNode = {
 	key: string;
 	path: string;
-	field: GroupField;
+	/** Поле группировки. Отсутствует у синтетического корня «без группировки». */
+	field?: GroupField;
 	label: string;
 	count: number;
 	children: GroupNode[];
@@ -23,7 +24,6 @@ export function buildGroupTree(items: PreparedPromoItem[], groupBy: GroupField[]
 			{
 				key: ROOT_PATH,
 				path: ROOT_PATH,
-				field: "channelType",
 				label: rootLabel,
 				count: items.length,
 				children: [],

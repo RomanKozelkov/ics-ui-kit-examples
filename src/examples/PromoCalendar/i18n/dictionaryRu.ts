@@ -31,29 +31,22 @@ const translationsRu: PromoCalendarTranslations = {
 	},
 	promo: {
 		name: "Наименование:",
-		duration: "Длительность:",
+		period: "Период:",
 		brand: "Бренд:",
 		channel: "Канал:",
 		daysShort: "дн."
 	}
-} satisfies ITranslations;
+};
 
 /** Плоская карта точечный-ключ → значение. Стабильная модульная ссылка. */
 const ru = makeDictionary(translationsRu);
 
-
 /** Интерполяция шаблона: первый арг — строка-значение, не ключ. */
 const textFromTemplate = (template: string, vars?: TextVars): string => {
-    if (!vars) return template;
+	if (!vars) return template;
 	return template.replace(/\{(\w+)\}/g, (_, k: string) => (k in vars ? String(vars[k]) : `{${k}}`));
-}
+};
 
 export const textFromLocalDictionary: TextFn = (key, vars) => {
-    return textFromTemplate(ru[key], vars);
-}
-
-
-
-    
-
-
+	return textFromTemplate(ru[key], vars);
+};

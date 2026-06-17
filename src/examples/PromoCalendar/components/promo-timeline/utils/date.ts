@@ -21,3 +21,22 @@ export function todayUTCms(): number {
 export function daysBetween(startMs: number, endMs: number): number {
 	return Math.round((endMs - startMs) / MS_DAY);
 }
+
+/**
+ * Промо-даты приходят inclusive (dateEnd — последний день промо включительно).
+ * Внутри таймлайна диапазоны храним exclusive (end не входит) — так считается
+ * длительность и позиция. Эти две функции — единственная точка конвертации.
+ */
+export function inclusiveEndToExclusiveMs(iso: string): number {
+	return isoToMsUTC(iso) + MS_DAY;
+}
+
+export function exclusiveMsToInclusiveISO(ms: number): string {
+	return msToISO(ms - MS_DAY);
+}
+
+/** ISO YYYY-MM-DD → dd.mm.yyyy. */
+export function isoToDdMmYyyy(iso: string): string {
+	const [year, month, day] = iso.split("-");
+	return `${day}.${month}.${year}`;
+}

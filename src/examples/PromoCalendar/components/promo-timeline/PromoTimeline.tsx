@@ -1,24 +1,26 @@
 import { useMemo } from "react";
-import { TimelineContext as DndTimelineContext } from "dnd-timeline";
+import { TimelineContext as DndTimelineContext, type UsePanStrategy } from "dnd-timeline";
 import type { Modifier as DndKitModifier } from "@dnd-kit/core";
 import { ErrorState } from "ics-ui-kit/components/error-state";
 import { Loader } from "ics-ui-kit/components/loader";
 import { usePromoCalendarQuery } from "../../api/promo.queries";
 import { useText } from "../../i18n";
 import { usePanelStore } from "../management-panel/store/panel.store";
-import { useGroupedRows } from "./hooks/useGroupedRows";
+import { usePreparedItems } from "./hooks/usePreparedItems";
 import { usePromoOverrides } from "./hooks/usePromoOverrides";
 import { CalendarSurface } from "./ui/CalendarSurface";
 import { LEFT_W, MS_DAY } from "./utils/constants";
 import { getTimelineModel } from "./utils/timeline";
-import { isGrouped } from "./utils/grouping";
+import { buildGroupTree, isGrouped } from "./utils/grouping";
 import type { GroupField } from "./types";
 
 // Можем двигать промо только по горизонтали (y: 0)
 const restrictHorizontal: DndKitModifier = ({ transform }) => ({ ...transform, y: 0 });
 const noop = () => {};
-// Колесо целиком отдаём нативному скроллу контейнера — пан/зум через range отключён.
-const useNoopPan = () => {};
+
+// Пан/зум через range отключён — колесо целиком отдаём нативному скроллу контейнера.
+// Стратегия-хук ничего не подписывает; тип UsePanStrategy возвращает void, cleanup не ждётся.
+const useNoPanStrategy: UsePanStrategy = () => {};
 
 export function PromoTimeline({
 	dateBegin,
@@ -37,11 +39,17 @@ export function PromoTimeline({
 	// range пиннится на весь период; масштаб задаётся шириной timeline-элемента (см. CalendarSurface).
 	const range = useMemo(() => ({ start: timeline.startMs, end: timeline.endMs }), [timeline]);
 	const { items, onItemMoved } = usePromoOverrides(data);
-	const groups = useGroupedRows(items, groupBy);
+	const prepared = usePreparedItems(items);
+	const groups = useMemo(
+		() => buildGroupTree(prepared, groupBy, text("calendar.allPromos")),
+		[prepared, groupBy, text]
+	);
 	// Без группировки левая колонка пуста — схлопываем до 0, чтобы не резервировать место.
 	const grouped = isGrouped(groups);
 	const leftW = grouped ? LEFT_W : 0;
-	const elementWidth = leftW + timeline.totalDays * dayWidth;
+	// Сайдбар — отдельная колонка (two-pane), поэтому dnd sidebarWidth=0, а измеряемый
+	// контентный элемент равен только ширине контента.
+	const contentWidth = timeline.totalDays * dayWidth;
 
 	if (isLoading) return <Loader>{text("calendar.loading")}</Loader>;
 	if (isError) return <ErrorState>{text("calendar.error")}</ErrorState>;
@@ -49,10 +57,10 @@ export function PromoTimeline({
 	return (
 		<DndTimelineContext
 			range={range}
-			sidebarWidth={leftW}
+			sidebarWidth={0}
 			onResizeEnd={noop}
 			onRangeChanged={noop}
-			usePanStrategy={useNoopPan}
+			usePanStrategy={useNoPanStrategy}
 			rangeGridSizeDefinition={MS_DAY}
 			modifiers={[restrictHorizontal]}
 		>
@@ -60,9 +68,9 @@ export function PromoTimeline({
 				timeline={timeline}
 				groups={groups}
 				onItemMoved={onItemMoved}
-				elementWidth={elementWidth}
+				leftWidth={leftW}
+				contentWidth={contentWidth}
 				dayWidth={dayWidth}
-				leftW={leftW}
 				isGrouped={grouped}
 			/>
 		</DndTimelineContext>

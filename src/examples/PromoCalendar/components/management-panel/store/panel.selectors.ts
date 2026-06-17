@@ -1,5 +1,3 @@
-import { useShallow } from "zustand/react/shallow";
-import { usePanelStore } from "./panel.store";
 import { PanelStore } from "./panel.store";
 
 const pad2 = (n: number) => String(n).padStart(2, "0");
@@ -16,8 +14,4 @@ export function selectDateRange(state: PanelStore): DateRange {
 		dateBegin: `${year}-${pad2(monthFrom + 1)}-01`,
 		dateEnd: `${year}-${pad2(monthTo + 1)}-${pad2(lastDay)}`
 	};
-}
-
-export function useShallowDateRange(): DateRange {
-	return usePanelStore(useShallow(selectDateRange));
 }

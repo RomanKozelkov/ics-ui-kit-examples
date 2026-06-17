@@ -1,7 +1,6 @@
 import { useCallback, useMemo, useState } from "react";
 import type { PromoData } from "../../../api/promo.queries";
-import { MS_DAY } from "../utils/constants";
-import { msToISO } from "../utils/date";
+import { msToISO, exclusiveMsToInclusiveISO } from "../utils/date";
 
 type Override = { dateBegin: string; dateEnd: string };
 
@@ -24,7 +23,7 @@ export function usePromoOverrides(data: PromoData[] | undefined) {
 	const onItemMoved = useCallback((id: string, startMs: number, endMs: number) => {
 		setOverrides((prev) => ({
 			...prev,
-			[id]: { dateBegin: msToISO(startMs), dateEnd: msToISO(endMs - MS_DAY) }
+			[id]: { dateBegin: msToISO(startMs), dateEnd: exclusiveMsToInclusiveISO(endMs) }
 		}));
 	}, []);
 
