@@ -1,5 +1,5 @@
 import type { PreparedPromoItem } from "../types";
-import { BAR_H, BAR_RADIUS } from "../utils/constants";
+import { BAR_FONT_PX, BAR_H, BAR_RADIUS } from "../utils/constants";
 import { useText } from "../../../i18n";
 
 /** Радиус скруглённого угла; 0 — когда бар обрезан этой стороной (уходит за диапазон). */
@@ -20,9 +20,10 @@ export function PromoBar({
 
 	return (
 		<div
-			className="flex w-full select-none items-center gap-1 overflow-hidden whitespace-nowrap px-2 text-[11.5px] font-medium leading-none text-white shadow-sm"
+			className="flex w-full select-none items-center gap-1 overflow-hidden whitespace-nowrap px-2 font-medium leading-none text-white shadow-sm"
 			style={{
 				height: BAR_H,
+				fontSize: BAR_FONT_PX,
 				background: item.color,
 				borderTopLeftRadius: corner(!overflowLeft),
 				borderBottomLeftRadius: corner(!overflowLeft),

@@ -1,4 +1,18 @@
-import { PromoCalendarItem } from "../promo.types";
+/**
+ * Сырое представление промо внутри mock: даты — Date (нужны для date-математики:
+ * фильтр по диапазону года, clamp). Наружу порт отдаёт ISO ({@link RawPromo}) —
+ * конвертация на границе fetchPromoCalendar (см. mock.api).
+ */
+export interface RawPromo {
+	id: number;
+	title: string;
+	dateBegin: Date;
+	dateEnd: Date;
+	channelType: string;
+	companyName: string;
+	companyId: number;
+	channelId: number;
+}
 
 // ─── Справочники ─────────────────────────────────────────────────────────────
 
@@ -80,7 +94,7 @@ const WINDOW_START = Date.UTC(2024, 0, 1);
 const WINDOW_END = Date.UTC(2026, 11, 31);
 const WINDOW_DAYS = Math.round((WINDOW_END - WINDOW_START) / 86400000);
 
-function buildItem(rnd: () => number, id: number): PromoCalendarItem {
+function buildItem(rnd: () => number, id: number): RawPromo {
 	const startMs = addDays(WINDOW_START, Math.floor(rnd() * WINDOW_DAYS));
 	const endMs = addDays(startMs, pickDuration(rnd));
 
@@ -99,7 +113,7 @@ function buildItem(rnd: () => number, id: number): PromoCalendarItem {
 // ─── Якорные записи (вручную) ─────────────────────────────────────────────────
 // Гарантируют интересные случаи: переход через год, длинные, перекрывающиеся.
 
-const ANCHORS: PromoCalendarItem[] = [
+const ANCHORS: RawPromo[] = [
 	{
 		id: 1,
 		title: "Новогодний промо",
@@ -205,17 +219,17 @@ const ANCHORS: PromoCalendarItem[] = [
 /*
  * Всегда возвращает одни и те же данные.
  */
-export function getStaticPromos(extend: number = 10000): PromoCalendarItem[] {
+export function getStaticPromos(extend: number = 100): RawPromo[] {
 	const rnd = mulberry32(0xc0ffee);
-	const generated: PromoCalendarItem[] = [];
+	const generated: RawPromo[] = [];
 	for (let i = ANCHORS.length + 1; i <= ANCHORS.length + extend; i++) {
 		generated.push(buildItem(rnd, i));
 	}
 	return [...ANCHORS, ...generated];
 }
 
-let cache: PromoCalendarItem[] | null = null;
-export function getStaticWithCache(): PromoCalendarItem[] {
+let cache: RawPromo[] | null = null;
+export function getStaticWithCache(): RawPromo[] {
 	if (cache) return cache;
 	cache = getStaticPromos();
 	return cache;
@@ -224,7 +238,7 @@ export function getStaticWithCache(): PromoCalendarItem[] {
 /**
  * Генерирует N случайных записей (seed = Date.now()).
  */
-export function generatePromos(count: number): PromoCalendarItem[] {
+export function generatePromos(count: number): RawPromo[] {
 	const rnd = mulberry32(Date.now());
 	return Array.from({ length: count }, (_, i) => buildItem(rnd, i + 1));
 }

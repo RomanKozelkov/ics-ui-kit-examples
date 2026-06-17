@@ -1,7 +1,7 @@
 import { useItem, useTimelineContext } from "dnd-timeline";
 import { Tooltip, TooltipContent, TooltipTrigger } from "ics-ui-kit/components/tooltip";
 import type { PreparedPromoItem } from "../types";
-import { ROW_PAD } from "../utils/constants";
+import { RESIZE_HANDLE_W, ROW_PAD } from "../utils/constants";
 import { PromoBar } from "./PromoBar";
 import { PromoTooltipContent } from "./PromoTooltipContent";
 
@@ -13,7 +13,7 @@ export function PromoItem({ item }: { item: PreparedPromoItem }) {
 	const { setNodeRef, listeners, attributes, itemStyle, itemContentStyle } = useItem({
 		id: String(item.id),
 		span: { start: item.startMs, end: item.endMs },
-		resizeHandleWidth: 0,
+		resizeHandleWidth: RESIZE_HANDLE_W,
 		data: { promo: item }
 	});
 

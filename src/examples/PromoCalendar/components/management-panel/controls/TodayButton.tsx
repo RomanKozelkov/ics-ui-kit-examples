@@ -1,12 +1,11 @@
 import { Button } from "ics-ui-kit/components/button";
 import { CalendarClock } from "lucide-react";
 import { usePanelStore } from "../store/panel.store";
-import { useYearsQuery } from "../../../api/promo.queries";
 import { useText } from "../../../i18n";
 
 export function TodayButton() {
 	const goToToday = usePanelStore((s) => s.goToToday);
-	const { data: years = [] } = useYearsQuery();
+	const years = usePanelStore((s) => s.years);
 	const text = useText();
 
 	// Сегодня — реальная дата: кнопка сама переключит период. Блокируем только если текущий

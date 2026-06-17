@@ -1,6 +1,9 @@
 import { type TextKey } from "./dictionary";
 export type TextVars = Record<string, string | number>;
 
+/** BCP-47 тег локали. Совпадает со строкой для Intl/localeCompare. */
+export type Locale = "ru" | "en";
+
 /**
  * Ключ типизирован: только из словаря.
  */

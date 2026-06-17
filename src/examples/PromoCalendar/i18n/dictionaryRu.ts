@@ -7,6 +7,7 @@ const translationsRu: PromoCalendarTranslations = {
 		title: "Промо-календарь",
 		loading: "Загрузка...",
 		error: "Ошибка загрузки данных",
+		retry: "Повторить",
 		group: "Группа",
 		allPromos: "Все промо"
 	},

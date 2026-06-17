@@ -2,10 +2,10 @@ import { useMemo } from "react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "ics-ui-kit/components/select";
 import { Field } from "ics-ui-kit/components/field";
 import { usePanelStore } from "../store/panel.store";
-import { useText } from "../../../i18n";
+import { useLocale, useText } from "../../../i18n";
 
-function getMonthNames(): string[] {
-	const f = new Intl.DateTimeFormat("ru", { month: "long" });
+function getMonthNames(locale: string): string[] {
+	const f = new Intl.DateTimeFormat(locale, { month: "long" });
 	return Array.from({ length: 12 }, (_, i) => {
 		const name = f.format(new Date(2000, i, 1));
 		return name.charAt(0).toUpperCase() + name.slice(1);
@@ -18,8 +18,9 @@ export function MonthRangeSelect() {
 	const setMonthFrom = usePanelStore((s) => s.setMonthFrom);
 	const setMonthTo = usePanelStore((s) => s.setMonthTo);
 	const text = useText();
+	const locale = useLocale();
 
-	const months = useMemo(() => getMonthNames(), []);
+	const months = useMemo(() => getMonthNames(locale), [locale]);
 
 	return (
 		<Field

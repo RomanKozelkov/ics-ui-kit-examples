@@ -1,14 +1,13 @@
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "ics-ui-kit/components/select";
 import { Field } from "ics-ui-kit/components/field";
 import { usePanelStore } from "../store/panel.store";
-import { useYearsQuery } from "../../../api/promo.queries";
 import { useText } from "../../../i18n";
 import { useCallback } from "react";
 
 export function YearSelect() {
 	const year = usePanelStore((s) => s.year);
 	const setYear = usePanelStore((s) => s.setYear);
-	const { data: years = [] } = useYearsQuery();
+	const years = usePanelStore((s) => s.years);
 	const text = useText();
 
 	const handleYearChange = useCallback((value: string) => setYear(Number(value)), [setYear]);

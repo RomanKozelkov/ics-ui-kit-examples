@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useTimelineContext } from "dnd-timeline";
 import { MS_DAY, Z_INDEX } from "../utils/constants";
 import { todayUTCms } from "../utils/date";
@@ -12,13 +13,21 @@ const TODAY_MARKER_W = 2;
 
 type ValueToPixels = ReturnType<typeof useTimelineContext>["valueToPixels"];
 
-/** Затенённые полосы под колонками выходных (нерабочих дней). */
-function WeekendBands({ timeline, valueToPixels }: { timeline: TimelineModel; valueToPixels: ValueToPixels }) {
+/** Затенённые полосы под колонками нерабочих дней.
+ *  memo: проход по всем дням не повторяется на ре-рендерах при стабильных timeline/valueToPixels
+ *  (напр. свёртка групп) — пересчёт только при смене периода/масштаба. */
+const DayOffBands = memo(function DayOffBands({
+	timeline,
+	valueToPixels
+}: {
+	timeline: TimelineModel;
+	valueToPixels: ValueToPixels;
+}) {
 	const dayPx = valueToPixels(MS_DAY);
 	return (
 		<>
 			{timeline.days.map((d) =>
-				d.isWeekend ? (
+				d.isDayOff ? (
 					<div
 						key={`w${d.dayIndex}`}
 						className="absolute inset-y-0 bg-muted/25"
@@ -28,10 +37,16 @@ function WeekendBands({ timeline, valueToPixels }: { timeline: TimelineModel; va
 			)}
 		</>
 	);
-}
+});
 
 /** Вертикальные линии в начале каждой недели (понедельник). */
-function WeekDividers({ timeline, valueToPixels }: { timeline: TimelineModel; valueToPixels: ValueToPixels }) {
+const WeekDividers = memo(function WeekDividers({
+	timeline,
+	valueToPixels
+}: {
+	timeline: TimelineModel;
+	valueToPixels: ValueToPixels;
+}) {
 	return (
 		<>
 			{timeline.days.map((d) =>
@@ -45,17 +60,23 @@ function WeekDividers({ timeline, valueToPixels }: { timeline: TimelineModel; va
 			)}
 		</>
 	);
-}
+});
 
 /** Линия-выделение по центру колонки «сегодня», если сегодня попадает в диапазон. */
-function TodayMarker({ timeline, valueToPixels }: { timeline: TimelineModel; valueToPixels: ValueToPixels }) {
+const TodayMarker = memo(function TodayMarker({
+	timeline,
+	valueToPixels
+}: {
+	timeline: TimelineModel;
+	valueToPixels: ValueToPixels;
+}) {
 	const todayMs = todayUTCms();
 	if (todayMs < timeline.startMs || todayMs >= timeline.endMs) return null;
 
 	const dayPx = valueToPixels(MS_DAY);
 	const left = valueToPixels(todayMs - timeline.startMs) + dayPx / 2 - TODAY_MARKER_W / 2;
 	return <div className="absolute inset-y-0 bg-destructive" style={{ left, width: TODAY_MARKER_W }} />;
-}
+});
 
 export function GridBackground({ timeline }: { timeline: TimelineModel }) {
 	const { sidebarWidth, valueToPixels } = useTimelineContext();
@@ -65,11 +86,12 @@ export function GridBackground({ timeline }: { timeline: TimelineModel }) {
 			<div
 				aria-hidden
 				// Z.grid (0, не 1): сетка в одном слое с промо (itemStyle z=auto), но раньше в DOM —
-				// значит под промо. Выше фоновой заливки строки, поэтому полосы выходных видны.
+				// значит под промо. Строки прозрачны (LaneRow без bg), поэтому полосы выходных
+				// просвечивают сквозь них; непрозрачные бары ложатся поверх.
 				className="pointer-events-none absolute inset-y-0"
 				style={{ left: sidebarWidth, right: 0, zIndex: Z_INDEX.grid }}
 			>
-				<WeekendBands timeline={timeline} valueToPixels={valueToPixels} />
+				<DayOffBands timeline={timeline} valueToPixels={valueToPixels} />
 				<WeekDividers timeline={timeline} valueToPixels={valueToPixels} />
 			</div>
 			{/* Маркер «сегодня» — отдельный слой: z=grid создаёт контекст наложения, поэтому

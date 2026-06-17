@@ -3,6 +3,8 @@ export const LEFT_W = 220;
 export const LANE_H = 30;
 export const BAR_H = 22;
 export const BAR_RADIUS = 5;
+/** Кегль текста промо-бара, px. Дробный — подобран под высоту бара (BAR_H), стандартные шаги Tailwind не подходят. */
+export const BAR_FONT_PX = 11.5;
 export const BAR_GAP = 4;
 export const ROW_PAD = 4;
 
@@ -21,6 +23,9 @@ export const MS_DAY = 86_400_000;
 export const SURFACE_MAX_H = 400;
 
 export const DAY_GRID_MIN_PX = 25;
+
+/** Ширина зоны захвата у краёв промо-бара для ресайза, px. 0 — ресайз выключен. */
+export const RESIZE_HANDLE_W = 8;
 
 /**
  * Слои наложения по оси Z — единый источник правды

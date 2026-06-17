@@ -5,7 +5,8 @@ export type TimelineDay = {
 	dayIndex: number;
 	day: number;
 	dow: number;
-	isWeekend: boolean;
+	/** Нерабочий день по предикату IsDayOff (выходной, праздник; рабочая суббота → false). */
+	isDayOff: boolean;
 	ms: number;
 };
 
@@ -32,14 +33,9 @@ export type TimelineModel = {
  */
 export type IsDayOff = (ms: number, dow: number) => boolean;
 
-/** Default rule: Saturday and Sunday are days off. */
 export const defaultIsDayOff: IsDayOff = (_ms, dow) => dow === 0 || dow === 6;
 
-export function getTimelineModel(
-	startISO: string,
-	endISO: string,
-	isDayOff: IsDayOff = defaultIsDayOff
-): TimelineModel {
+export function getTimelineModel(startISO: string, endISO: string, isDayOff: IsDayOff): TimelineModel {
 	const startMs = isoToMsUTC(startISO);
 	const endMs = inclusiveEndToExclusiveMs(endISO);
 	const totalDays = daysBetween(startMs, endMs);
@@ -58,7 +54,7 @@ export function getTimelineModel(
 			dayIndex: i,
 			day: d.getUTCDate(),
 			dow: dayOfWeek,
-			isWeekend: isDayOff(ms, dayOfWeek),
+			isDayOff: isDayOff(ms, dayOfWeek),
 			ms
 		});
 

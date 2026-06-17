@@ -1,7 +1,6 @@
 import { useCallback, useLayoutEffect, useRef } from "react";
 import type { RefObject } from "react";
 import { useTimelineContext } from "dnd-timeline";
-import { usePanelStore } from "../../management-panel/store/panel.store";
 import { MS_DAY } from "../utils/constants";
 import { todayUTCms } from "../utils/date";
 import type { TimelineModel } from "../utils/timeline";
@@ -14,19 +13,26 @@ const clamp = (v: number, min: number, max: number) => Math.min(Math.max(v, min)
  *  - кнопка «Сегодня» (флаг showToday): то же по требованию;
  *  - смена масштаба (dayWidth, пресеты): держим день в центре вьюпорта стабильным.
  * Видимая область таймлайна — правее sticky-сайдбара (ширина sidebarWidth; 0 без группировки).
+ *
+ * `showToday`/`onTodayConsumed` приходят параметрами: хук не знает про конкретный стор —
+ * любой источник триггера подойдёт (тест, другой стор), потребитель сам решает, чем сбросить флаг.
  */
 export function useScrollControl({
 	scrollRef,
 	timeline,
-	dayWidth
+	dayWidth,
+	showToday,
+	onTodayConsumed
 }: {
 	scrollRef: RefObject<HTMLElement | null>;
 	timeline: TimelineModel;
 	dayWidth: number;
+	/** Триггер прокрутки к сегодня (кнопка «Сегодня»). */
+	showToday: boolean;
+	/** Вызывается после обработки showToday — потребитель гасит флаг. */
+	onTodayConsumed: () => void;
 }) {
 	const { sidebarWidth } = useTimelineContext();
-	const showToday = usePanelStore((s) => s.showToday);
-	const resetShowToday = usePanelStore((s) => s.resetShowToday);
 	const prevDayWidthRef = useRef<number | null>(null);
 
 	const startMs = timeline.startMs;
@@ -68,8 +74,8 @@ export function useScrollControl({
 		if (!showToday) return;
 		const today = todayUTCms();
 		if (today >= timeline.startMs && today < timeline.endMs) scrollToMs(today, true);
-		resetShowToday();
-	}, [showToday, timeline.startMs, timeline.endMs, scrollToMs, resetShowToday]);
+		onTodayConsumed();
+	}, [showToday, timeline.startMs, timeline.endMs, scrollToMs, onTodayConsumed]);
 
 	// Смена масштаба (пресеты): пересчёт scrollLeft, чтобы центр вьюпорта (день) не «прыгал».
 	useLayoutEffect(() => {

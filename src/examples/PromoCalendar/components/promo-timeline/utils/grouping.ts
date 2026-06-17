@@ -1,3 +1,4 @@
+import type { Locale } from "../../../i18n";
 import type { GroupField, PreparedPromoItem } from "../types";
 
 export type GroupNode = {
@@ -18,7 +19,12 @@ export function isGrouped(groups: GroupNode[]): boolean {
 	return groups.length > 1 || (groups[0]?.children.length ?? 0) > 0;
 }
 
-export function buildGroupTree(items: PreparedPromoItem[], groupBy: GroupField[], rootLabel: string): GroupNode[] {
+export function buildGroupTree(
+	items: PreparedPromoItem[],
+	groupBy: GroupField[],
+	rootLabel: string,
+	locale: Locale
+): GroupNode[] {
 	if (groupBy.length === 0) {
 		return [
 			{
@@ -31,10 +37,16 @@ export function buildGroupTree(items: PreparedPromoItem[], groupBy: GroupField[]
 			}
 		];
 	}
-	return buildLevel(items, groupBy, 0, ROOT_PATH);
+	return buildLevel(items, groupBy, 0, ROOT_PATH, locale);
 }
 
-function buildLevel(items: PreparedPromoItem[], fields: GroupField[], depth: number, parentPath: string): GroupNode[] {
+function buildLevel(
+	items: PreparedPromoItem[],
+	fields: GroupField[],
+	depth: number,
+	parentPath: string,
+	locale: Locale
+): GroupNode[] {
 	const field = fields[depth];
 	const buckets = new Map<string, PreparedPromoItem[]>();
 
@@ -55,12 +67,12 @@ function buildLevel(items: PreparedPromoItem[], fields: GroupField[], depth: num
 			field,
 			label: key,
 			count: bucketItems.length,
-			children: isLeaf ? [] : buildLevel(bucketItems, fields, depth + 1, path),
+			children: isLeaf ? [] : buildLevel(bucketItems, fields, depth + 1, path, locale),
 			lanes: isLeaf ? assignLanes(bucketItems) : []
 		});
 	}
 
-	nodes.sort((a, b) => a.label.localeCompare(b.label, "ru"));
+	nodes.sort((a, b) => a.label.localeCompare(b.label, locale));
 	return nodes;
 }
 

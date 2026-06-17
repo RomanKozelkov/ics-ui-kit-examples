@@ -14,6 +14,7 @@ export type PromoCalendarTranslations = {
 		title: string;
 		loading: string;
 		error: string;
+		retry: string;
 		group: string;
 		allPromos: string;
 	};

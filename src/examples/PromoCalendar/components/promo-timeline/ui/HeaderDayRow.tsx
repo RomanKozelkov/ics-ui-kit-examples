@@ -15,7 +15,7 @@ export function HeaderDayRow({ days, dayPx }: Props) {
 					key={d.dayIndex}
 					className={[
 						"flex h-full shrink-0 items-center justify-center font-mono text-[11px] tabular-nums",
-						d.isWeekend ? "bg-muted/40 text-muted-foreground" : "text-primary-fg",
+						d.isDayOff ? "bg-muted/40 text-muted-foreground" : "text-primary-fg",
 						d.dow === 1 ? "border-l border-border" : ""
 					].join(" ")}
 					style={{ width: dayPx }}

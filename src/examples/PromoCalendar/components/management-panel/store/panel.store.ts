@@ -1,30 +1,44 @@
 import { createContext, useContext } from "react";
 import { createStore, useStore } from "zustand";
 import { persist } from "zustand/middleware";
-import { DAY_WIDTH_DEFAULT, clampDayWidth } from "../data/options";
+import { DAY_WIDTH_DEFAULT, GROUPING_VALUES, clamp, clampDayWidth } from "../data/options";
 
-export type Grouping = "none" | "channel" | "client";
+// Поля группировки. Пустой массив = без группировки; порядок = вложенность уровней.
+export type Grouping = "channel" | "client";
 
 export type SortBy = "startDateAsc" | "nameAsc";
 
-const clamp = (value: number, min: number, max: number) => Math.min(Math.max(value, min), max);
+// Весь год: диапазон месяцев января–декабря. Общая «база» для init и goToToday.
+const FULL_YEAR_MONTHS = { monthFrom: 0, monthTo: 11 } as const;
+
+// Приводим произвольный persist к массиву валидных уровней без дублей (порядок сохраняем).
+const sanitizeGrouping = (value: unknown): Grouping[] => {
+	if (!Array.isArray(value)) return [];
+	const seen = new Set<Grouping>();
+	for (const v of value) {
+		if (GROUPING_VALUES.includes(v as Grouping)) seen.add(v as Grouping);
+	}
+	return [...seen];
+};
 
 export type PanelStore = {
+	/** Доступные годы (bootstrap из useYearsQuery, инжектятся при создании стора). Не персистятся. */
+	years: number[];
 	/** Выбранный год (01.01–31.12 этого года). */
 	year: number;
 	/** Начальный месяц диапазона, 0–11. */
 	monthFrom: number;
 	/** Конечный месяц диапазона, 0–11. */
 	monthTo: number;
-	/** Группировка строк. */
-	grouping: Grouping;
+	/** Группировка строк: упорядоченные уровни вложенности. */
+	grouping: Grouping[];
 	/** Масштаб таймлайна: ширина одного дня в пикселях. */
 	dayWidth: number;
 
 	setYear: (year: number) => void;
 	setMonthFrom: (monthFrom: number) => void;
 	setMonthTo: (monthTo: number) => void;
-	setGrouping: (grouping: Grouping) => void;
+	setGrouping: (grouping: Grouping[]) => void;
 	setDayWidth: (dayWidth: number) => void;
 
 	/** Триггер прокрутки к текущему дню. Сбрасывается потребителем через resetShowToday. */
@@ -37,14 +51,15 @@ export type PanelStore = {
 export const createPanelStore = ({ years }: { years: number[] }) => {
 	const yearMin = years[0];
 	const yearMax = years[years.length - 1];
+	const clampYear = (year: number) => clamp(year, yearMin, yearMax);
 
 	return createStore<PanelStore>()(
 		persist(
 			(set) => ({
-				year: clamp(new Date().getFullYear(), yearMin, yearMax),
-				monthFrom: 0,
-				monthTo: 11,
-				grouping: "none",
+				years,
+				year: clampYear(new Date().getFullYear()),
+				...FULL_YEAR_MONTHS,
+				grouping: [],
 				dayWidth: DAY_WIDTH_DEFAULT,
 				setYear: (year) => set({ year }),
 				// Инвариант: monthFrom <= monthTo. Подтягиваем границу при нарушении.
@@ -56,11 +71,9 @@ export const createPanelStore = ({ years }: { years: number[] }) => {
 				// Сегодня — реальная дата: переключаем год/месяцы на текущие (год зажат в доступный
 				// диапазон), затем поднимаем флаг прокрутки. Месяцы раскрываем на весь год.
 				goToToday: () => {
-					const now = new Date();
 					set({
-						year: clamp(now.getFullYear(), yearMin, yearMax),
-						monthFrom: 0,
-						monthTo: 11,
+						year: clampYear(new Date().getFullYear()),
+						...FULL_YEAR_MONTHS,
 						showToday: true
 					});
 				},
@@ -68,7 +81,8 @@ export const createPanelStore = ({ years }: { years: number[] }) => {
 			}),
 			{
 				name: "promoManagementPanel:settings",
-				partialize: ({ showToday, goToToday, resetShowToday, ...s }) => s,
+				// years — bootstrap из query, не настройка: персистить нельзя (устареет список).
+				partialize: ({ showToday, goToToday, resetShowToday, years, ...s }) => s,
 				// Регидрация из localStorage: зажимаем год и месяцы, чтобы старый/невалидный
 				// persist не «залипал» на значении, которого нет в Select.
 				merge: (persisted, current) => {
@@ -77,11 +91,14 @@ export const createPanelStore = ({ years }: { years: number[] }) => {
 					const monthTo = clamp(merged.monthTo, 0, 11);
 					return {
 						...merged,
-						year: clamp(merged.year, yearMin, yearMax),
+						year: clampYear(merged.year),
 						monthFrom,
 						monthTo: Math.max(monthFrom, monthTo),
 						// Масштаб из persist (в т.ч. непрерывный от Ctrl+колеса) → в границы [MIN,MAX].
-						dayWidth: clampDayWidth(merged.dayWidth)
+						dayWidth: clampDayWidth(merged.dayWidth),
+						// Старый persist мог хранить grouping строкой ("none"/...) — отбрасываем невалидное,
+						// оставляем массив валидных уровней без дублей.
+						grouping: sanitizeGrouping(merged.grouping)
 					};
 				}
 			}

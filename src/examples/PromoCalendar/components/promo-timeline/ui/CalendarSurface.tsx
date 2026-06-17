@@ -1,6 +1,7 @@
 import { useRef } from "react";
 import { useTimelineContext } from "dnd-timeline";
 import { TooltipProvider } from "ics-ui-kit/components/tooltip";
+import { usePanelStore } from "../../management-panel/store/panel.store";
 import { useCollapsiblePaths } from "../hooks/useCollapsiblePaths";
 import { useItemDragMonitor } from "../hooks/useItemDragMonitor";
 import { useScrollControl } from "../hooks/useScrollControl";
@@ -13,32 +14,39 @@ import { ContentGroup } from "./ContentGroup";
 import { SidebarColumn } from "./SidebarColumn";
 import { TimelineHeader } from "./TimelineHeader";
 
-export function CalendarSurface({
-	timeline,
-	groups,
-	onItemMoved,
-	leftWidth,
-	contentWidth,
-	dayWidth,
-	isGrouped
-}: {
-	timeline: TimelineModel;
-	groups: GroupNode[];
-	onItemMoved: (id: string, startMs: number, endMs: number) => void;
+/** Геометрия раскладки полотна — производные размеры из стора/модели (px). */
+export type SurfaceLayout = {
 	/** Ширина сайдбар-колонки, px (0 без группировки). */
 	leftWidth: number;
 	/** Ширина контентной колонки: totalDays * dayWidth. Задаёт масштаб (px/день). */
 	contentWidth: number;
 	dayWidth: number;
 	isGrouped: boolean;
+};
+
+export function CalendarSurface({
+	timeline,
+	groups,
+	onPeriodChange,
+	layout
+}: {
+	timeline: TimelineModel;
+	groups: GroupNode[];
+	onPeriodChange: (id: string, startMs: number, endMs: number) => void;
+	layout: SurfaceLayout;
 }) {
+	const { leftWidth, contentWidth, dayWidth, isGrouped } = layout;
 	const { setTimelineRef, style } = useTimelineContext();
 	const { headerHeight } = useTimelineHeader();
 	const { collapsedPaths, onToggle } = useCollapsiblePaths();
 	const scrollRef = useRef<HTMLDivElement>(null);
 
-	useItemDragMonitor(onItemMoved);
-	useScrollControl({ scrollRef, timeline, dayWidth });
+	// Триггер «Сегодня» из стора панели; хук скролла остаётся независимым от источника.
+	const showToday = usePanelStore((s) => s.showToday);
+	const resetShowToday = usePanelStore((s) => s.resetShowToday);
+
+	useItemDragMonitor(onPeriodChange);
+	useScrollControl({ scrollRef, timeline, dayWidth, showToday, onTodayConsumed: resetShowToday });
 
 	return (
 		<TooltipProvider>
