@@ -1,4 +1,4 @@
-import { PromoCalendarItem } from "./promo.types";
+import { PromoCalendarItem } from "../promo.types";
 
 // ─── Справочники ─────────────────────────────────────────────────────────────
 
@@ -7,19 +7,6 @@ const CHANNELS = ["retail", "distrib", "ecom", "opt", "horeca"];
 const CHANNEL_WEIGHTS = [34, 20, 18, 16, 12];
 
 const CLIENTS = ["Магнит", "X5 Group", "Лента", "Ашан", "Перекрёсток", "Дикси", "Метро", "ВкусВилл"];
-
-const BRANDS = ["Морозко", "Селяночка", "Фрутоныч", "Чистолюкс", "Аромаль", "Тонус", "Зелёный луг", "Барин"];
-
-const SKU_BY_BRAND: { [key: string]: string[] } = {
-	Морозко: ["Пельмени 800 г", "Вареники 450 г", "Блинчики 360 г"],
-	Селяночка: ["Сметана 20% 300 г", "Творог 5% 200 г", "Масло 82% 180 г"],
-	Фрутоныч: ["Сок яблочный 1 л", "Нектар мультифрукт 0,95 л", "Морс клюква 1 л"],
-	Чистолюкс: ["Гель для посуды 500 мл", "Порошок 3 кг", "Кондиционер 1 л"],
-	Аромаль: ["Шампунь 400 мл", "Гель для душа 250 мл", "Мыло 4×90 г"],
-	Тонус: ["Энергетик 0,45 л", "Изотоник 0,5 л", "Вода 1,5 л"],
-	"Зелёный луг": ["Чай чёрный 100 пак.", "Кофе молотый 250 г", "Какао 200 г"],
-	Барин: ["Колбаса в/к 350 г", "Сосиски 480 г", "Бекон 200 г"]
-};
 
 const TITLES = [
 	"Жёлтый ценник",
@@ -94,8 +81,6 @@ const WINDOW_END = Date.UTC(2026, 11, 31);
 const WINDOW_DAYS = Math.round((WINDOW_END - WINDOW_START) / 86400000);
 
 function buildItem(rnd: () => number, id: number): PromoCalendarItem {
-	const brand = pick(rnd, BRANDS);
-	const skus = SKU_BY_BRAND[brand];
 	const startMs = addDays(WINDOW_START, Math.floor(rnd() * WINDOW_DAYS));
 	const endMs = addDays(startMs, pickDuration(rnd));
 
@@ -105,9 +90,9 @@ function buildItem(rnd: () => number, id: number): PromoCalendarItem {
 		dateBegin: toDateObj(startMs),
 		dateEnd: toDateObj(endMs),
 		channelType: weightedPick(rnd, CHANNELS, CHANNEL_WEIGHTS),
+		channelId: Math.floor(rnd() * 100),
 		companyName: pick(rnd, CLIENTS),
-		brandName: brand,
-		skuName: brand + " · " + pick(rnd, skus)
+		companyId: Math.floor(rnd() * 100)
 	};
 }
 
@@ -121,9 +106,9 @@ const ANCHORS: PromoCalendarItem[] = [
 		dateBegin: new Date(2024, 11, 15),
 		dateEnd: new Date(2025, 1, 10),
 		channelType: "retail",
+		channelId: 1,
 		companyName: "Магнит",
-		brandName: "Морозко",
-		skuName: "Морозко · Пельмени 800 г"
+		companyId: 1
 	},
 	{
 		id: 2,
@@ -131,9 +116,9 @@ const ANCHORS: PromoCalendarItem[] = [
 		dateBegin: new Date(2025, 10, 20),
 		dateEnd: new Date(2026, 0, 25),
 		channelType: "retail",
+		channelId: 1,
 		companyName: "X5 Group",
-		brandName: "Селяночка",
-		skuName: "Селяночка · Масло 82% 180 г"
+		companyId: 2
 	},
 	{
 		id: 3,
@@ -141,9 +126,9 @@ const ANCHORS: PromoCalendarItem[] = [
 		dateBegin: new Date(2025, 0, 10),
 		dateEnd: new Date(2025, 11, 20),
 		channelType: "distrib",
+		channelId: 2,
 		companyName: "Лента",
-		brandName: "Чистолюкс",
-		skuName: "Чистолюкс · Порошок 3 кг"
+		companyId: 3
 	},
 	{
 		id: 4,
@@ -151,9 +136,9 @@ const ANCHORS: PromoCalendarItem[] = [
 		dateBegin: new Date(2025, 2, 3),
 		dateEnd: new Date(2025, 3, 14),
 		channelType: "retail",
+		channelId: 1,
 		companyName: "Магнит",
-		brandName: "Фрутоныч",
-		skuName: "Фрутоныч · Сок яблочный 1 л"
+		companyId: 1
 	},
 	{
 		id: 5,
@@ -161,9 +146,9 @@ const ANCHORS: PromoCalendarItem[] = [
 		dateBegin: new Date(2025, 2, 20),
 		dateEnd: new Date(2025, 4, 5),
 		channelType: "retail",
+		channelId: 1,
 		companyName: "Магнит",
-		brandName: "Тонус",
-		skuName: "Тонус · Энергетик 0,45 л"
+		companyId: 1
 	},
 	{
 		id: 6,
@@ -171,9 +156,9 @@ const ANCHORS: PromoCalendarItem[] = [
 		dateBegin: new Date(2025, 2, 25),
 		dateEnd: new Date(2025, 3, 30),
 		channelType: "retail",
+		channelId: 1,
 		companyName: "Магнит",
-		brandName: "Барин",
-		skuName: "Барин · Сосиски 480 г"
+		companyId: 1
 	},
 	{
 		id: 7,
@@ -181,9 +166,9 @@ const ANCHORS: PromoCalendarItem[] = [
 		dateBegin: new Date(2025, 5, 1),
 		dateEnd: new Date(2025, 7, 31),
 		channelType: "ecom",
+		channelId: 3,
 		companyName: "ВкусВилл",
-		brandName: "Аромаль",
-		skuName: "Аромаль · Гель для душа 250 мл"
+		companyId: 8
 	},
 	{
 		id: 8,
@@ -191,9 +176,9 @@ const ANCHORS: PromoCalendarItem[] = [
 		dateBegin: new Date(2025, 10, 24),
 		dateEnd: new Date(2025, 10, 30),
 		channelType: "ecom",
+		channelId: 3,
 		companyName: "ВкусВилл",
-		brandName: "Зелёный луг",
-		skuName: "Зелёный луг · Кофе молотый 250 г"
+		companyId: 8
 	},
 	{
 		id: 9,
@@ -201,9 +186,9 @@ const ANCHORS: PromoCalendarItem[] = [
 		dateBegin: new Date(2025, 7, 10),
 		dateEnd: new Date(2025, 8, 15),
 		channelType: "retail",
+		channelId: 1,
 		companyName: "Перекрёсток",
-		brandName: "Фрутоныч",
-		skuName: "Фрутоныч · Морс клюква 1 л"
+		companyId: 5
 	},
 	{
 		id: 10,
@@ -211,25 +196,29 @@ const ANCHORS: PromoCalendarItem[] = [
 		dateBegin: new Date(2025, 4, 1),
 		dateEnd: new Date(2025, 4, 14),
 		channelType: "horeca",
+		channelId: 5,
 		companyName: "Метро",
-		brandName: "Барин",
-		skuName: "Барин · Колбаса в/к 350 г"
+		companyId: 7
 	}
 ];
 
-// ─── Экспортируемые функции ───────────────────────────────────────────────────
-
-/**
- * 100 детерминированных записей (фиксированный seed).
+/*
  * Всегда возвращает одни и те же данные.
  */
-export function getStaticPromos(): PromoCalendarItem[] {
+export function getStaticPromos(extend: number = 10000): PromoCalendarItem[] {
 	const rnd = mulberry32(0xc0ffee);
 	const generated: PromoCalendarItem[] = [];
-	for (let i = ANCHORS.length + 1; i <= 1000; i++) {
+	for (let i = ANCHORS.length + 1; i <= ANCHORS.length + extend; i++) {
 		generated.push(buildItem(rnd, i));
 	}
 	return [...ANCHORS, ...generated];
+}
+
+let cache: PromoCalendarItem[] | null = null;
+export function getStaticWithCache(): PromoCalendarItem[] {
+	if (cache) return cache;
+	cache = getStaticPromos();
+	return cache;
 }
 
 /**

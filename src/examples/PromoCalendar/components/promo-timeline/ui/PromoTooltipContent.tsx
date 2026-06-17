@@ -13,12 +13,8 @@ export function PromoTooltipContent({ item }: { item: PreparedPromoItem }) {
 			<dd>
 				{isoToDdMmYyyy(item.dateBegin)} – {isoToDdMmYyyy(item.dateEnd)}
 			</dd>
-			<dt className="text-muted-foreground">{text("promo.brand")}</dt>
-			<dd>{item.brandName}</dd>
 			<dt className="text-muted-foreground">{text("promo.channel")}</dt>
 			<dd>{item.channelType}</dd>
-			<dt className="text-muted-foreground">SKU:</dt>
-			<dd>{item.skuName}</dd>
 		</dl>
 	);
 }

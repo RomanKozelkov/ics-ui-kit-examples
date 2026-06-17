@@ -57,7 +57,6 @@ export function CalendarSurface({
 							onToggle={onToggle}
 						/>
 
-						{/* Контентная колонка: измеряемый dnd-элемент (ширина = масштаб). */}
 						<div
 							ref={setTimelineRef}
 							className="flex shrink-0 flex-col"

@@ -5,6 +5,6 @@ export interface PromoCalendarItem {
 	dateEnd: Date;
 	channelType: string;
 	companyName: string;
-	brandName: string;
-	skuName: string;
+	companyId: number;
+	channelId: number;
 }

@@ -1,4 +1,6 @@
 export const promoKeys = {
 	promo: "promo",
-	fetch: (range?: { dateBegin: string; dateEnd: string }) => [promoKeys.promo, "fetch", range] as const
+	fetch: (year: number) => [promoKeys.promo, "fetch", year] as const,
+	years: () => [promoKeys.promo, "years"] as const,
+	holidays: (year: number) => [promoKeys.promo, "holidays", year] as const
 } as const;

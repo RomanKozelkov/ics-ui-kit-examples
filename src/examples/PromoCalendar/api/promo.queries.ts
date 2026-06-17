@@ -1,28 +1,42 @@
 import { useQuery } from "@tanstack/react-query";
 import { usePromoCalendarContext } from "../PromoCalendarContext";
 import { promoKeys } from "./promo.keys";
+import { dateToIso } from "../utils/dateToIso";
 
-export function usePromoCalendarQuery({ dateBegin, dateEnd }: { dateBegin: string; dateEnd: string }) {
+export function useYearsQuery() {
 	const { api } = usePromoCalendarContext();
 	return useQuery({
-		queryKey: promoKeys.fetch({ dateBegin, dateEnd }),
-		queryFn: () => api.fetchPromoCalendar(dateBegin, dateEnd),
+		queryKey: promoKeys.years(),
+		queryFn: () => api.fetchYears()
+	});
+}
+
+export function useHolidaysQuery({ year }: { year: number }) {
+	const { api } = usePromoCalendarContext();
+	return useQuery({
+		queryKey: promoKeys.holidays(year),
+		queryFn: () => api.getHolidays(year),
+		select: (dates) => new Set(dates)
+	});
+}
+
+export function usePromoCalendarQuery({ year }: { year: number }) {
+	const { api } = usePromoCalendarContext();
+	return useQuery({
+		queryKey: promoKeys.fetch(year),
+		queryFn: () => api.fetchPromoCalendar(year),
 		select: (data) =>
 			data.map<PromoData>((item) => ({
 				id: item.id,
 				title: item.title,
-				dateBegin: toIsoDate(item.dateBegin),
-				dateEnd: toIsoDate(item.dateEnd),
+				dateBegin: dateToIso(item.dateBegin),
+				dateEnd: dateToIso(item.dateEnd),
 				channelType: item.channelType,
 				companyName: item.companyName,
-				brandName: item.brandName,
-				skuName: item.skuName
+				companyId: item.companyId,
+				channelId: item.channelId
 			}))
 	});
-}
-
-function toIsoDate(date: Date): string {
-	return date.toISOString().split("T")[0];
 }
 
 export interface PromoDto {
@@ -31,9 +45,9 @@ export interface PromoDto {
 	dateBegin: Date;
 	dateEnd: Date;
 	channelType: string;
+	channelId: number;
 	companyName: string;
-	brandName: string;
-	skuName: string;
+	companyId: number;
 }
 
 export interface PromoData {
@@ -44,6 +58,6 @@ export interface PromoData {
 
 	channelType: string;
 	companyName: string;
-	brandName: string;
-	skuName: string;
+	companyId: number;
+	channelId: number;
 }

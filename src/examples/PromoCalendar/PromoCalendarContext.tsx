@@ -5,7 +5,6 @@ import type { TextFn } from "./i18n";
 export type Locale = "ru" | "en";
 
 export type PromoCalendarConfig = {
-	years: number[];
 	/** Источник данных. DI: подменяется для прод/тестов. */
 	api: PromoApi;
 	/** Функция перевода. DI: словарь / i18next / стаб. */

@@ -3,7 +3,7 @@ import { createStore, useStore } from "zustand";
 import { persist } from "zustand/middleware";
 import { DAY_WIDTH_DEFAULT, clampDayWidth } from "../data/options";
 
-export type Grouping = "none" | "channel" | "client" | "brand";
+export type Grouping = "none" | "channel" | "client";
 
 export type SortBy = "startDateAsc" | "nameAsc";
 
