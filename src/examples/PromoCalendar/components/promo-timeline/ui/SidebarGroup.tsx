@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { GROUP_HEAD_H, LANE_H, Z_INDEX } from "../utils/constants";
 import type { GroupNode } from "../utils/grouping";
 import { groupStickyTop, resolveHeaderPlacement } from "../utils/rows";
@@ -16,7 +17,14 @@ type Props = {
  * Сайдбар-половина секции группы. Зеркалит структуру ContentGroup (та же рекурсия и высоты),
  * поэтому строки двух колонок совпадают. Заголовок секции — sticky внутри своего relative-блока.
  */
-export function SidebarGroup({ group, depth, collapsedPaths, onToggle, headerHeight, showOwnHeader }: Props) {
+export const SidebarGroup = memo(function SidebarGroup({
+	group,
+	depth,
+	collapsedPaths,
+	onToggle,
+	headerHeight,
+	showOwnHeader
+}: Props) {
 	const collapsed = collapsedPaths.has(group.path);
 	const hasChildren = group.children.length > 0;
 	const placement = resolveHeaderPlacement(group, showOwnHeader, collapsed);
@@ -74,4 +82,4 @@ export function SidebarGroup({ group, depth, collapsedPaths, onToggle, headerHei
 				))}
 		</div>
 	);
-}
+});

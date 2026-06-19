@@ -3,11 +3,11 @@ import { TimelineContext as DndTimelineContext, type UsePanStrategy } from "dnd-
 import { type Modifier as DndKitModifier, MouseSensor, TouchSensor, useSensor, useSensors } from "@dnd-kit/core";
 import { usePromoCalendarSuspenseQuery } from "../../api/promo.queries";
 import { useText, useLocale } from "../../i18n";
-import { usePanelStore } from "../management-panel/store/panel.store";
 import { useIsDayOff } from "./hooks/useIsDayOff";
 import { usePreparedItems } from "./hooks/usePreparedItems";
 import { usePromoOverrides } from "./hooks/usePromoOverrides";
 import { CalendarSurface } from "./ui/CalendarSurface";
+import { StaleOverlay } from "./ui/StaleOverlay";
 import {
 	DRAG_ACTIVATION_PX,
 	LEFT_W,
@@ -25,12 +25,16 @@ export function PromoTimeline({
 	year,
 	dateBegin,
 	dateEnd,
-	groupBy = []
+	groupBy = [],
+	dayWidth,
+	isStale
 }: {
 	year: number;
 	dateBegin: string;
 	dateEnd: string;
 	groupBy?: GroupField[];
+	dayWidth: number;
+	isStale: boolean;
 }) {
 	// Данные грузятся на весь год; смена месяцев не вызывает рефетч — окно режется на клиенте.
 	// Suspense-query: data гарантированно есть, loading/error держит внешний QueryBoundary.
@@ -38,7 +42,6 @@ export function PromoTimeline({
 
 	const text = useText();
 	const locale = useLocale();
-	const dayWidth = usePanelStore((s) => s.dayWidth);
 
 	// Модификатор dnd-kit правит transform-дельту на каждом pointermove ещё до того,
 	// как она попадёт в бар. y:0 — только горизонталь. round(x/dayWidth)*dayWidth —
@@ -90,28 +93,30 @@ export function PromoTimeline({
 	const contentWidth = timeline.totalDays * dayWidth;
 
 	return (
-		<DndTimelineContext
-			range={range}
-			sidebarWidth={0}
-			sensors={sensors}
-			// onResizeEnd/onRangeChanged здесь noop намеренно: обязательные пропсы контекста,
-			// но drag и resize ловим подпиской useTimelineMonitor (см. useItemDragMonitor) —
-			// единая точка записи интервала. Дублировать обработку в пропсах не нужно.
-			onResizeEnd={noop}
-			onRangeChanged={noop}
-			usePanStrategy={noop}
-			rangeGridSizeDefinition={MS_DAY}
-			modifiers={modifiers}
-			// Live-resize берёт геометрию из getSpanFromResizeEvent, а тот снапит край к
-			// rangeGridSize (MS_DAY) → ресайз прыгает по дням, а не попиксельно.
-			useResizeAnimation
-		>
-			<CalendarSurface
-				timeline={timeline}
-				groups={groups}
-				onPeriodChange={onPeriodChange}
-				layout={{ leftWidth: leftW, contentWidth, dayWidth, isGrouped: grouped }}
-			/>
-		</DndTimelineContext>
+		<StaleOverlay stale={isStale}>
+			<DndTimelineContext
+				range={range}
+				sidebarWidth={0}
+				sensors={sensors}
+				// onResizeEnd/onRangeChanged здесь noop намеренно: обязательные пропсы контекста,
+				// но drag и resize ловим подпиской useTimelineMonitor (см. useItemDragMonitor) —
+				// единая точка записи интервала. Дублировать обработку в пропсах не нужно.
+				onResizeEnd={noop}
+				onRangeChanged={noop}
+				usePanStrategy={noop}
+				rangeGridSizeDefinition={MS_DAY}
+				modifiers={modifiers}
+				// Live-resize берёт геометрию из getSpanFromResizeEvent, а тот снапит край к
+				// rangeGridSize (MS_DAY) → ресайз прыгает по дням, а не попиксельно.
+				useResizeAnimation
+			>
+				<CalendarSurface
+					timeline={timeline}
+					groups={groups}
+					onPeriodChange={onPeriodChange}
+					layout={{ leftWidth: leftW, contentWidth, dayWidth, isGrouped: grouped }}
+				/>
+			</DndTimelineContext>
+		</StaleOverlay>
 	);
 }

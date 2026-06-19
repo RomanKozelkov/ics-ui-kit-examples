@@ -1,3 +1,4 @@
+import { memo } from "react";
 import type { PreparedPromoItem } from "../types";
 import { BAR_FONT_PX, BAR_H, BAR_RADIUS } from "../utils/constants";
 import { useText } from "../../../i18n";
@@ -7,7 +8,7 @@ function corner(rounded: boolean) {
 	return rounded ? BAR_RADIUS : 0;
 }
 
-export function PromoBar({
+export const PromoBar = memo(function PromoBar({
 	item,
 	overflowLeft,
 	overflowRight
@@ -42,4 +43,4 @@ export function PromoBar({
 			{overflowRight && <span className="ml-auto shrink-0 opacity-80">›</span>}
 		</div>
 	);
-}
+});

@@ -1,3 +1,4 @@
+import { memo } from "react";
 import type { GroupNode } from "../utils/grouping";
 import { groupStickyTop, resolveHeaderPlacement } from "../utils/rows";
 import { ContentGroupBand } from "./ContentGroupBand";
@@ -15,7 +16,13 @@ type Props = {
  * Контентная половина секции группы. Каждая секция — отдельный containing block (relative),
  * поэтому её заголовок-полоса залипает только в пределах своей группы (iOS-style), а не всего столбца.
  */
-export function ContentGroup({ group, depth, collapsedPaths, headerHeight, showOwnHeader }: Props) {
+export const ContentGroup = memo(function ContentGroup({
+	group,
+	depth,
+	collapsedPaths,
+	headerHeight,
+	showOwnHeader
+}: Props) {
 	const collapsed = collapsedPaths.has(group.path);
 	const hasChildren = group.children.length > 0;
 	const placement = resolveHeaderPlacement(group, showOwnHeader, collapsed);
@@ -49,4 +56,4 @@ export function ContentGroup({ group, depth, collapsedPaths, headerHeight, showO
 				))}
 		</div>
 	);
-}
+});

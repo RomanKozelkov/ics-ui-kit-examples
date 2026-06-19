@@ -1,5 +1,5 @@
 import { MutationCache, QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { Suspense, useMemo, useState } from "react";
+import { Suspense, useDeferredValue, useMemo, useState } from "react";
 import { PromoCalendarContext, type PromoCalendarConfig } from "./PromoCalendarContext";
 import { mockPromoApi } from "./api/mock/mock.api";
 import { Layout } from "./components/layout/Layout";
@@ -94,7 +94,35 @@ function CalendarContainer() {
 	const { dateBegin, dateEnd } = usePanelStore(useShallow(selectDateRange));
 	const year = usePanelStore((s) => s.year);
 	const grouping = usePanelStore((s) => s.grouping);
-	const groupBy = useMemo(() => mapGroupingToFields(grouping), [grouping]);
+	const dayWidth = usePanelStore((s) => s.dayWidth);
 
-	return <PromoTimeline year={year} dateBegin={dateBegin} dateEnd={dateEnd} groupBy={groupBy} />;
+	// Откладываем все параметры, питающие suspense-query и тяжёлые мемо (buildGroupTree, релейаут баров).
+	// useDeferredValue, а не startTransition: значения приходят из zustand (useSyncExternalStore),
+	// который React обновляет синхронно — transition его не откладывает.
+	const deferredYear = useDeferredValue(year);
+	const deferredGrouping = useDeferredValue(grouping);
+	const deferredDayWidth = useDeferredValue(dayWidth);
+	const deferredDateBegin = useDeferredValue(dateBegin);
+	const deferredDateEnd = useDeferredValue(dateEnd);
+
+	const groupBy = useMemo(() => mapGroupingToFields(deferredGrouping), [deferredGrouping]);
+
+	// stale, пока deferred-значения догоняют актуальные → накрываем полотно blur + inert (StaleOverlay).
+	const isStale =
+		year !== deferredYear ||
+		grouping !== deferredGrouping ||
+		dayWidth !== deferredDayWidth ||
+		dateBegin !== deferredDateBegin ||
+		dateEnd !== deferredDateEnd;
+
+	return (
+		<PromoTimeline
+			year={deferredYear}
+			dateBegin={deferredDateBegin}
+			dateEnd={deferredDateEnd}
+			groupBy={groupBy}
+			dayWidth={deferredDayWidth}
+			isStale={isStale}
+		/>
+	);
 }
