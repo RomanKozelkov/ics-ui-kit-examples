@@ -14,6 +14,7 @@ import { msToContentX } from "../utils/timeline";
 import { EdgeDateLabel } from "./EdgeDateLabel";
 import { GridBackground } from "./GridBackground";
 import { ContentGroup } from "./ContentGroup";
+import { PromoHoverTooltip } from "./PromoHoverTooltip";
 import { SidebarColumn } from "./SidebarColumn";
 import { TimelineHeader } from "./TimelineHeader";
 import { TimelineScrollProvider } from "./TimelineScrollContext";
@@ -120,6 +121,7 @@ export function CalendarSurface({
 					</div>
 				</div>
 				<EdgeDateLabel />
+				<PromoHoverTooltip />
 			</div>
 		</TooltipProvider>
 	);

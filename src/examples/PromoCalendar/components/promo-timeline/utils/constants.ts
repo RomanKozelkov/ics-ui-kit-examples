@@ -60,3 +60,8 @@ export const EDGE_LABEL_CLEARANCE_PX = 24;
 
 /** Зазор подсказки даты края от бара, px. */
 export const EDGE_LABEL_GAP_PX = 6;
+
+/** Задержка появления hover-тултипа промо, мс. Как у Radix — не мигает при свайпе курсором по барам. */
+export const TOOLTIP_HOVER_DELAY_MS = 300;
+/** Зазор hover-тултипа над баром, px. */
+export const TOOLTIP_GAP_PX = 6;

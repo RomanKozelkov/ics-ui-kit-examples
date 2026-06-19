@@ -1,4 +1,4 @@
-import { useMemo, useSyncExternalStore } from "react";
+import { memo, useMemo, useSyncExternalStore } from "react";
 import { useRow as useDndTimelineRow } from "dnd-timeline";
 import { IconButton } from "ics-ui-kit/components/button";
 import { ChevronLeft, ChevronRight } from "lucide-react";
@@ -16,7 +16,7 @@ type Props = {
 };
 
 /** Контентная строка lane: только промо-бары. Сайдбар вынесен в отдельную колонку (two-pane). */
-export function LaneRow({ rowId, items, borderBottom }: Props) {
+export const LaneRow = memo(function LaneRow({ rowId, items, borderBottom }: Props) {
 	const { setNodeRef, rowStyle, rowWrapperStyle } = useDndTimelineRow({ id: rowId });
 	const text = useText();
 	const { viewportStore, toX, scrollToMs, leftWidth } = useTimelineScroll();
@@ -32,7 +32,16 @@ export function LaneRow({ rowId, items, borderBottom }: Props) {
 	// Базовая заливка приходит от surface (bg-primary-bg, тот же цвет).
 	const { left, right } = edges;
 	return (
-		<div style={{ ...rowWrapperStyle, width: "100%" }}>
+		// content-visibility: браузер пропускает layout/paint строк вне вьюпорта; intrinsic-size
+		// держит высоту строки (LANE_H), чтобы общая высота полотна и фоновая сетка не плыли.
+		<div
+			style={{
+				...rowWrapperStyle,
+				width: "100%",
+				contentVisibility: "auto",
+				containIntrinsicSize: `auto ${LANE_H}px`
+			}}
+		>
 			<div ref={setNodeRef} style={{ ...rowStyle, height: LANE_H }} className={borderBottom ? "border-b" : ""}>
 				{items.map((item) => (
 					<PromoItem key={item.id} item={item} />
@@ -72,4 +81,4 @@ export function LaneRow({ rowId, items, borderBottom }: Props) {
 			</div>
 		</div>
 	);
-}
+});
