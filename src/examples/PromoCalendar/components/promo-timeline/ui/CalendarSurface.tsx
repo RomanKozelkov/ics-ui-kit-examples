@@ -11,6 +11,7 @@ import type { TimelineModel } from "../utils/timeline";
 import type { GroupNode } from "../utils/grouping";
 import { SURFACE_MAX_H } from "../utils/constants";
 import { msToContentX } from "../utils/timeline";
+import { EdgeDateLabel } from "./EdgeDateLabel";
 import { GridBackground } from "./GridBackground";
 import { ContentGroup } from "./ContentGroup";
 import { SidebarColumn } from "./SidebarColumn";
@@ -118,6 +119,7 @@ export function CalendarSurface({
 						</div>
 					</div>
 				</div>
+				<EdgeDateLabel />
 			</div>
 		</TooltipProvider>
 	);

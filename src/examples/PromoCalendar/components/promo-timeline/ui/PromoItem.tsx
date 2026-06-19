@@ -1,6 +1,9 @@
 import { useItem, useTimelineContext } from "dnd-timeline";
+import type { Span } from "dnd-timeline";
 import { Tooltip, TooltipContent, TooltipTrigger } from "ics-ui-kit/components/tooltip";
+import { useCallback } from "react";
 import type { PromoCalendarItem } from "../../../api/promo.types";
+import { useEdgeLabel } from "../hooks/useEdgeLabel";
 import { usePromoEditor } from "../../promo-editor/PromoEditorContext";
 import type { PreparedPromoItem } from "../types";
 import { RESIZE_HANDLE_W, ROW_PAD } from "../utils/constants";
@@ -25,20 +28,33 @@ export function PromoItem({ item }: { item: PreparedPromoItem }) {
 	const overflowLeft = item.startMs < range.start;
 	const overflowRight = item.endMs > range.end;
 
+	const itemSpan: Span = { start: item.startMs, end: item.endMs };
+	const { resizeHandlers, barProps, registerNode } = useEdgeLabel(itemSpan);
+
 	const { setNodeRef, listeners, attributes, itemStyle, itemContentStyle } = useItem({
 		id: String(item.id),
-		span: { start: item.startMs, end: item.endMs },
+		span: itemSpan,
 		resizeHandleWidth: RESIZE_HANDLE_W,
-		data: { promo: item }
+		data: { promo: item },
+		...resizeHandlers
 	});
+
+	const handleRef = useCallback(
+		(node: HTMLDivElement | null) => {
+			registerNode(node);
+			setNodeRef(node);
+		},
+		[registerNode, setNodeRef]
+	);
 
 	return (
 		<Tooltip>
 			<TooltipTrigger asChild>
 				<div
-					ref={setNodeRef}
+					ref={handleRef}
 					{...listeners}
 					{...attributes}
+					{...barProps}
 					onClick={() => openEdit(toPromo(item))}
 					style={{ ...itemStyle, top: ROW_PAD }}
 				>

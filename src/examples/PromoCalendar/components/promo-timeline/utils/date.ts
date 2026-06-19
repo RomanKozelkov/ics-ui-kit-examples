@@ -40,3 +40,11 @@ export function isoToDdMmYyyy(iso: string): string {
 	const [year, month, day] = iso.split("-");
 	return `${day}.${month}.${year}`;
 }
+
+const MONTHS_SHORT_RU = ["янв", "фев", "мар", "апр", "май", "июн", "июл", "авг", "сен", "окт", "ноя", "дек"];
+
+/** ms (UTC-полночь) → краткая метка дня для ресайз-подсказки, напр. «16 дек». */
+export function msToDayLabel(ms: number): string {
+	const d = new Date(ms);
+	return `${d.getUTCDate()} ${MONTHS_SHORT_RU[d.getUTCMonth()]}`;
+}
