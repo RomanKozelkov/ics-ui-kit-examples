@@ -24,10 +24,10 @@ export function FrostedGlassExample() {
 						style={frostedStyle}
 						className="absolute inset-x-0 top-0 z-10 flex items-center justify-between px-5 py-4"
 					>
-						<span className="text-sm font-bold text-white">Логотип</span>
+						<span className="text-sm font-bold">Логотип</span>
 						<div className="flex gap-4">
-							<span className="text-xs text-white/70">Главная</span>
-							<span className="text-xs text-white/70">О нас</span>
+							<span className="text-xs">Главная</span>
+							<span className="text-xs">О нас</span>
 						</div>
 					</nav>
 				</ScrollBackground>

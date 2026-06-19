@@ -2,7 +2,7 @@ const SCROLL_ITEMS = Array.from({ length: 20 }, (_, i) => i);
 
 export function ScrollBackground({ children }: { children: React.ReactNode }) {
 	return (
-		<div className="relative h-[400px] overflow-hidden rounded-2xl bg-gradient-to-br from-slate-700 via-slate-800 to-slate-900">
+		<div className="relative h-[400px] overflow-hidden rounded-2xl bg-stone-200">
 			<div className="absolute inset-0 overflow-y-auto" style={{ scrollbarWidth: "none" }}>
 				<div className="flex flex-col gap-2 p-4 pb-24 pt-24">
 					{SCROLL_ITEMS.map((i) => (
