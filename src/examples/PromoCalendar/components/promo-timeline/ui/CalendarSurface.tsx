@@ -1,4 +1,4 @@
-import { useMemo, useRef } from "react";
+import { useCallback, useMemo, useRef } from "react";
 import { useTimelineContext } from "dnd-timeline";
 import { TooltipProvider } from "ics-ui-kit/components/tooltip";
 import { usePanelStore } from "../../management-panel/store/panel.store";
@@ -6,7 +6,7 @@ import { useCollapsiblePaths } from "../hooks/useCollapsiblePaths";
 import { useItemDragMonitor } from "../hooks/useItemDragMonitor";
 import { useScrollControl } from "../hooks/useScrollControl";
 import { useTimelineHeader } from "../hooks/useTimelineHeader";
-import { useTimelineViewport } from "../hooks/useTimelineViewport";
+import { useTimelineViewportStore } from "../hooks/useTimelineViewport";
 import type { TimelineModel } from "../utils/timeline";
 import type { GroupNode } from "../utils/grouping";
 import { SURFACE_MAX_H } from "../utils/constants";
@@ -44,19 +44,24 @@ export function CalendarSurface({
 	const { collapsedPaths, onToggle } = useCollapsiblePaths();
 	const scrollRef = useRef<HTMLDivElement>(null);
 
-	// Триггер «Сегодня» из стора панели; хук скролла остаётся независимым от источника.
 	const showToday = usePanelStore((s) => s.showToday);
 	const resetShowToday = usePanelStore((s) => s.resetShowToday);
 
 	useItemDragMonitor(onPeriodChange);
-	const { scrollToMs } = useScrollControl({ scrollRef, timeline, dayWidth, showToday, onTodayConsumed: resetShowToday });
+	const { scrollToMs } = useScrollControl({
+		scrollRef,
+		timeline,
+		dayWidth,
+		showToday,
+		onTodayConsumed: resetShowToday
+	});
 
-	// Видимое окно + ms→px: питают edge-стрелки навигации к off-screen промо в строках.
-	const viewport = useTimelineViewport({ scrollRef, leftWidth, dayWidth });
+	const viewportStore = useTimelineViewportStore({ scrollRef, leftWidth, dayWidth });
 	const startMs = timeline.startMs;
+	const toX = useCallback((ms: number) => msToContentX(ms, startMs, dayWidth), [startMs, dayWidth]);
 	const scroll = useMemo(
-		() => ({ viewport, scrollToMs, toX: (ms: number) => msToContentX(ms, startMs, dayWidth), leftWidth }),
-		[viewport, scrollToMs, startMs, dayWidth, leftWidth]
+		() => ({ viewportStore, toX, scrollToMs, leftWidth }),
+		[viewportStore, toX, scrollToMs, leftWidth]
 	);
 
 	return (
@@ -65,7 +70,7 @@ export function CalendarSurface({
 				className="relative flex min-h-0 flex-1 flex-col overflow-hidden rounded-lg border border-border bg-primary-bg"
 				style={{ maxHeight: SURFACE_MAX_H }}
 			>
-				<div ref={scrollRef} className="min-h-0 flex-1 overflow-auto">
+				<div ref={scrollRef} data-timeline-scrollport className="min-h-0 flex-1 overflow-auto">
 					{/* Горизонтальный ряд из двух колонок шире вьюпорта → H-скролл контейнера. */}
 					<div className="flex" style={{ width: leftWidth + contentWidth }}>
 						<SidebarColumn
@@ -84,7 +89,13 @@ export function CalendarSurface({
 							// окно (промо на стыке лет: dateEnd в следующем январе), — иначе их box
 							// растягивает scrollWidth и за месяцами появляется пустое место.
 							// clip (в отличие от hidden) не создаёт scroll-контейнер → sticky не ломается.
-							style={{ ...style, overflowX: "clip", overflowY: "visible", minWidth: undefined, width: contentWidth }}
+							style={{
+								...style,
+								overflowX: "clip",
+								overflowY: "visible",
+								minWidth: undefined,
+								width: contentWidth
+							}}
 						>
 							<TimelineHeader timeline={timeline} leftWidth={leftWidth} />
 							{/* flex-col: строки из dnd-timeline идут inline-flex; без блокификации между

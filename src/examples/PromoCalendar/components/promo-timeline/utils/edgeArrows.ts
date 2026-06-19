@@ -1,32 +1,29 @@
 import type { TimelineViewport } from "../hooks/useTimelineViewport";
 
-/** Цель скролла для edge-стрелки: ms ближайшего off-screen промо, либо null (стрелки нет). */
-export type EdgeTarget = { ms: number } | null;
-
-export type RowEdgeTargets = {
+/** Цели edge-стрелок строки: ms ближайшего off-screen промо с каждой стороны (null — стрелки нет). */
+export type RowEdges = {
 	/** Ближайший промо целиком левее видимого окна. */
-	left: EdgeTarget;
+	left: number | null;
 	/** Ближайший промо целиком правее видимого окна. */
-	right: EdgeTarget;
+	right: number | null;
 };
-
-const NONE: RowEdgeTargets = { left: null, right: null };
 
 type EdgeItem = { startMs: number; endMs: number };
 
 /**
- * Какие edge-стрелки показать строке и куда они скроллят.
+ * Снапшот edge-стрелок строки как ПРИМИТИВ `"leftMs:rightMs"` (пустая сторона — без числа).
  *
- * Если хоть один промо пересекает видимое окно — строка не пуста, стрелок нет.
- * Иначе ищем ближайший промо с каждой стороны: слева — с максимальным правым краем,
- * справа — с минимальным левым краем. Цель скролла — startMs найденного промо
- * (центрируется потребителем).
+ * Строка (не объект) специально: useSyncExternalStore сравнивает снапшоты через Object.is,
+ * поэтому стабильный примитив не триггерит ре-рендер строки, пока цели стрелок не сменились.
+ * Это и есть то, что держит скролл дешёвым при многих строках.
+ *
+ * Логика: если хоть один промо пересекает видимое окно — строка не пуста, стрелок нет (`""`).
+ * Иначе ближайший слева — с максимальным правым краем, справа — с минимальным левым краем;
+ * цель скролла — startMs найденного промо (центрируется потребителем).
  */
-export function rowEdgeTargets(
-	items: EdgeItem[],
-	view: TimelineViewport,
-	toX: (ms: number) => number
-): RowEdgeTargets {
+export function rowEdgeKey(items: EdgeItem[], view: TimelineViewport | null, toX: (ms: number) => number): string {
+	if (!view) return ""; // ещё не измерено — стрелок нет
+
 	let leftItem: EdgeItem | null = null;
 	let leftEndX = -Infinity; // макс endX среди тех, что целиком левее окна
 	let rightItem: EdgeItem | null = null;
@@ -37,17 +34,29 @@ export function rowEdgeTargets(
 		const endX = toX(item.endMs);
 
 		// Пересекает видимое окно — строка не пуста, стрелки не нужны.
-		if (endX > view.visibleStartX && startX < view.visibleEndX) return NONE;
+		if (endX > view.visibleStartX && startX < view.visibleEndX) return "";
 
 		if (endX <= view.visibleStartX) {
-			if (endX > leftEndX) { leftItem = item; leftEndX = endX; }
+			if (endX > leftEndX) {
+				leftItem = item;
+				leftEndX = endX;
+			}
 		} else {
-			if (startX < rightStartX) { rightItem = item; rightStartX = startX; }
+			if (startX < rightStartX) {
+				rightItem = item;
+				rightStartX = startX;
+			}
 		}
 	}
 
-	return {
-		left: leftItem ? { ms: leftItem.startMs } : null,
-		right: rightItem ? { ms: rightItem.startMs } : null
-	};
+	return `${leftItem ? leftItem.startMs : ""}:${rightItem ? rightItem.startMs : ""}`;
+}
+
+/** Разбирает снапшот `rowEdgeKey` обратно в ms-цели стрелок. */
+export function parseEdgeKey(key: string): RowEdges {
+	const sep = key.indexOf(":");
+	if (sep === -1) return { left: null, right: null };
+	const left = key.slice(0, sep);
+	const right = key.slice(sep + 1);
+	return { left: left ? Number(left) : null, right: right ? Number(right) : null };
 }

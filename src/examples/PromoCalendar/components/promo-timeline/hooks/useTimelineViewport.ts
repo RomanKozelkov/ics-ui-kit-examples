@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef } from "react";
 import type { RefObject } from "react";
 
 /** Видимое окно таймлайна в координатах контента (px от первого дня). */
@@ -10,16 +10,26 @@ export type TimelineViewport = {
 };
 
 /**
- * Реактивно отслеживает горизонтальное видимое окно скролл-контейнера таймлайна.
+ * External store видимого окна: `get()` + `subscribe()` для useSyncExternalStore.
  *
- * Возвращает окно в координатах КОНТЕНТА (origin = первый день), поэтому из правого
- * края вычитается `leftWidth` — ширина sticky-сайдбара, перекрывающего левую часть
- * вьюпорта. Так окно напрямую сравнимо с `toX(ms)` промо-баров.
- *
- * Слушает scroll (через rAF-throttle — programmatic scrollLeft тоже его триггерит) и
- * ResizeObserver контейнера; пере-измеряется при смене `dayWidth` (zoom меняет scrollLeft).
+ * Намеренно НЕ React-state: при многих строках реактивный viewport в context перерисовывал
+ * бы все строки каждый кадр скролла. Здесь строки подписываются точечно и перерисовываются
+ * только когда меняется их собственный снапшот edge-стрелок.
  */
-export function useTimelineViewport({
+export type ViewportStore = {
+	get: () => TimelineViewport | null;
+	subscribe: (listener: () => void) => () => void;
+};
+
+/**
+ * Отслеживает горизонтальное видимое окно скролл-контейнера таймлайна и раздаёт его как
+ * external store. Окно — в координатах КОНТЕНТА (origin = первый день): из правого края
+ * вычитается `leftWidth` (ширина sticky-сайдбара), поэтому окно напрямую сравнимо с `toX(ms)`.
+ *
+ * Слушает scroll (rAF-throttle — programmatic scrollLeft тоже триггерит) и ResizeObserver;
+ * пере-измеряется при смене `dayWidth` (zoom двигает scrollLeft) и `leftWidth`.
+ */
+export function useTimelineViewportStore({
 	scrollRef,
 	leftWidth,
 	dayWidth
@@ -27,17 +37,35 @@ export function useTimelineViewport({
 	scrollRef: RefObject<HTMLElement | null>;
 	leftWidth: number;
 	dayWidth: number;
-}): TimelineViewport {
-	const [metrics, setMetrics] = useState({ scrollLeft: 0, clientWidth: 0 });
+}): ViewportStore {
+	const stateRef = useRef<TimelineViewport | null>(null);
+	const listenersRef = useRef<Set<() => void>>(new Set());
 	const rafRef = useRef<number | null>(null);
+
+	const subscribe = useCallback((listener: () => void) => {
+		listenersRef.current.add(listener);
+		return () => {
+			listenersRef.current.delete(listener);
+		};
+	}, []);
+
+	const get = useCallback(() => stateRef.current, []);
 
 	useEffect(() => {
 		const el = scrollRef.current;
 		if (!el) return;
 
-		const measure = () => setMetrics({ scrollLeft: el.scrollLeft, clientWidth: el.clientWidth });
+		const measure = () => {
+			const visibleStartX = el.scrollLeft;
+			const visibleEndX = el.scrollLeft + el.clientWidth - leftWidth;
 
-		// rAF-throttle: scroll сыпется чаще кадра, измеряем максимум раз в кадр.
+			const prev = stateRef.current;
+			if (prev && prev.visibleStartX === visibleStartX && prev.visibleEndX === visibleEndX) return;
+
+			stateRef.current = { visibleStartX, visibleEndX };
+			listenersRef.current.forEach((l) => l());
+		};
+
 		const onScroll = () => {
 			if (rafRef.current !== null) return;
 			rafRef.current = requestAnimationFrame(() => {
@@ -57,14 +85,8 @@ export function useTimelineViewport({
 			if (rafRef.current !== null) cancelAnimationFrame(rafRef.current);
 			rafRef.current = null;
 		};
-		// dayWidth: смена масштаба двигает scrollLeft программно — пере-измеряем.
-	}, [scrollRef, dayWidth]);
+		// dayWidth/leftWidth: zoom двигает scrollLeft программно, leftWidth меняет правый край — пере-измеряем.
+	}, [scrollRef, dayWidth, leftWidth]);
 
-	return useMemo(
-		() => ({
-			visibleStartX: metrics.scrollLeft,
-			visibleEndX: metrics.scrollLeft + metrics.clientWidth - leftWidth
-		}),
-		[metrics, leftWidth]
-	);
+	return useMemo(() => ({ get, subscribe }), [get, subscribe]);
 }
