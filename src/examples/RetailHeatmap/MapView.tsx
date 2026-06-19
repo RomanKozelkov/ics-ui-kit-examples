@@ -10,6 +10,7 @@ import { TYPE_MAP } from "./types";
 import type { TradePoint } from "./types";
 import type { Brick } from "./bricks";
 import { HoverCard } from "./HoverCard";
+import { Legend } from "./Legend";
 import { MapToolbar, type Tool } from "./MapToolbar";
 
 // Растровая подложка CARTO (как в референсе) — светлый стиль без токена.
@@ -99,6 +100,7 @@ export function MapView({
 	const cancelDrawRef = useRef<() => void>(() => {});
 	const [hover, setHover] = useState<Hover | null>(null);
 	const [tool, setTool] = useState<Tool>("cursor");
+	const [opacity, setOpacity] = useState(0.55);
 	// Свежие значения без пересоздания карты (mount-эффект с пустыми зависимостями).
 	const toolRef = useRef(tool);
 	toolRef.current = tool;
@@ -372,7 +374,7 @@ export function MapView({
 				fillColor: brick.color,
 				weight: sel ? 3 : 1.2,
 				color: sel ? "#0f172a" : "rgba(15,23,42,.5)",
-				fillOpacity: sel ? 0.72 : 0.55
+				fillOpacity: sel ? Math.min(0.95, opacity + 0.18) : opacity
 			});
 			if (sel) poly.bringToFront();
 		}
@@ -384,7 +386,7 @@ export function MapView({
 				delete brickLayersRef.current[id];
 			}
 		}
-	}, [bricks, selectedBrickId]);
+	}, [bricks, selectedBrickId, opacity]);
 
 	// Реакция на смену инструмента: отменить рисование, сменить курсор, dblclick-зум.
 	useEffect(() => {
@@ -447,6 +449,7 @@ export function MapView({
 		<div className="relative h-full w-full">
 			<div ref={containerRef} className="h-full w-full" style={{ background: "#eef2f6" }} />
 			<MapToolbar tool={tool} onToolChange={setTool} />
+			<Legend opacity={opacity} onOpacityChange={setOpacity} />
 			{hover && (
 				<div
 					className="pointer-events-none absolute z-[600]"
