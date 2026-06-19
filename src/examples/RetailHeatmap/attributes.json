@@ -1,0 +1,8 @@
+{
+	"title": "Retail Heatmap",
+	"category": "dashboard",
+	"canvas": {
+		"height": 640,
+		"classNames": ""
+	}
+}

@@ -3,3 +3,4 @@ export { SecondarySalesDashboard } from "./SecondarySalesDashboard/SecondarySale
 export { OfftakeDashboard } from "./OfftakeDashboard/OfftakeDashboard";
 export { SidebarNavigation } from "./SidebarNavigation/SidebarNavigation";
 export { DonutLegendSort } from "./DonutLegendSort/DonutLegendSort";
+export { RetailHeatmap } from "./RetailHeatmap/RetailHeatmap";
