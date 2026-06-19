@@ -1,14 +1,20 @@
 import { useMemo } from "react";
 import { TimelineContext as DndTimelineContext, type UsePanStrategy } from "dnd-timeline";
-import type { Modifier as DndKitModifier } from "@dnd-kit/core";
-import { usePromoCalendarQuery } from "../../api/promo.queries";
+import { type Modifier as DndKitModifier, MouseSensor, TouchSensor, useSensor, useSensors } from "@dnd-kit/core";
+import { usePromoCalendarSuspenseQuery } from "../../api/promo.queries";
 import { useText, useLocale } from "../../i18n";
 import { usePanelStore } from "../management-panel/store/panel.store";
 import { useIsDayOff } from "./hooks/useIsDayOff";
 import { usePreparedItems } from "./hooks/usePreparedItems";
 import { usePromoOverrides } from "./hooks/usePromoOverrides";
 import { CalendarSurface } from "./ui/CalendarSurface";
-import { LEFT_W, MS_DAY } from "./utils/constants";
+import {
+	DRAG_ACTIVATION_PX,
+	LEFT_W,
+	MS_DAY,
+	TOUCH_ACTIVATION_DELAY_MS,
+	TOUCH_ACTIVATION_TOLERANCE_PX
+} from "./utils/constants";
 import { getTimelineModel } from "./utils/timeline";
 import { buildGroupTree, isGrouped } from "./utils/grouping";
 import type { GroupField } from "./types";
@@ -28,7 +34,8 @@ export function PromoTimeline({
 }) {
 	// Данные грузятся на весь год; смена месяцев не вызывает рефетч — окно режется на клиенте.
 	// Suspense-query: data гарантированно есть, loading/error держит внешний QueryBoundary.
-	const { data } = usePromoCalendarQuery({ year });
+	const { data } = usePromoCalendarSuspenseQuery({ year });
+
 	const text = useText();
 	const locale = useLocale();
 	const dayWidth = usePanelStore((s) => s.dayWidth);
@@ -45,6 +52,18 @@ export function PromoTimeline({
 			}
 		],
 		[dayWidth]
+	);
+
+	// Порог активации: жест ниже порога — клик (открытие карточки), выше — драг.
+	// Без порога любой микросдвиг стартует драг, dnd-kit глушит трейлинг-click и onClick не доходит.
+	const sensors = useSensors(
+		useSensor(MouseSensor, { activationConstraint: { distance: DRAG_ACTIVATION_PX } }),
+		useSensor(TouchSensor, {
+			activationConstraint: {
+				delay: TOUCH_ACTIVATION_DELAY_MS,
+				tolerance: TOUCH_ACTIVATION_TOLERANCE_PX
+			}
+		})
 	);
 
 	const isDayOff = useIsDayOff(year);
@@ -74,6 +93,7 @@ export function PromoTimeline({
 		<DndTimelineContext
 			range={range}
 			sidebarWidth={0}
+			sensors={sensors}
 			// onResizeEnd/onRangeChanged здесь noop намеренно: обязательные пропсы контекста,
 			// но drag и resize ловим подпиской useTimelineMonitor (см. useItemDragMonitor) —
 			// единая точка записи интервала. Дублировать обработку в пропсах не нужно.

@@ -68,8 +68,12 @@ export function CalendarSurface({
 						<div
 							ref={setTimelineRef}
 							className="flex shrink-0 flex-col"
-							// overflow:visible вместо клиппинга библиотеки — скроллит внешний контейнер.
-							style={{ ...style, overflow: "visible", minWidth: undefined, width: contentWidth }}
+							// overflowY:visible вместо клиппинга библиотеки — скроллит внешний контейнер,
+							// залипающая шапка работает. overflowX:clip обрезает бары промо, выходящих за
+							// окно (промо на стыке лет: dateEnd в следующем январе), — иначе их box
+							// растягивает scrollWidth и за месяцами появляется пустое место.
+							// clip (в отличие от hidden) не создаёт scroll-контейнер → sticky не ломается.
+							style={{ ...style, overflowX: "clip", overflowY: "visible", minWidth: undefined, width: contentWidth }}
 						>
 							<TimelineHeader timeline={timeline} leftWidth={leftWidth} />
 							{/* flex-col: строки из dnd-timeline идут inline-flex; без блокификации между

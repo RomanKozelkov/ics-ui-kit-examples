@@ -20,12 +20,21 @@ export const GROUP_HEAD_H = 32;
 export const MS_DAY = 86_400_000;
 
 /** Максимальная высота полотна, px; дальше включается вертикальный скролл. */
-export const SURFACE_MAX_H = 400;
+export const SURFACE_MAX_H = 800;
 
 export const DAY_GRID_MIN_PX = 25;
 
 /** Ширина зоны захвата у краёв промо-бара для ресайза, px. 0 — ресайз выключен. */
 export const RESIZE_HANDLE_W = 8;
+
+/** Порог движения мыши (px), после которого жест считается драгом, а не кликом.
+ *  Ниже порога драг не стартует → срабатывает onClick (открытие карточки). */
+export const DRAG_ACTIVATION_PX = 5;
+
+/** Тач: задержка удержания (мс) и допуск дрожания (px) до старта драга.
+ *  delay даёт прокрутке таймлайна пройти, не превращаясь в драг. */
+export const TOUCH_ACTIVATION_DELAY_MS = 200;
+export const TOUCH_ACTIVATION_TOLERANCE_PX = 8;
 
 /**
  * Слои наложения по оси Z — единый источник правды

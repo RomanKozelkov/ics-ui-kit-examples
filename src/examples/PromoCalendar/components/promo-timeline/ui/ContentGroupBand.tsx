@@ -8,7 +8,7 @@ export function ContentGroupBand({ top }: { top: number }) {
 	return (
 		<div
 			aria-hidden
-			className="sticky w-full border-b border-border bg-primary-bg"
+			className="sticky w-full border-b border-border"
 			style={{ height: GROUP_HEAD_H, top, zIndex: Z_INDEX.sidebar }}
 		>
 			<div className="pointer-events-none absolute inset-0 bg-muted/40" />

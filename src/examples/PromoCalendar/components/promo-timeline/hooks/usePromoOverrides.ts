@@ -3,12 +3,6 @@ import { useChangePromoPeriodMutation } from "../../../api/promo.queries";
 import type { PromoCalendarItem } from "../../../api/promo.types";
 import { msToISO, exclusiveMsToInclusiveISO } from "../utils/date";
 
-interface PromoPatch {
-	promoId: number;
-	dateBegin: string; // ISO inclusive YYYY-MM-DD
-	dateEnd: string; // ISO inclusive YYYY-MM-DD
-}
-
 /**
  * Мост между таймлайном (мс, exclusive end) и API (ISO, inclusive end).
  *
@@ -22,38 +16,37 @@ export function usePromoOverrides(data: PromoCalendarItem[] | undefined, year: n
 	const { mutateAsync } = useChangePromoPeriodMutation({ year });
 	const [, startTransition] = useTransition();
 
-	const [items, applyPatch] = useOptimistic(
-		data ?? [],
-		(current: PromoCalendarItem[], patch: PromoPatch) =>
-			current.map((p) =>
-				p.id === patch.promoId ? { ...p, dateBegin: patch.dateBegin, dateEnd: patch.dateEnd } : p
-			)
+	const [items, applyPatch] = useOptimistic(data ?? [], (current: PromoCalendarItem[], updated: PromoCalendarItem) =>
+		current.map((p) => (p.id === updated.id ? updated : p))
 	);
 
 	const onPeriodChange = useCallback(
 		(id: string, startMs: number, endMs: number) => {
-			const patch: PromoPatch = {
-				promoId: Number(id),
+			// changePromoPeriod слит с updatePromo — backend принимает целый promo,
+			// поэтому собираем полный item из data, меняя только период.
+			const target = data?.find((p) => p.id === Number(id));
+			if (!target) return;
+			const updated: PromoCalendarItem = {
+				...target,
 				dateBegin: msToISO(startMs),
 				dateEnd: exclusiveMsToInclusiveISO(endMs)
 			};
 			// applyPatch обязан идти внутри transition — иначе React 19 кинет варн
 			// "optimistic update outside a transition". await держит transition открытым,
-			// пока мутация не сядет → useOptimistic удерживает бар до записи span в кэш (onSuccess).
+			// пока мутация не сядет → useOptimistic удерживает бар до записи в кэш (onSuccess).
 			// try/catch гасит reject mutateAsync (иначе unhandled rejection); откат UI делает
 			// сам useOptimistic, инвалидацию — onError мутации.
 			startTransition(async () => {
-				applyPatch(patch);
+				applyPatch(updated);
 				try {
-					await mutateAsync(patch);
+					await mutateAsync(updated);
 				} catch {
 					// проглочено намеренно: откат и инвалидация уже обработаны выше по стеку
 				}
 			});
 		},
-		[applyPatch, mutateAsync]
+		[data, applyPatch, mutateAsync]
 	);
 
-	// TODO: useTransition даёт isPending — можно диммить/дизейблить бар на время сейва.
 	return { items, onPeriodChange };
 }

@@ -28,7 +28,20 @@ const translationsRu: PromoCalendarTranslations = {
 		today: "Показать текущий день",
 		zoom: "Масштаб",
 		zoomIn: "Увеличить масштаб",
-		zoomOut: "Уменьшить масштаб"
+		zoomOut: "Уменьшить масштаб",
+		add: "Добавить"
+	},
+	editor: {
+		createTitle: "Новое промо",
+		editTitle: "Редактирование промо",
+		save: "Сохранить",
+		cancel: "Отмена",
+		delete: "Удалить",
+		titleLabel: "Наименование",
+		channelLabel: "Канал",
+		clientLabel: "Клиент",
+		dateBeginLabel: "Дата начала",
+		dateEndLabel: "Дата окончания"
 	},
 	promo: {
 		name: "Наименование:",

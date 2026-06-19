@@ -15,6 +15,20 @@ const toIso = (item: RawPromo): PromoCalendarItem => ({
 	channelId: item.channelId
 });
 
+// Обратная конвертация границы: доменный ISO → сырое Date-представление mock.
+const toRaw = (id: number, promo: Omit<PromoCalendarItem, "id">): RawPromo => ({
+	id,
+	title: promo.title,
+	dateBegin: new Date(promo.dateBegin),
+	dateEnd: new Date(promo.dateEnd),
+	channelType: promo.channelType,
+	companyName: promo.companyName,
+	companyId: promo.companyId,
+	channelId: promo.channelId
+});
+
+const nextId = (items: RawPromo[]): number => items.reduce((max, p) => Math.max(max, p.id), 0) + 1;
+
 export const mockPromoApi: PromoApi = {
 	fetchPromoCalendar: async (year: number): Promise<PromoCalendarItem[]> => {
 		const beginMs = new Date(year, 0, 1).getTime();
@@ -22,7 +36,6 @@ export const mockPromoApi: PromoApi = {
 
 		const result = getStaticWithCache()
 			.filter((item) => item.dateBegin.getTime() <= endMs && item.dateEnd.getTime() >= beginMs)
-			.map((item) => clampToRange(item, beginMs, endMs))
 			.map(toIso);
 
 		return Promise.resolve(result);
@@ -45,16 +58,23 @@ export const mockPromoApi: PromoApi = {
 
 		return Promise.resolve(daysOff);
 	},
-	changePromoPeriod: async (promoId: number, dateBegin: string, dateEnd: string): Promise<void> => {
-		const item = getStaticWithCache().find((p) => p.id === promoId);
-		if (item) {
-			item.dateBegin = new Date(dateBegin);
-			item.dateEnd = new Date(dateEnd);
-		}
+	deletePromo: async (promoId: number): Promise<void> => {
+		const cache = getStaticWithCache();
+		const idx = cache.findIndex((p) => p.id === promoId);
+		if (idx !== -1) cache.splice(idx, 1);
 		return Promise.resolve();
 	},
-	deletePromo: () => Promise.resolve(),
-	createPromo: () => Promise.resolve()
+	createPromo: async (promo: Omit<PromoCalendarItem, "id">): Promise<void> => {
+		const cache = getStaticWithCache();
+		cache.push(toRaw(nextId(cache), promo));
+		return Promise.resolve();
+	},
+	updatePromo: async (promo: PromoCalendarItem): Promise<void> => {
+		const cache = getStaticWithCache();
+		const idx = cache.findIndex((p) => p.id === promo.id);
+		if (idx !== -1) cache[idx] = toRaw(promo.id, promo);
+		return Promise.resolve();
+	}
 };
 
 const RU_HOLIDAY_PATTERNS = [
@@ -73,11 +93,3 @@ const RU_HOLIDAY_PATTERNS = [
 	"06-12",
 	"11-04"
 ];
-
-function clampToRange(item: RawPromo, beginMs: number, endMs: number): RawPromo {
-	return {
-		...item,
-		dateBegin: new Date(Math.max(item.dateBegin.getTime(), beginMs)),
-		dateEnd: new Date(Math.min(item.dateEnd.getTime(), endMs))
-	};
-}

@@ -1,21 +1,21 @@
 import { MutationCache, QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { useMemo, useState } from "react";
-
+import { Suspense, useMemo, useState } from "react";
 import { PromoCalendarContext, type PromoCalendarConfig } from "./PromoCalendarContext";
 import { mockPromoApi } from "./api/mock/mock.api";
 import { Layout } from "./components/layout/Layout";
 import { PageTitle } from "./components/page-title/PageTitle";
 import { PromoTimeline } from "./components/promo-timeline/PromoTimeline";
-import { ManagementPanel } from "./components/management-panel/panel-management";
+import { ManagementPanel } from "./components/management-panel/ManagementPanel";
+import { PromoEditorProvider } from "./components/promo-editor/PromoEditorContext";
+import { PromoEditorDialog } from "./components/promo-editor/PromoEditorDialog";
 import { createPanelStore, PanelStoreContext, usePanelStore } from "./components/management-panel/store/panel.store";
 import { mapGroupingToFields } from "./groupingAdapter";
 import { TextProvider, textFromLocalDictionary, useText } from "./i18n";
 import { selectDateRange } from "./components/management-panel/store/panel.selectors";
 import { useShallow } from "zustand/react/shallow";
 import { TooltipProvider } from "ics-ui-kit/components/tooltip";
-import { QueryBoundary } from "./components/boundary/QueryBoundary";
 import { CalendarError, CalendarLoader } from "./components/feedback/CalendarFeedback";
-import { useYearsQuery } from "./api/promo.queries";
+import { useYearsSuspenseQuery } from "./api/promo.queries";
 
 const defaultConfig: PromoCalendarConfig = {
 	api: mockPromoApi,
@@ -23,8 +23,8 @@ const defaultConfig: PromoCalendarConfig = {
 	locale: "ru"
 };
 
-const STALE_TIME_MS = 60 * 1000; // 1 мин: год промо меняется редко, лишние рефетчи не нужны
-const GC_TIME_MS = 24 * 60 * 60 * 1000; // 24 ч: данные года живут долго между визитами
+const STALE_TIME_MS = 60 * 1000;
+const GC_TIME_MS = 24 * 60 * 60 * 1000;
 
 function createQueryClient() {
 	const queryClient = new QueryClient({
@@ -54,7 +54,9 @@ export function PromoCalendar() {
 			<TextProvider text={defaultConfig.text} locale={defaultConfig.locale}>
 				<QueryClientProvider client={queryClient}>
 					<TooltipProvider>
-						<PromoCalendarApp />
+						<Suspense fallback={<CalendarLoader />}>
+							<PromoCalendarApp />
+						</Suspense>
 					</TooltipProvider>
 				</QueryClientProvider>
 			</TextProvider>
@@ -62,30 +64,28 @@ export function PromoCalendar() {
 	);
 }
 
+// TODO: rename
 function PromoCalendarApp() {
-	const { data: years, isLoading, isError, refetch } = useYearsQuery();
-
-	if (isLoading) return <CalendarLoader />;
-	if (isError || !years?.length) return <CalendarError onRetry={() => refetch()} />;
-
-	return <PromoCalendarShell years={years} />;
-}
-
-function PromoCalendarShell({ years }: { years: number[] }) {
+	const { data: years, refetch } = useYearsSuspenseQuery();
 	const text = useText();
 	const [store] = useState(() => createPanelStore({ years }));
 
+	if (!years.length) return <CalendarError onRetry={() => refetch()} />;
+
 	return (
 		<PanelStoreContext.Provider value={store}>
-			<Layout.Wrapper>
-				<Layout.Header>
-					<PageTitle>{text("calendar.title")}</PageTitle>
-					<ManagementPanel />
-				</Layout.Header>
-				<Layout.Body>
-					<CalendarContainer />
-				</Layout.Body>
-			</Layout.Wrapper>
+			<PromoEditorProvider>
+				<Layout.Wrapper>
+					<Layout.Header>
+						<PageTitle>{text("calendar.title")}</PageTitle>
+						<ManagementPanel />
+					</Layout.Header>
+					<Layout.Body>
+						<CalendarContainer />
+					</Layout.Body>
+				</Layout.Wrapper>
+				<PromoEditorDialog />
+			</PromoEditorProvider>
 		</PanelStoreContext.Provider>
 	);
 }
@@ -96,9 +96,5 @@ function CalendarContainer() {
 	const grouping = usePanelStore((s) => s.grouping);
 	const groupBy = useMemo(() => mapGroupingToFields(grouping), [grouping]);
 
-	return (
-		<QueryBoundary loading={<CalendarLoader />} error={({ reset }) => <CalendarError onRetry={reset} />}>
-			<PromoTimeline year={year} dateBegin={dateBegin} dateEnd={dateEnd} groupBy={groupBy} />
-		</QueryBoundary>
-	);
+	return <PromoTimeline year={year} dateBegin={dateBegin} dateEnd={dateEnd} groupBy={groupBy} />;
 }

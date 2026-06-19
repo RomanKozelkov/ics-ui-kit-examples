@@ -36,6 +36,19 @@ export type PromoCalendarTranslations = {
 		zoom: string;
 		zoomIn: string;
 		zoomOut: string;
+		add: string;
+	};
+	editor: {
+		createTitle: string;
+		editTitle: string;
+		save: string;
+		cancel: string;
+		delete: string;
+		titleLabel: string;
+		channelLabel: string;
+		clientLabel: string;
+		dateBeginLabel: string;
+		dateEndLabel: string;
 	};
 	promo: {
 		name: string;
