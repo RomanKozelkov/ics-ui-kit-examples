@@ -22,6 +22,18 @@ function buildDisplacementMapSvg(width: number, height: number, _aberration: num
   <rect x="0" y="0" width="${width}" height="${height}" fill="url(#red)"/>
   <rect x="0" y="0" width="${width}" height="${height}" fill="url(#blue)" style="mix-blend-mode:difference"/>
   <rect x="1.89" y="1.89" width="${width - 3.78}" height="${height - 3.78}" fill="hsl(0 0% 50% / 0.93)" style="filter:blur(11px)"/>
+  <!-- Мягкие края: градиент поверх нейтрального серого затухает к краям.
+       Серый 50% = нет смещения, прозрачный = displacement просвечивает насквозь.
+       Меняй 25%/75% чтобы регулировать ширину зоны затухания. -->
+  <defs>
+    <linearGradient id="fadeV" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%"   stop-color="hsl(0 0% 50%)"/>
+      <stop offset="25%"  stop-color="transparent"/>
+      <stop offset="75%"  stop-color="transparent"/>
+      <stop offset="100%" stop-color="hsl(0 0% 50%)"/>
+    </linearGradient>
+  </defs>
+  <rect x="0" y="0" width="${width}" height="${height}" fill="url(#fadeV)"/>
 </svg>`;
 	return `data:image/svg+xml,${encodeURIComponent(svg)}`;
 }
@@ -79,12 +91,48 @@ export function useLiquidGlass({
 			<defs>
 				<filter id={filterId} colorInterpolationFilters="sRGB">
 					<feImage ref={feImageRef} x="0" y="0" preserveAspectRatio="none" result="map" />
-					<feDisplacementMap in="SourceGraphic" in2="map" xChannelSelector="R" yChannelSelector="B" scale={String(-scale)} result="dispRed" />
-					<feColorMatrix in="dispRed" type="matrix" values="1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0" result="red" />
-					<feDisplacementMap in="SourceGraphic" in2="map" xChannelSelector="R" yChannelSelector="B" scale={String(-(scale * (1 - aberration)))} result="dispGreen" />
-					<feColorMatrix in="dispGreen" type="matrix" values="0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 1 0" result="green" />
-					<feDisplacementMap in="SourceGraphic" in2="map" xChannelSelector="R" yChannelSelector="B" scale={String(-(scale * (1 - aberration * 2)))} result="dispBlue" />
-					<feColorMatrix in="dispBlue" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 1 0" result="blue" />
+					<feDisplacementMap
+						in="SourceGraphic"
+						in2="map"
+						xChannelSelector="R"
+						yChannelSelector="B"
+						scale={String(-scale)}
+						result="dispRed"
+					/>
+					<feColorMatrix
+						in="dispRed"
+						type="matrix"
+						values="1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0"
+						result="red"
+					/>
+					<feDisplacementMap
+						in="SourceGraphic"
+						in2="map"
+						xChannelSelector="R"
+						yChannelSelector="B"
+						scale={String(-(scale * (1 - aberration)))}
+						result="dispGreen"
+					/>
+					<feColorMatrix
+						in="dispGreen"
+						type="matrix"
+						values="0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 1 0"
+						result="green"
+					/>
+					<feDisplacementMap
+						in="SourceGraphic"
+						in2="map"
+						xChannelSelector="R"
+						yChannelSelector="B"
+						scale={String(-(scale * (1 - aberration * 2)))}
+						result="dispBlue"
+					/>
+					<feColorMatrix
+						in="dispBlue"
+						type="matrix"
+						values="0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 1 0"
+						result="blue"
+					/>
 					<feBlend in="red" in2="green" mode="screen" result="rg" />
 					<feBlend in="rg" in2="blue" mode="screen" result="output" />
 					<feGaussianBlur in="output" stdDeviation="0.7" />

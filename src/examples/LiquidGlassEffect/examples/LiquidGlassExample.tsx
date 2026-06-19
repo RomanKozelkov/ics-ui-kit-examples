@@ -15,16 +15,10 @@ import { ScrollBackground, SectionLabel } from "./shared";
 export function LiquidGlassExample() {
 	return (
 		<section className="flex flex-col gap-4">
-			{/*
-			 * Liquid Glass реализован через GlassComponent — готовый компонент с дефолтными параметрами.
-			 * Альтернатива: useLiquidGlass (hooks/useLiquidGlass.tsx) — хук без компонента,
-			 * если нужна полная свобода в разметке и стилизации.
-			 * Рекомендация: берите то, что подходит вашему проекту — компонент или хук — и настраивайте под себя.
-			 */}
 			<SectionLabel
 				number="2"
-				title="Liquid Glass — GlassComponent / useLiquidGlass"
-				subtitle="SVG displacement map + backdrop-filter. Используйте GlassComponent как есть или useLiquidGlass как примитив для своего компонента"
+				title="Liquid Glass — GlassComponent"
+				subtitle="SVG displacement map + backdrop-filter. Готовый компонент с дефолтными параметрами — берите и используйте как есть"
 			/>
 
 			<div className="grid grid-cols-2 gap-4">
