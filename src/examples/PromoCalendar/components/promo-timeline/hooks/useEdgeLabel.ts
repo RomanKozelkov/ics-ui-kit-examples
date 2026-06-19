@@ -2,8 +2,9 @@ import { useTimelineContext } from "dnd-timeline";
 import type { DragDirection, ResizeMoveEvent, ResizeStartEvent, Span } from "dnd-timeline";
 import { type MouseEvent, type PointerEvent, type TouchEvent, useCallback, useRef } from "react";
 import { useEdgeLabelStore } from "../store/edgeLabel.store";
-import { EDGE_LABEL_CLEARANCE_PX } from "../utils/constants";
 import { msToDayLabel } from "../utils/date";
+
+const EDGE_LABEL_CLEARANCE_PX = 24;
 import { edgeDay, edgeUnderCursor } from "../utils/edgeLabel";
 import { useTimelineHeader } from "./useTimelineHeader";
 

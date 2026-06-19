@@ -1,5 +1,7 @@
 import { useEdgeLabelStore } from "../store/edgeLabel.store";
-import { EDGE_LABEL_GAP_PX, Z_INDEX } from "../utils/constants";
+import { Z_INDEX } from "../utils/z-index";
+
+const EDGE_LABEL_GAP_PX = 6;
 
 /**
  * Единственный always-mounted оверлей с датой края промо (как в Notion при hover/resize).

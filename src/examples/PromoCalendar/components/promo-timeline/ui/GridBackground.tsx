@@ -1,6 +1,7 @@
 import { memo } from "react";
 import { useTimelineContext } from "dnd-timeline";
-import { MS_DAY, Z_INDEX } from "../utils/constants";
+import { MS_DAY } from "../utils/date";
+import { Z_INDEX } from "../utils/z-index";
 import { todayUTCms } from "../utils/date";
 import type { TimelineModel } from "../utils/timeline";
 

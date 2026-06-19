@@ -1,22 +1,16 @@
 import { useMemo } from "react";
-import { TimelineContext as DndTimelineContext, type UsePanStrategy } from "dnd-timeline";
-import { type Modifier as DndKitModifier, MouseSensor, TouchSensor, useSensor, useSensors } from "@dnd-kit/core";
+import { TimelineContext as DndTimelineContext } from "dnd-timeline";
 import { usePromoCalendarSuspenseQuery } from "../../api/promo.queries";
-import { useText, useLocale } from "../../i18n";
 import { useIsDayOff } from "./hooks/useIsDayOff";
 import { usePreparedItems } from "./hooks/usePreparedItems";
 import { usePromoOverrides } from "./hooks/usePromoOverrides";
+import { useDndConfig } from "./hooks/useDndConfig";
+import { useTimelineGroups } from "./hooks/useTimelineGroups";
 import { CalendarSurface } from "./ui/CalendarSurface";
 import { StaleOverlay } from "./ui/StaleOverlay";
-import {
-	DRAG_ACTIVATION_PX,
-	LEFT_W,
-	MS_DAY,
-	TOUCH_ACTIVATION_DELAY_MS,
-	TOUCH_ACTIVATION_TOLERANCE_PX
-} from "./utils/constants";
+import { LEFT_W } from "./utils/layout";
+import { MS_DAY } from "./utils/date";
 import { getTimelineModel } from "./utils/timeline";
-import { buildGroupTree, isGrouped } from "./utils/grouping";
 import type { GroupField } from "./types";
 
 const noop = () => {};
@@ -40,58 +34,22 @@ export function PromoTimeline({
 	// Suspense-query: data гарантированно есть, loading/error держит внешний QueryBoundary.
 	const { data } = usePromoCalendarSuspenseQuery({ year });
 
-	const text = useText();
-	const locale = useLocale();
-
-	// Модификатор dnd-kit правит transform-дельту на каждом pointermove ещё до того,
-	// как она попадёт в бар. y:0 — только горизонталь. round(x/dayWidth)*dayWidth —
-	// живой снап: бар прыгает шагами по ширине дня (как в Notion), а не попиксельно.
-	// Старт бара уже выровнен по дню (deltaXStart кратен dayWidth), поэтому снап дельты
-	// сохраняет выравнивание.
-	const modifiers = useMemo<DndKitModifier[]>(
-		() => [
-			({ transform }) => {
-				return { ...transform, x: Math.round(transform.x / dayWidth) * dayWidth, y: 0 };
-			}
-		],
-		[dayWidth]
-	);
-
-	// Порог активации: жест ниже порога — клик (открытие карточки), выше — драг.
-	// Без порога любой микросдвиг стартует драг, dnd-kit глушит трейлинг-click и onClick не доходит.
-	const sensors = useSensors(
-		useSensor(MouseSensor, { activationConstraint: { distance: DRAG_ACTIVATION_PX } }),
-		useSensor(TouchSensor, {
-			activationConstraint: {
-				delay: TOUCH_ACTIVATION_DELAY_MS,
-				tolerance: TOUCH_ACTIVATION_TOLERANCE_PX
-			}
-		})
-	);
-
 	const isDayOff = useIsDayOff(year);
 	const timeline = useMemo(() => getTimelineModel(dateBegin, dateEnd, isDayOff), [dateBegin, dateEnd, isDayOff]);
 	// range пиннится на весь период; масштаб задаётся шириной timeline-элемента (см. CalendarSurface).
 	const range = useMemo(() => ({ start: timeline.startMs, end: timeline.endMs }), [timeline]);
+
 	const { items, onPeriodChange } = usePromoOverrides(data, year);
 	const prepared = usePreparedItems(items);
-	// Оставляем только промо, пересекающие видимое окно месяцев, — иначе группы/строки
-	// плодились бы из записей вне диапазона.
-	const visible = useMemo(
-		() => prepared.filter((p) => p.startMs < timeline.endMs && p.endMs > timeline.startMs),
-		[prepared, timeline.startMs, timeline.endMs]
-	);
-	const groups = useMemo(
-		() => buildGroupTree(visible, groupBy, text("calendar.allPromos"), locale),
-		[visible, groupBy, text, locale]
-	);
+	const { groups, grouped } = useTimelineGroups(prepared, timeline, groupBy);
+
 	// Без группировки левая колонка пуста — схлопываем до 0, чтобы не резервировать место.
-	const grouped = isGrouped(groups);
 	const leftW = grouped ? LEFT_W : 0;
 	// Сайдбар — отдельная колонка (two-pane), поэтому dnd sidebarWidth=0, а измеряемый
 	// контентный элемент равен только ширине контента.
 	const contentWidth = timeline.totalDays * dayWidth;
 
+	const { sensors, modifiers } = useDndConfig(dayWidth);
 	return (
 		<StaleOverlay stale={isStale}>
 			<DndTimelineContext

@@ -1,12 +1,12 @@
 import { useItem, useTimelineContext } from "dnd-timeline";
 import type { Span } from "dnd-timeline";
-import { memo, type PointerEvent, useCallback, useEffect, useRef } from "react";
+import { memo, useCallback } from "react";
 import type { PromoCalendarItem } from "../../../api/promo.types";
 import { useEdgeLabel } from "../hooks/useEdgeLabel";
+import { usePromoTooltip } from "../hooks/usePromoTooltip";
 import { usePromoEditor } from "../../promo-editor/PromoEditorContext";
-import { usePromoTooltipStore } from "../store/promoTooltip.store";
 import type { PreparedPromoItem } from "../types";
-import { RESIZE_HANDLE_W, ROW_PAD, TOOLTIP_HOVER_DELAY_MS } from "../utils/constants";
+import { RESIZE_HANDLE_W, ROW_PAD } from "../utils/layout";
 import { PromoBar } from "./PromoBar";
 
 // Доменный срез без timeline-полей color/startMs/....
@@ -46,30 +46,7 @@ export const PromoItem = memo(function PromoItem({ item }: { item: PreparedPromo
 		[registerNode, setNodeRef]
 	);
 
-	// Один общий тултип на всё полотно (PromoHoverTooltip): пишем в стор императивно, бар не
-	// ререндерится. Задержка как у Radix — без мигания при свайпе курсором по барам.
-	const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-	const clearTimer = () => {
-		if (timerRef.current) clearTimeout(timerRef.current);
-		timerRef.current = null;
-	};
-	const showTooltip = useCallback(
-		(e: PointerEvent<HTMLDivElement>) => {
-			// buttons!==0 → идёт жест (drag/resize), не hover.
-			if (e.buttons !== 0) return;
-			const x = e.clientX;
-			const y = e.currentTarget.getBoundingClientRect().top;
-			clearTimer();
-			timerRef.current = setTimeout(() => usePromoTooltipStore.getState().show({ item, x, y }), TOOLTIP_HOVER_DELAY_MS);
-		},
-		[item]
-	);
-	const hideTooltip = useCallback(() => {
-		clearTimer();
-		usePromoTooltipStore.getState().hide();
-	}, []);
-	// Снять висящий таймер при анмаунте (скролл/смена данных удаляют бары).
-	useEffect(() => clearTimer, []);
+	const { showTooltip, hideTooltip } = usePromoTooltip(item);
 
 	return (
 		<div

@@ -9,8 +9,10 @@ import { useTimelineHeader } from "../hooks/useTimelineHeader";
 import { useTimelineViewportStore } from "../hooks/useTimelineViewport";
 import type { TimelineModel } from "../utils/timeline";
 import type { GroupNode } from "../utils/grouping";
-import { SURFACE_MAX_H } from "../utils/constants";
 import { msToContentX } from "../utils/timeline";
+
+/** Максимальная высота полотна, px; дальше включается вертикальный скролл. */
+const SURFACE_MAX_H = 800;
 import { EdgeDateLabel } from "./EdgeDateLabel";
 import { GridBackground } from "./GridBackground";
 import { ContentGroup } from "./ContentGroup";

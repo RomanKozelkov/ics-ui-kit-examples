@@ -1,4 +1,4 @@
-import { GROUP_HEAD_H } from "./constants";
+import { GROUP_HEAD_H } from "./layout";
 import type { GroupNode } from "./grouping";
 
 export type HeaderPlacement = "embedded" | "standalone" | "none";

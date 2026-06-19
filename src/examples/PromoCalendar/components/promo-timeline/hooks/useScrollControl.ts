@@ -1,8 +1,7 @@
 import { useCallback, useLayoutEffect, useRef } from "react";
 import type { RefObject } from "react";
 import { useTimelineContext } from "dnd-timeline";
-import { MS_DAY } from "../utils/constants";
-import { todayUTCms } from "../utils/date";
+import { MS_DAY, todayUTCms } from "../utils/date";
 import type { TimelineModel } from "../utils/timeline";
 import { msToContentX } from "../utils/timeline";
 

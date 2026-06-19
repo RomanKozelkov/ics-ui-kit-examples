@@ -1,4 +1,5 @@
-import { GROUP_HEAD_H, Z_INDEX } from "../utils/constants";
+import { GROUP_HEAD_H } from "../utils/layout";
+import { Z_INDEX } from "../utils/z-index";
 
 /**
  * Контентная половина строки-заголовка группы: пустая залипающая полоса с тонировкой,

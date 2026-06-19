@@ -1,4 +1,4 @@
-import { MS_DAY } from "./constants";
+export const MS_DAY = 86_400_000;
 
 export function isoToMsUTC(iso: string): number {
 	const [year, month, day] = iso.split("-").map(Number);

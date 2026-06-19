@@ -1,5 +1,6 @@
 import type { DragDirection, Span } from "dnd-timeline";
-import { MS_DAY, RESIZE_HANDLE_W } from "./constants";
+import { MS_DAY } from "./date";
+import { RESIZE_HANDLE_W } from "./layout";
 
 /** День у нужного края span'а: start — первый день, end — последний (span хранится exclusive). */
 export function edgeDay(side: DragDirection, span: Span): number {

@@ -1,4 +1,7 @@
-import { HEAD_MONTH_H, MONTH_LABEL_GAP, MS_DAY } from "../utils/constants";
+import { HEAD_MONTH_H } from "../utils/layout";
+import { MS_DAY } from "../utils/date";
+
+const MONTH_LABEL_GAP = 8;
 import type { TimelineMonth } from "../utils/timeline";
 
 const MONTHS_RU = [

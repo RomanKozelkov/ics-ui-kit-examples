@@ -1,5 +1,8 @@
 import { useTimelineContext } from "dnd-timeline";
-import { DAY_GRID_MIN_PX, HEAD_DAY_H, HEAD_MONTH_H, MS_DAY } from "../utils/constants";
+import { HEAD_DAY_H, HEAD_MONTH_H } from "../utils/layout";
+import { MS_DAY } from "../utils/date";
+
+const DAY_GRID_MIN_PX = 25;
 
 /** Derived geometry for the timeline header: column width + zoom-aware flags. */
 export function useTimelineHeader() {

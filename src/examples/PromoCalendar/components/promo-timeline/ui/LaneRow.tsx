@@ -4,7 +4,10 @@ import { IconButton } from "ics-ui-kit/components/button";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useText } from "../../../i18n";
 import type { PreparedPromoItem } from "../types";
-import { EDGE_ARROW_GAP, LANE_H, Z_INDEX } from "../utils/constants";
+import { LANE_H } from "../utils/layout";
+import { Z_INDEX } from "../utils/z-index";
+
+const EDGE_ARROW_GAP = 4;
 import { parseEdgeKey, rowEdgeKey } from "../utils/edgeArrows";
 import { useTimelineScroll } from "./TimelineScrollContext";
 import { PromoItem } from "./PromoItem";

@@ -1,4 +1,4 @@
-import { Z_INDEX } from "../utils/constants";
+import { Z_INDEX } from "../utils/z-index";
 import { useTimelineHeader } from "../hooks/useTimelineHeader";
 import type { TimelineModel } from "../utils/timeline";
 import { HeaderMonthRow } from "./HeaderMonthRow";

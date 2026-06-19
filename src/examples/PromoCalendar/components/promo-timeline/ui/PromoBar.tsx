@@ -1,7 +1,11 @@
 import { memo } from "react";
 import type { PreparedPromoItem } from "../types";
-import { BAR_FONT_PX, BAR_H, BAR_RADIUS } from "../utils/constants";
 import { useText } from "../../../i18n";
+
+/** Кегль текста промо-бара, px. Дробный — подобран под высоту бара (BAR_H), стандартные шаги Tailwind не подходят. */
+const BAR_FONT_PX = 11.5;
+const BAR_H = 22;
+const BAR_RADIUS = 5;
 
 /** Радиус скруглённого угла; 0 — когда бар обрезан этой стороной (уходит за диапазон). */
 function corner(rounded: boolean) {

@@ -1,5 +1,7 @@
 import { usePromoTooltipStore } from "../store/promoTooltip.store";
-import { TOOLTIP_GAP_PX, Z_INDEX } from "../utils/constants";
+import { Z_INDEX } from "../utils/z-index";
+
+const TOOLTIP_GAP_PX = 6;
 import { PromoTooltipContent } from "./PromoTooltipContent";
 
 /**

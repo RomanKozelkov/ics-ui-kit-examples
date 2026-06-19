@@ -1,5 +1,4 @@
-import { MS_DAY } from "./constants";
-import { isoToMsUTC, inclusiveEndToExclusiveMs, daysBetween } from "./date";
+import { MS_DAY, isoToMsUTC, inclusiveEndToExclusiveMs, daysBetween } from "./date";
 
 export type TimelineDay = {
 	dayIndex: number;

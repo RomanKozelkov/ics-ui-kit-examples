@@ -1,5 +1,6 @@
 import { memo } from "react";
-import { GROUP_HEAD_H, LANE_H, Z_INDEX } from "../utils/constants";
+import { GROUP_HEAD_H, LANE_H } from "../utils/layout";
+import { Z_INDEX } from "../utils/z-index";
 import type { GroupNode } from "../utils/grouping";
 import { groupStickyTop, resolveHeaderPlacement } from "../utils/rows";
 import { GroupHeaderButton } from "./GroupHeaderButton";

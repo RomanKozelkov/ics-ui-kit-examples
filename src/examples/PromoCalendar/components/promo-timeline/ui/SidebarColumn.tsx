@@ -1,5 +1,5 @@
 import { useText } from "../../../i18n";
-import { Z_INDEX } from "../utils/constants";
+import { Z_INDEX } from "../utils/z-index";
 import type { GroupNode } from "../utils/grouping";
 import { SidebarGroup } from "./SidebarGroup";
 

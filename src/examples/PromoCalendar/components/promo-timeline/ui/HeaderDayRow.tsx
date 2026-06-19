@@ -1,4 +1,4 @@
-import { HEAD_DAY_H } from "../utils/constants";
+import { HEAD_DAY_H } from "../utils/layout";
 import type { TimelineDay } from "../utils/timeline";
 
 type Props = {
