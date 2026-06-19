@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useMemo, useRef } from "react";
 import { useTimelineContext } from "dnd-timeline";
 import { TooltipProvider } from "ics-ui-kit/components/tooltip";
 import { usePanelStore } from "../../management-panel/store/panel.store";
@@ -6,13 +6,16 @@ import { useCollapsiblePaths } from "../hooks/useCollapsiblePaths";
 import { useItemDragMonitor } from "../hooks/useItemDragMonitor";
 import { useScrollControl } from "../hooks/useScrollControl";
 import { useTimelineHeader } from "../hooks/useTimelineHeader";
+import { useTimelineViewport } from "../hooks/useTimelineViewport";
 import type { TimelineModel } from "../utils/timeline";
 import type { GroupNode } from "../utils/grouping";
 import { SURFACE_MAX_H } from "../utils/constants";
+import { msToContentX } from "../utils/timeline";
 import { GridBackground } from "./GridBackground";
 import { ContentGroup } from "./ContentGroup";
 import { SidebarColumn } from "./SidebarColumn";
 import { TimelineHeader } from "./TimelineHeader";
+import { TimelineScrollProvider } from "./TimelineScrollContext";
 
 /** Геометрия раскладки полотна — производные размеры из стора/модели (px). */
 export type SurfaceLayout = {
@@ -46,7 +49,15 @@ export function CalendarSurface({
 	const resetShowToday = usePanelStore((s) => s.resetShowToday);
 
 	useItemDragMonitor(onPeriodChange);
-	useScrollControl({ scrollRef, timeline, dayWidth, showToday, onTodayConsumed: resetShowToday });
+	const { scrollToMs } = useScrollControl({ scrollRef, timeline, dayWidth, showToday, onTodayConsumed: resetShowToday });
+
+	// Видимое окно + ms→px: питают edge-стрелки навигации к off-screen промо в строках.
+	const viewport = useTimelineViewport({ scrollRef, leftWidth, dayWidth });
+	const startMs = timeline.startMs;
+	const scroll = useMemo(
+		() => ({ viewport, scrollToMs, toX: (ms: number) => msToContentX(ms, startMs, dayWidth), leftWidth }),
+		[viewport, scrollToMs, startMs, dayWidth, leftWidth]
+	);
 
 	return (
 		<TooltipProvider>
@@ -80,16 +91,18 @@ export function CalendarSurface({
 							    ними остаются просветы line-box, сквозь которые на H-скролле видно сетку. */}
 							<div className="relative flex flex-col">
 								<GridBackground timeline={timeline} />
-								{groups.map((group) => (
-									<ContentGroup
-										key={group.path}
-										group={group}
-										depth={0}
-										collapsedPaths={collapsedPaths}
-										headerHeight={headerHeight}
-										showOwnHeader={isGrouped}
-									/>
-								))}
+								<TimelineScrollProvider value={scroll}>
+									{groups.map((group) => (
+										<ContentGroup
+											key={group.path}
+											group={group}
+											depth={0}
+											collapsedPaths={collapsedPaths}
+											headerHeight={headerHeight}
+											showOwnHeader={isGrouped}
+										/>
+									))}
+								</TimelineScrollProvider>
 							</div>
 						</div>
 					</div>

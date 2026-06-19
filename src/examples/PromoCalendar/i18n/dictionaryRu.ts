@@ -9,7 +9,9 @@ const translationsRu: PromoCalendarTranslations = {
 		error: "Ошибка загрузки данных",
 		retry: "Повторить",
 		group: "Группа",
-		allPromos: "Все промо"
+		allPromos: "Все промо",
+		scrollToNearestLeft: "К ближайшему промо слева",
+		scrollToNearestRight: "К ближайшему промо справа"
 	},
 	groupField: {
 		channel: "Канал",

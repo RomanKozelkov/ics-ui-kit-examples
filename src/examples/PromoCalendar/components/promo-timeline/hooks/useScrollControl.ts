@@ -4,6 +4,7 @@ import { useTimelineContext } from "dnd-timeline";
 import { MS_DAY } from "../utils/constants";
 import { todayUTCms } from "../utils/date";
 import type { TimelineModel } from "../utils/timeline";
+import { msToContentX } from "../utils/timeline";
 
 const clamp = (v: number, min: number, max: number) => Math.min(Math.max(v, min), max);
 
@@ -40,7 +41,7 @@ export function useScrollControl({
 	// scrollLeft, при котором день `ms` оказывается в центре видимой области (правее сайдбара).
 	const centerTargetPx = useCallback(
 		(ms: number, el: HTMLElement) => {
-			const contentX = ((ms - startMs) / MS_DAY) * dayWidth;
+			const contentX = msToContentX(ms, startMs, dayWidth);
 			return sidebarWidth + contentX - (el.clientWidth + sidebarWidth) / 2;
 		},
 		[startMs, dayWidth, sidebarWidth]
@@ -90,4 +91,7 @@ export function useScrollControl({
 		const centerMs = startMs + ((el.scrollLeft + half) / prev) * MS_DAY;
 		el.scrollLeft = clamp(centerTargetPx(centerMs, el), 0, el.scrollWidth - el.clientWidth);
 	}, [scrollRef, dayWidth, startMs, sidebarWidth, centerTargetPx]);
+
+	// Отдаём наружу: edge-стрелки строк центрируют ближайший off-screen промо тем же скроллом.
+	return { scrollToMs };
 }

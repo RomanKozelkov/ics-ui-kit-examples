@@ -17,6 +17,8 @@ export type PromoCalendarTranslations = {
 		retry: string;
 		group: string;
 		allPromos: string;
+		scrollToNearestLeft: string;
+		scrollToNearestRight: string;
 	};
 	groupField: {
 		channel: string;

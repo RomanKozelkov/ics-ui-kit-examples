@@ -35,6 +35,11 @@ export type IsDayOff = (ms: number, dow: number) => boolean;
 
 export const defaultIsDayOff: IsDayOff = (_ms, dow) => dow === 0 || dow === 6;
 
+/** ms → x в координатах контента (origin = первый день таймлайна, px). */
+export function msToContentX(ms: number, startMs: number, dayWidth: number): number {
+	return ((ms - startMs) / MS_DAY) * dayWidth;
+}
+
 export function getTimelineModel(startISO: string, endISO: string, isDayOff: IsDayOff): TimelineModel {
 	const startMs = isoToMsUTC(startISO);
 	const endMs = inclusiveEndToExclusiveMs(endISO);
