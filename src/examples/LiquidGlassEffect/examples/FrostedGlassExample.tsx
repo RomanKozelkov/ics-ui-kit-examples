@@ -13,7 +13,7 @@ export function FrostedGlassExample() {
 	return (
 		<section className="flex flex-col gap-4">
 			<SectionLabel
-				number="1"
+				number="2"
 				title="Frosted Glass — чистый CSS"
 				subtitle="backdrop-filter: blur() saturate() — максимальная кастомизация, нет зависимостей"
 			/>
@@ -24,10 +24,10 @@ export function FrostedGlassExample() {
 						style={frostedStyle}
 						className="absolute inset-x-0 top-0 z-10 flex items-center justify-between px-5 py-4"
 					>
-						<span className="text-sm font-bold">Логотип</span>
+						<span className="text-sm font-bold text-white">Логотип</span>
 						<div className="flex gap-4">
-							<span className="text-xs">Главная</span>
-							<span className="text-xs">О нас</span>
+							<span className="text-xs text-white/80">Главная</span>
+							<span className="text-xs text-white/80">О нас</span>
 						</div>
 					</nav>
 				</ScrollBackground>
@@ -48,9 +48,9 @@ export function FrostedGlassExample() {
 				<ScrollBackground>
 					<div className="pointer-events-none absolute inset-0 z-10 flex items-center justify-center">
 						<div style={{ ...frostedStyle, borderRadius: 20 }} className="pointer-events-auto w-56 p-5">
-							<p className="mb-1 text-xs">Статус проекта</p>
-							<p className="text-sm font-semibold">Glass готов ✓</p>
-							<p className="mt-1 text-xs">Сегодня, 14:32</p>
+							<p className="mb-1 text-xs text-white/70">Статус проекта</p>
+							<p className="text-sm font-semibold text-white">Glass готов ✓</p>
+							<p className="mt-1 text-xs text-white/70">Сегодня, 14:32</p>
 						</div>
 					</div>
 				</ScrollBackground>
@@ -59,8 +59,8 @@ export function FrostedGlassExample() {
 					<div className="pointer-events-none absolute inset-0 z-10 flex items-center justify-center">
 						<div className="pointer-events-auto flex flex-col items-center gap-3">
 							<div style={{ ...frostedStyle, borderRadius: 12 }} className="px-4 py-2 text-center">
-								<p className="text-xs font-semibold">Стеклянный тултип</p>
-								<p className="text-xs">подсказка поверх контента</p>
+								<p className="text-xs font-semibold text-white">Стеклянный тултип</p>
+								<p className="text-xs text-white/70">подсказка поверх контента</p>
 							</div>
 							<Button variant="secondary" size="sm">
 								Кнопка под тултипом

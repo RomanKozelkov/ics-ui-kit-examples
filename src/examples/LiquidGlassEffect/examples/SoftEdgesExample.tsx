@@ -124,7 +124,7 @@ export function SoftEdgesExample() {
 	return (
 		<section className="flex flex-col gap-4">
 			<SectionLabel
-				number="3"
+				number="4"
 				title="useLiquidGlass — мягкие края"
 				subtitle="Хук даёт полную свободу разметки. Мягкость встроена в displacement-карту — смещение затухает у краёв само, контент не обрезается"
 			/>
@@ -137,10 +137,10 @@ export function SoftEdgesExample() {
 						className="absolute inset-x-0 top-0 z-10 flex items-center justify-between px-5 py-4"
 					>
 						{header.svgElement}
-						<span className="text-sm font-bold">Логотип</span>
+						<span className="text-sm font-bold text-white">Логотип</span>
 						<div className="flex gap-4">
-							<span className="text-xs">Главная</span>
-							<span className="text-xs">О нас</span>
+							<span className="text-xs text-white/80">Главная</span>
+							<span className="text-xs text-white/80">О нас</span>
 						</div>
 					</div>
 				</ScrollBackground>
