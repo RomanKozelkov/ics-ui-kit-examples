@@ -80,7 +80,7 @@ export function HookPlaygroundExample() {
 			<SectionLabel
 				number="2"
 				title="useLiquidGlass — интерактивный плейграунд"
-				subtitle="Крутите слайдеры — эффект меняется в реальном времени. Настройте параметры и скопируйте готовый вызов хука в свой проект."
+				subtitle="SVG-дисторсия + хроматическая аберрация — «живой» линзовый эффект в стиле Apple Liquid Glass. Подходит когда нужно искажение по краям, элемент меняет размер (ResizeObserver внутри), или контент под стеклом детализированный. Тяжелее Frosted Glass — не используйте для десятков элементов на экране."
 			/>
 
 			<div className="grid grid-cols-[1fr_300px] items-stretch gap-4">

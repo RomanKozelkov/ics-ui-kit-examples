@@ -44,7 +44,10 @@ function FrostedPreview(p: FrostedParams) {
 	return (
 		<GlassBackground>
 			<div className="pointer-events-none absolute inset-0 z-10 flex items-center justify-center">
-				<div style={{ ...cardStyle, resize: "both", minWidth: 226, minHeight: 130 }} className="pointer-events-auto flex flex-col gap-3 overflow-hidden p-5 shadow-lg">
+				<div
+					style={{ ...cardStyle, resize: "both", minWidth: 226, minHeight: 130 }}
+					className="pointer-events-auto flex flex-col gap-3 overflow-hidden p-5 shadow-lg"
+				>
 					<ProfileCard />
 				</div>
 			</div>
@@ -85,7 +88,7 @@ export function FrostedGlassPlaygroundExample() {
 			<SectionLabel
 				number="1"
 				title="Frosted Glass — интерактивный плейграунд"
-				subtitle="Крутите слайдеры — все параметры backdrop-filter меняются в реальном времени. Скопируйте готовый CSS в свой проект."
+				subtitle="Чистый CSS backdrop-filter без JS. Подходит для статичных элементов: карточки, панели, модалки. Крутите слайдеры и копируйте готовый CSS в свой проект."
 			/>
 
 			<div className="grid grid-cols-[1fr_300px] items-stretch gap-4">
