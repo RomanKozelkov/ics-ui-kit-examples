@@ -4,6 +4,7 @@ import { GlassBackground } from "../components/GlassBackground";
 import { SectionLabel } from "../components/SectionLabel";
 import { ControlRow } from "../components/ControlRow";
 import { CodeBlock } from "../components/CodeBlock";
+import { ProfileCard } from "../components/ProfileCard";
 
 interface FrostedParams {
 	blur: number;
@@ -42,21 +43,9 @@ function FrostedPreview(p: FrostedParams) {
 
 	return (
 		<GlassBackground>
-			<div className="pointer-events-none absolute inset-0 z-10 flex items-center justify-center">
-				<div style={cardStyle} className="flex w-56 flex-col gap-3 p-5 shadow-lg">
-					<div className="flex items-center gap-3">
-						<div className="flex size-10 shrink-0 items-center justify-center rounded-full bg-white/30 text-sm font-semibold text-white">
-							АК
-						</div>
-						<div className="flex flex-col gap-0.5">
-							<span className="text-sm font-semibold leading-tight text-white">Алексей Кириллов</span>
-							<span className="text-xs text-white/70">Frontend Developer</span>
-						</div>
-					</div>
-					<div className="flex flex-col gap-1">
-						<span className="text-xs text-white/70">email@example.com</span>
-						<span className="text-xs text-white/70">Москва, Россия</span>
-					</div>
+			<div className="absolute inset-0 z-10 flex items-center justify-center">
+				<div style={{ ...cardStyle, resize: "both", minWidth: 226, minHeight: 130 }} className="flex flex-col gap-3 overflow-hidden p-5 shadow-lg">
+					<ProfileCard />
 				</div>
 			</div>
 		</GlassBackground>
