@@ -4,3 +4,4 @@ export { OfftakeDashboard } from "./OfftakeDashboard/OfftakeDashboard";
 export { SidebarNavigation } from "./SidebarNavigation/SidebarNavigation";
 export { DonutLegendSort } from "./DonutLegendSort/DonutLegendSort";
 export { RetailHeatmap } from "./RetailHeatmap/RetailHeatmap";
+export { LiquidGlassEffect } from "./LiquidGlassEffect/LiquidGlassEffect";
