@@ -6,7 +6,7 @@ import { usePreparedItems } from "./hooks/usePreparedItems";
 import { usePromoOverrides } from "./hooks/usePromoOverrides";
 import { useDndConfig } from "./hooks/useDndConfig";
 import { useTimelineGroups } from "./hooks/useTimelineGroups";
-import { CalendarSurface } from "./ui/CalendarSurface";
+import { TimelineSurface } from "./ui/TimelineSurface";
 import { StaleOverlay } from "./ui/StaleOverlay";
 import { LEFT_W } from "./utils/layout";
 import { MS_DAY } from "./utils/date";
@@ -68,7 +68,7 @@ export function PromoTimeline({
 				// rangeGridSize (MS_DAY) → ресайз прыгает по дням, а не попиксельно.
 				useResizeAnimation
 			>
-				<CalendarSurface
+				<TimelineSurface
 					timeline={timeline}
 					groups={groups}
 					onPeriodChange={onPeriodChange}

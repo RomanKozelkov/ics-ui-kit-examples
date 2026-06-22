@@ -1,5 +1,6 @@
 import type { PromoCalendarItem } from "../../api/promo.types";
 import type { TextKey } from "../../i18n";
+import type { PromoColor } from "./utils/palette";
 
 export type GroupField = "channelType" | "companyName";
 
@@ -12,7 +13,7 @@ export const GROUP_FIELD_TEXT_KEY: Record<GroupField, TextKey> = {
 export type PromoItem = PromoCalendarItem;
 
 export type PreparedPromoItem = PromoItem & {
-	color: string;
+	color: PromoColor;
 	startMs: number;
 	endMs: number;
 	durationDays: number;

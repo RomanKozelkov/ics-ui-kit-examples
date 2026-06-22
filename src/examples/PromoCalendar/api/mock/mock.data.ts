@@ -219,7 +219,7 @@ const ANCHORS: RawPromo[] = [
 /*
  * Всегда возвращает одни и те же данные.
  */
-export function getStaticPromos(extend: number = 100): RawPromo[] {
+export function getStaticPromos(extend: number = 200): RawPromo[] {
 	const rnd = mulberry32(0xc0ffee);
 	const generated: RawPromo[] = [];
 	for (let i = ANCHORS.length + 1; i <= ANCHORS.length + extend; i++) {

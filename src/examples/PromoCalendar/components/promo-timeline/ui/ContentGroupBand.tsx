@@ -12,7 +12,7 @@ export function ContentGroupBand({ top }: { top: number }) {
 			className="sticky w-full border-b border-border"
 			style={{ height: GROUP_HEAD_H, top, zIndex: Z_INDEX.sidebar }}
 		>
-			<div className="pointer-events-none absolute inset-0 bg-muted/40" />
+			<div className="pointer-events-none absolute inset-0" />
 		</div>
 	);
 }

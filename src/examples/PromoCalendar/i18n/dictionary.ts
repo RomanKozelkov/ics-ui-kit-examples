@@ -28,8 +28,6 @@ export type PromoCalendarTranslations = {
 	panel: {
 		year: string;
 		months: string;
-		monthFrom: string;
-		monthTo: string;
 		grouping: string;
 		sort: string;
 		search: string;

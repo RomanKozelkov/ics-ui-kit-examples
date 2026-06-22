@@ -18,26 +18,28 @@ export function GroupingSelect() {
 
 	// Порядок выбранных уровней = вложенность группировки, поэтому маппим из grouping, а не из опций.
 	const value = useMemo(
-		() => grouping.map((g) => options.find((o) => o.value === g)).filter((o): o is SearchSelectOption => Boolean(o)),
+		() =>
+			grouping.map((g) => options.find((o) => o.value === g)).filter((o): o is SearchSelectOption => Boolean(o)),
 		[grouping, options]
 	);
 
 	// Список короткий и статичный — отдаём синхронно, фильтруя по строке поиска.
 	const loadOptions = useMemo(
-		() => async ({ searchQuery }: LoadOptionsParams) => ({
-			options: options.filter((o) => o.label.toLowerCase().includes(searchQuery.toLowerCase()))
-		}),
+		() =>
+			async ({ searchQuery }: LoadOptionsParams) => ({
+				options: options.filter((o) => o.label.toLowerCase().includes(searchQuery.toLowerCase()))
+			}),
 		[options]
 	);
 
 	return (
 		<Field
 			className="w-auto"
-			layout="vertical"
-			title={text("panel.grouping")}
+			layout="horizontal"
+			title={text("panel.grouping") + ":"}
 			control={() => (
 				<MultiSelect
-					className="w-44"
+					className="w-auto"
 					value={value}
 					onChange={(selected) => setGrouping(selected.map((o) => o.value).filter(isGrouping))}
 					loadOptions={loadOptions}

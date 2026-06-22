@@ -31,7 +31,7 @@ const DayOffBands = memo(function DayOffBands({
 				d.isDayOff ? (
 					<div
 						key={`w${d.dayIndex}`}
-						className="absolute inset-y-0 bg-muted/25"
+						className="absolute inset-y-0 bg-muted/10"
 						style={{ left: valueToPixels(d.dayIndex * MS_DAY), width: dayPx }}
 					/>
 				) : null

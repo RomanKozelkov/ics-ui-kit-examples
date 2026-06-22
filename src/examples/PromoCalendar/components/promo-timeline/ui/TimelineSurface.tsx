@@ -31,7 +31,7 @@ export type SurfaceLayout = {
 	isGrouped: boolean;
 };
 
-export function CalendarSurface({
+export function TimelineSurface({
 	timeline,
 	groups,
 	onPeriodChange,
@@ -71,7 +71,7 @@ export function CalendarSurface({
 	return (
 		<TooltipProvider>
 			<div
-				className="relative flex min-h-0 flex-1 flex-col overflow-hidden rounded-lg border border-border bg-primary-bg"
+				className="relative flex min-h-0 flex-1 flex-col overflow-hidden rounded-lg border border-border bg-secondary-bg"
 				style={{ maxHeight: SURFACE_MAX_H }}
 			>
 				<div ref={scrollRef} data-timeline-scrollport className="min-h-0 flex-1 overflow-auto">

@@ -15,8 +15,8 @@ export function YearSelect() {
 	return (
 		<Field
 			className="w-auto"
-			layout="vertical"
-			title={text("panel.year")}
+			layout="horizontal"
+			title={text("panel.year") + ":"}
 			control={({ id }) => (
 				<Select value={String(year)} onValueChange={handleYearChange}>
 					<SelectTrigger id={id} className="w-28">

@@ -5,7 +5,7 @@ export function Wrapper({ children }: { children: React.ReactNode }) {
 Wrapper.displayName = "PromoCalendar.Wrapper";
 
 export function Header({ children }: { children: React.ReactNode }) {
-	return <div className="container mx-auto flex shrink-0 items-center gap-4 pb-4">{children}</div>;
+	return <div className="container mx-auto flex shrink-0 flex-col gap-4 pb-4">{children}</div>;
 }
 
 Header.displayName = "PromoCalendar.Header";

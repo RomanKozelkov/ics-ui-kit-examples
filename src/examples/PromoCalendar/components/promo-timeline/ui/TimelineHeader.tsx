@@ -13,7 +13,7 @@ export function TimelineHeader({ timeline, leftWidth }: { timeline: TimelineMode
 
 	return (
 		<div
-			className="sticky top-0 flex w-full flex-col border-b border-border bg-primary-bg"
+			className="sticky top-0 flex w-full flex-col border-b border-border bg-secondary-bg"
 			style={{ height: headerHeight, zIndex: Z_INDEX.header }}
 		>
 			<HeaderMonthRow months={timeline.months} valueToPixels={valueToPixels} labelOffset={leftWidth} />

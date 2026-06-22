@@ -22,12 +22,12 @@ export function SidebarColumn({ groups, width, headerHeight, collapsedPaths, onT
 
 	return (
 		<div
-			className="sticky left-0 flex shrink-0 flex-col border-r border-border bg-primary-bg"
+			className="sticky left-0 flex shrink-0 flex-col border-r border-border bg-secondary-bg"
 			style={{ width, zIndex: Z_INDEX.corner }}
 		>
 			{/* Header: угловая ячейка с названием колонки группировки. */}
 			<div
-				className="sticky top-0 flex shrink-0 items-center border-b border-border bg-primary-bg px-2 text-xs font-medium text-muted-foreground"
+				className="sticky top-0 flex shrink-0 items-center border-b border-border bg-secondary-bg px-2 text-xs font-medium text-muted-foreground"
 				style={{ height: headerHeight, zIndex: Z_INDEX.corner }}
 			>
 				{text("calendar.group")}

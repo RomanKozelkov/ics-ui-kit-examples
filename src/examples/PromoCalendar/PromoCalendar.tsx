@@ -96,9 +96,6 @@ function CalendarContainer() {
 	const grouping = usePanelStore((s) => s.grouping);
 	const dayWidth = usePanelStore((s) => s.dayWidth);
 
-	// Откладываем все параметры, питающие suspense-query и тяжёлые мемо (buildGroupTree, релейаут баров).
-	// useDeferredValue, а не startTransition: значения приходят из zustand (useSyncExternalStore),
-	// который React обновляет синхронно — transition его не откладывает.
 	const deferredYear = useDeferredValue(year);
 	const deferredGrouping = useDeferredValue(grouping);
 	const deferredDayWidth = useDeferredValue(dayWidth);
@@ -107,7 +104,6 @@ function CalendarContainer() {
 
 	const groupBy = useMemo(() => mapGroupingToFields(deferredGrouping), [deferredGrouping]);
 
-	// stale, пока deferred-значения догоняют актуальные → накрываем полотно blur + inert (StaleOverlay).
 	const isStale =
 		year !== deferredYear ||
 		grouping !== deferredGrouping ||

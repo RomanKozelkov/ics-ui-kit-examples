@@ -19,8 +19,8 @@ export function ZoomSelect() {
 	return (
 		<Field
 			className="w-56"
-			layout="vertical"
-			title={text("panel.zoom")}
+			layout="horizontal"
+			title={text("panel.zoom") + ":"}
 			control={() => (
 				<div className="flex items-center gap-2">
 					<IconButton

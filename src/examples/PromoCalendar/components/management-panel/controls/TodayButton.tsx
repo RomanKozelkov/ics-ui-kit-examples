@@ -13,7 +13,7 @@ export function TodayButton() {
 	const todayReachable = years.includes(new Date().getFullYear());
 
 	return (
-		<Button variant="secondary" startIcon={CalendarClock} disabled={!todayReachable} onClick={goToToday}>
+		<Button variant="outline" startIcon={CalendarClock} disabled={!todayReachable} onClick={goToToday}>
 			{text("panel.today")}
 		</Button>
 	);

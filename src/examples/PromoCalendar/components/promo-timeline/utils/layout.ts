@@ -9,6 +9,6 @@ export const BAR_GAP = 4;
 export const HEAD_MONTH_H = 30;
 export const HEAD_DAY_H = 26;
 
-export const GROUP_HEAD_H = 32;
+export const GROUP_HEAD_H = 30;
 
 export const RESIZE_HANDLE_W = 8;

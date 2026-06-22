@@ -1,15 +1,10 @@
 import { memo, useMemo, useSyncExternalStore } from "react";
 import { useRow as useDndTimelineRow } from "dnd-timeline";
-import { IconButton } from "ics-ui-kit/components/button";
-import { ChevronLeft, ChevronRight } from "lucide-react";
-import { useText } from "../../../i18n";
 import type { PreparedPromoItem } from "../types";
 import { LANE_H } from "../utils/layout";
-import { Z_INDEX } from "../utils/z-index";
-
-const EDGE_ARROW_GAP = 4;
 import { parseEdgeKey, rowEdgeKey } from "../utils/edgeArrows";
 import { useTimelineScroll } from "./TimelineScrollContext";
+import { EdgeArrows } from "./EdgeArrows";
 import { PromoItem } from "./PromoItem";
 
 type Props = {
@@ -21,8 +16,7 @@ type Props = {
 /** Контентная строка lane: только промо-бары. Сайдбар вынесен в отдельную колонку (two-pane). */
 export const LaneRow = memo(function LaneRow({ rowId, items, borderBottom }: Props) {
 	const { setNodeRef, rowStyle, rowWrapperStyle } = useDndTimelineRow({ id: rowId });
-	const text = useText();
-	const { viewportStore, toX, scrollToMs, leftWidth } = useTimelineScroll();
+	const { viewportStore, toX } = useTimelineScroll();
 
 	// Какие edge-стрелки показать: строка пуста во вьюпорте → ведём к ближайшему off-screen промо.
 	// Снапшот — примитив-строка: строка перерисовывается только когда цели стрелок реально сменились,
@@ -50,37 +44,7 @@ export const LaneRow = memo(function LaneRow({ rowId, items, borderBottom }: Pro
 					<PromoItem key={item.id} item={item} />
 				))}
 
-				{/* Оверлей edge-стрелок: pointer-events off, кнопки sticky у краёв вьюпорта.
-				    Sticky держит их на месте при H-скролле; left-инсет минует sticky-сайдбар. */}
-				{(left !== null || right !== null) && (
-					<div
-						className="pointer-events-none absolute inset-0 flex items-center"
-						style={{ zIndex: Z_INDEX.edgeArrow }}
-					>
-						{left !== null && (
-							<IconButton
-								variant="secondary"
-								size="sm"
-								icon={ChevronLeft}
-								aria-label={text("calendar.scrollToNearestLeft")}
-								className="pointer-events-auto sticky"
-								style={{ left: leftWidth + EDGE_ARROW_GAP }}
-								onClick={() => scrollToMs(left, true)}
-							/>
-						)}
-						{right !== null && (
-							<IconButton
-								variant="secondary"
-								size="sm"
-								icon={ChevronRight}
-								aria-label={text("calendar.scrollToNearestRight")}
-								className="pointer-events-auto sticky ml-auto"
-								style={{ right: EDGE_ARROW_GAP }}
-								onClick={() => scrollToMs(right, true)}
-							/>
-						)}
-					</div>
-				)}
+				<EdgeArrows left={left} right={right} />
 			</div>
 		</div>
 	);
