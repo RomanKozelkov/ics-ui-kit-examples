@@ -1,9 +1,0 @@
-{
-  "permissions": {
-    "allow": [
-      "Bash(rtk tsc *)",
-      "Bash(rtk read *)",
-      "Bash(npx tsc *)"
-    ]
-  }
-}

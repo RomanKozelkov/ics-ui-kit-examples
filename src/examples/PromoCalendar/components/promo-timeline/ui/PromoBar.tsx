@@ -3,8 +3,6 @@ import { tv } from "tailwind-variants";
 import type { PreparedPromoItem } from "../types";
 import { useText } from "../../../i18n";
 
-/** Кегль текста промо-бара, px. Дробный — подобран под высоту бара (BAR_H), стандартные шаги Tailwind не подходят. */
-const BAR_FONT_PX = 11.5;
 const BAR_H = 22;
 
 const promoBar = tv({
