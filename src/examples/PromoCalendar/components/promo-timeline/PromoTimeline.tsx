@@ -49,13 +49,12 @@ export function PromoTimeline({
 	// контентный элемент равен только ширине контента.
 	const contentWidth = timeline.totalDays * dayWidth;
 
-	const { sensors, modifiers } = useDndConfig(dayWidth);
+	const { modifiers } = useDndConfig(dayWidth);
 	return (
 		<StaleOverlay stale={isStale}>
 			<DndTimelineContext
 				range={range}
 				sidebarWidth={0}
-				sensors={sensors}
 				// onResizeEnd/onRangeChanged здесь noop намеренно: обязательные пропсы контекста,
 				// но drag и resize ловим подпиской useTimelineMonitor (см. useItemDragMonitor) —
 				// единая точка записи интервала. Дублировать обработку в пропсах не нужно.

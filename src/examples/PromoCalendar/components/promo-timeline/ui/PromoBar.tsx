@@ -6,7 +6,7 @@ import { useText } from "../../../i18n";
 const BAR_H = 22;
 
 const promoBar = tv({
-	base: "flex w-full select-none items-center gap-1 overflow-hidden whitespace-nowrap border px-2 text-xs font-medium leading-none",
+	base: "flex w-full select-none items-center gap-1 overflow-hidden whitespace-nowrap border px-2 text-xs font-medium leading-none outline-none",
 	variants: {
 		status: {
 			info: "",

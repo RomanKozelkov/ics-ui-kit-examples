@@ -1,5 +1,5 @@
 import { useTimelineContext } from "dnd-timeline";
-import { memo } from "react";
+import { memo, useCallback, useMemo } from "react";
 import { cn } from "ics-ui-kit/lib/utils";
 import type { PromoCalendarItem } from "../../../api/promo.types";
 import { usePromoItemDnd } from "../hooks/usePromoItemDnd";
@@ -40,6 +40,24 @@ export const PromoItem = memo(function PromoItem({ item }: { item: PreparedPromo
 	const { onPointerDown: dndPointerDown, ...restListeners } = listeners ?? {};
 	const { onPointerLeave: edgeLabelPointerLeave, ...restBarProps } = barProps;
 
+	const onPointerLeave = useCallback(
+		(e: React.PointerEvent<HTMLDivElement>) => {
+			edgeLabelPointerLeave(e);
+			hideTooltip();
+		},
+		[edgeLabelPointerLeave, hideTooltip]
+	);
+
+	const onPointerDown = useCallback(
+		(e: React.PointerEvent<HTMLDivElement>) => {
+			dndPointerDown?.(e);
+			hideTooltip();
+		},
+		[dndPointerDown, hideTooltip]
+	);
+
+	const style = { ...itemStyle, top: ROW_PAD, zIndex: isDragging || isResizing ? 1000 : undefined };
+
 	return (
 		<div
 			ref={ref}
@@ -47,17 +65,11 @@ export const PromoItem = memo(function PromoItem({ item }: { item: PreparedPromo
 			{...restListeners}
 			{...restBarProps}
 			onPointerEnter={showTooltip}
-			onPointerLeave={(e) => {
-				edgeLabelPointerLeave(e);
-				hideTooltip();
-			}}
-			onPointerDown={(e) => {
-				dndPointerDown?.(e);
-				hideTooltip();
-			}}
+			onPointerLeave={onPointerLeave}
+			onPointerDown={onPointerDown}
 			onClick={() => openEdit(toPromo(item))}
-			className={cn("transition-[filter] duration-150", getItemShadow(isDragging, isResizing))}
-			style={{ ...itemStyle, top: ROW_PAD, zIndex: isDragging ? 1000 : undefined }}
+			className={cn("outline-none transition-[filter] duration-150", getItemShadow(isDragging, isResizing))}
+			style={style}
 		>
 			<div style={itemContentStyle}>
 				<PromoBar item={item} overflowLeft={overflowLeft} overflowRight={overflowRight} focus="low" />
