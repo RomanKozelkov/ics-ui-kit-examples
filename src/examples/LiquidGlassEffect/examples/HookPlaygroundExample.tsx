@@ -20,7 +20,7 @@ function GlassPreview({ blur, saturate, scale, aberration, borderRadius }: Glass
 
 	return (
 		<GlassBackground>
-			<div className="absolute inset-0 z-10 flex items-center justify-center">
+			<div className="pointer-events-none absolute inset-0 z-10 flex items-center justify-center">
 				<div
 					ref={glass.ref}
 					style={{
@@ -32,7 +32,7 @@ function GlassPreview({ blur, saturate, scale, aberration, borderRadius }: Glass
 						minWidth: 226,
 						minHeight: 130
 					}}
-					className="flex flex-col gap-3 overflow-hidden p-5 shadow-lg"
+					className="pointer-events-auto flex flex-col gap-3 overflow-hidden p-5 shadow-lg"
 				>
 					{glass.svgElement}
 					<ProfileCard />

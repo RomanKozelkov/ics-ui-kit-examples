@@ -43,8 +43,8 @@ function FrostedPreview(p: FrostedParams) {
 
 	return (
 		<GlassBackground>
-			<div className="absolute inset-0 z-10 flex items-center justify-center">
-				<div style={{ ...cardStyle, resize: "both", minWidth: 226, minHeight: 130 }} className="flex flex-col gap-3 overflow-hidden p-5 shadow-lg">
+			<div className="pointer-events-none absolute inset-0 z-10 flex items-center justify-center">
+				<div style={{ ...cardStyle, resize: "both", minWidth: 226, minHeight: 130 }} className="pointer-events-auto flex flex-col gap-3 overflow-hidden p-5 shadow-lg">
 					<ProfileCard />
 				</div>
 			</div>
