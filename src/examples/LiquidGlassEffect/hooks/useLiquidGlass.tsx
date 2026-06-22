@@ -6,7 +6,8 @@
  */
 import * as React from "react";
 
-function buildDisplacementMapSvg(width: number, height: number): string {
+function buildDisplacementMapSvg(width: number, height: number, borderRadius: number): string {
+	const rx = Math.min(borderRadius, width / 2, height / 2);
 	const svg = `<svg viewBox="0 0 ${width} ${height}" xmlns="http://www.w3.org/2000/svg">
   <defs>
     <linearGradient id="red" x1="100%" y1="0%" x2="0%" y2="0%">
@@ -19,9 +20,9 @@ function buildDisplacementMapSvg(width: number, height: number): string {
     </linearGradient>
   </defs>
   <rect x="0" y="0" width="${width}" height="${height}" fill="black"/>
-  <rect x="0" y="0" width="${width}" height="${height}" fill="url(#red)"/>
-  <rect x="0" y="0" width="${width}" height="${height}" fill="url(#blue)" style="mix-blend-mode:difference"/>
-  <rect x="1.89" y="1.89" width="${width - 3.78}" height="${height - 3.78}" fill="hsl(0 0% 50% / 0.93)" style="filter:blur(11px)"/>
+  <rect x="0" y="0" width="${width}" height="${height}" rx="${rx}" fill="url(#red)"/>
+  <rect x="0" y="0" width="${width}" height="${height}" rx="${rx}" fill="url(#blue)" style="mix-blend-mode:difference"/>
+  <rect x="1.89" y="1.89" width="${width - 3.78}" height="${height - 3.78}" rx="${rx}" fill="hsl(0 0% 50% / 0.93)" style="filter:blur(11px)"/>
 </svg>`;
 	return `data:image/svg+xml,${encodeURIComponent(svg)}`;
 }
@@ -31,6 +32,7 @@ export interface UseLiquidGlassOptions {
 	saturate?: number;
 	scale?: number;
 	aberration?: number;
+	borderRadius?: number;
 }
 
 export interface UseLiquidGlassReturn {
@@ -43,7 +45,8 @@ export function useLiquidGlass({
 	blur = 7,
 	saturate = 1.4,
 	scale = 50,
-	aberration = 0.06
+	aberration = 0.06,
+	borderRadius = 0
 }: UseLiquidGlassOptions = {}): UseLiquidGlassReturn {
 	const ref = React.useRef<HTMLDivElement>(null);
 	const feImageRef = React.useRef<SVGFEImageElement>(null);
@@ -57,7 +60,7 @@ export function useLiquidGlass({
 		const update = () => {
 			const { offsetWidth: w, offsetHeight: h } = el;
 			if (w === 0 || h === 0) return;
-			const href = buildDisplacementMapSvg(w, h);
+			const href = buildDisplacementMapSvg(w, h, borderRadius);
 			feImage.setAttribute("href", href);
 			feImage.setAttribute("width", String(w));
 			feImage.setAttribute("height", String(h));
@@ -67,7 +70,7 @@ export function useLiquidGlass({
 		const observer = new ResizeObserver(update);
 		observer.observe(el);
 		return () => observer.disconnect();
-	}, [aberration]);
+	}, [aberration, borderRadius]);
 
 	const style: React.CSSProperties = {
 		backdropFilter: `url(#${filterId}) blur(${blur}px) saturate(${saturate})`,

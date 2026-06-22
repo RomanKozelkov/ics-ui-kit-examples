@@ -16,7 +16,7 @@ interface GlassPreviewProps {
 }
 
 function GlassPreview({ blur, saturate, scale, aberration, borderRadius }: GlassPreviewProps) {
-	const glass = useLiquidGlass({ blur, saturate, scale, aberration });
+	const glass = useLiquidGlass({ blur, saturate, scale, aberration, borderRadius });
 
 	return (
 		<GlassBackground>
