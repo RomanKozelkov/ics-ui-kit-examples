@@ -9,7 +9,7 @@ const toIso = (item: RawPromo): PromoCalendarItem => ({
 	title: item.title,
 	dateBegin: dateToIso(item.dateBegin),
 	dateEnd: dateToIso(item.dateEnd),
-	channelType: item.channelType,
+	channelName: item.channelType,
 	companyName: item.companyName,
 	companyId: item.companyId,
 	channelId: item.channelId
@@ -21,7 +21,7 @@ const toRaw = (id: number, promo: Omit<PromoCalendarItem, "id">): RawPromo => ({
 	title: promo.title,
 	dateBegin: new Date(promo.dateBegin),
 	dateEnd: new Date(promo.dateEnd),
-	channelType: promo.channelType,
+	channelType: promo.channelName,
 	companyName: promo.companyName,
 	companyId: promo.companyId,
 	channelId: promo.channelId

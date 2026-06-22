@@ -20,7 +20,7 @@ const toPromo = (item: PreparedPromoItem): PromoCalendarItem => ({
 	title: item.title,
 	dateBegin: item.dateBegin,
 	dateEnd: item.dateEnd,
-	channelType: item.channelType,
+	channelName: item.channelName,
 	companyName: item.companyName,
 	companyId: item.companyId,
 	channelId: item.channelId

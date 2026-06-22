@@ -37,7 +37,7 @@ export function PromoForm({
 
 	const handleChannelChange = (value: string) => {
 		const option = CHANNEL_OPTIONS.find((o) => o.value === value);
-		patch({ channelType: value, channelId: option?.channelId ?? values.channelId });
+		patch({ channelName: value, channelId: option?.channelId ?? values.channelId });
 	};
 
 	const handleClientChange = (companyName: string) => {
@@ -57,18 +57,14 @@ export function PromoForm({
 					layout="vertical"
 					title={text("editor.titleLabel")}
 					control={({ id }) => (
-						<TextInput
-							id={id}
-							value={values.title}
-							onChange={(value) => patch({ title: value ?? "" })}
-						/>
+						<TextInput id={id} value={values.title} onChange={(value) => patch({ title: value ?? "" })} />
 					)}
 				/>
 				<Field
 					layout="vertical"
 					title={text("editor.channelLabel")}
 					control={({ id }) => (
-						<Select value={values.channelType} onValueChange={handleChannelChange}>
+						<Select value={values.channelName} onValueChange={handleChannelChange}>
 							<SelectTrigger id={id}>
 								<SelectValue />
 							</SelectTrigger>

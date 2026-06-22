@@ -40,7 +40,7 @@ const MS_DAY = 86_400_000;
 const MIN_DURATION_DAYS = 3;
 const MAX_DURATION_DAYS = 30;
 
-const pick = <T,>(arr: T[]): T => arr[Math.floor(Math.random() * arr.length)];
+const pick = <T>(arr: T[]): T => arr[Math.floor(Math.random() * arr.length)];
 const toIso = (ms: number): string => new Date(ms).toISOString().split("T")[0];
 
 /**
@@ -64,7 +64,7 @@ export function makeRandomPromoDraft(year: number): Omit<PromoCalendarItem, "id"
 		title: pick(TITLES),
 		dateBegin: toIso(beginMs),
 		dateEnd: toIso(endMs),
-		channelType: channel.value,
+		channelName: channel.value,
 		channelId: channel.channelId,
 		companyName: client.companyName,
 		companyId: client.companyId

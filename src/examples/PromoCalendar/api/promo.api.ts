@@ -1,6 +1,6 @@
 import { PromoCalendarItem } from "./promo.types";
 
-export interface PromoApi {
+export interface IPromoCalendarApi {
 	fetchPromoCalendar(year: number): Promise<PromoCalendarItem[]>;
 	fetchYears(): Promise<number[]>;
 	getHolidays(year: number): Promise<Set<string>>; // в формате YYYY-MM-DD

@@ -10,8 +10,6 @@ export interface PromoCalendarItem {
 	title: string;
 	dateBegin: string; // YYYY-MM-DD inclusive
 	dateEnd: string; // YYYY-MM-DD inclusive
-	channelType: string;
+	channelName: string;
 	companyName: string;
-	companyId: number;
-	channelId: number;
 }
