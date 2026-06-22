@@ -1,6 +1,9 @@
 import * as React from "react";
 import { Button } from "ics-ui-kit/components/button";
-import { CodeBlock, ControlRow, SCROLL_ITEMS, SectionLabel } from "./shared";
+import { GlassBackground } from "../components/GlassBackground";
+import { SectionLabel } from "../components/SectionLabel";
+import { ControlRow } from "../components/ControlRow";
+import { CodeBlock } from "../components/CodeBlock";
 
 interface FrostedParams {
 	blur: number;
@@ -38,20 +41,7 @@ function FrostedPreview(p: FrostedParams) {
 	};
 
 	return (
-		<div className="relative h-[360px] overflow-hidden rounded-2xl bg-gradient-to-br from-violet-500 via-purple-400 to-fuchsia-500">
-			<div className="absolute inset-0 overflow-y-auto" style={{ scrollbarWidth: "none" }}>
-				<div className="flex flex-col gap-2 p-4">
-					{SCROLL_ITEMS.map((i) => (
-						<div
-							key={i}
-							className="flex h-14 items-center rounded-xl border border-white/20 bg-white/20 px-4"
-						>
-							<span className="text-sm font-medium text-white/90">Строка {i + 1}</span>
-						</div>
-					))}
-				</div>
-			</div>
-
+		<GlassBackground>
 			<div className="pointer-events-none absolute inset-0 z-10 flex items-center justify-center">
 				<div style={cardStyle} className="flex w-56 flex-col gap-3 p-5 shadow-lg">
 					<div className="flex items-center gap-3">
@@ -69,7 +59,7 @@ function FrostedPreview(p: FrostedParams) {
 					</div>
 				</div>
 			</div>
-		</div>
+		</GlassBackground>
 	);
 }
 
@@ -109,7 +99,7 @@ export function FrostedGlassPlaygroundExample() {
 				subtitle="Крутите слайдеры — все параметры backdrop-filter меняются в реальном времени. Скопируйте готовый CSS в свой проект."
 			/>
 
-			<div className="grid grid-cols-[1fr_300px] gap-4">
+			<div className="grid grid-cols-[1fr_300px] items-stretch gap-4">
 				<FrostedPreview {...params} />
 
 				<div className="flex flex-col gap-4 rounded-2xl border border-secondary-border bg-secondary-bg p-5">

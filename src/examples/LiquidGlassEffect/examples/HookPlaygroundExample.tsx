@@ -1,8 +1,10 @@
 import * as React from "react";
 import { Button } from "ics-ui-kit/components/button";
 import { useLiquidGlass } from "../hooks/useLiquidGlass";
-import { CodeBlock, ControlRow, SCROLL_ITEMS, SectionLabel } from "./shared";
-
+import { GlassBackground } from "../components/GlassBackground";
+import { ControlRow } from "../components/ControlRow";
+import { CodeBlock } from "../components/CodeBlock";
+import { SectionLabel } from "../components/SectionLabel";
 
 interface GlassPreviewProps {
 	blur: number;
@@ -16,20 +18,7 @@ function GlassPreview({ blur, saturate, scale, aberration, borderRadius }: Glass
 	const glass = useLiquidGlass({ blur, saturate, scale, aberration });
 
 	return (
-		<div className="relative h-[360px] overflow-hidden rounded-2xl bg-gradient-to-br from-violet-500 via-purple-400 to-fuchsia-500">
-			<div className="absolute inset-0 overflow-y-auto" style={{ scrollbarWidth: "none" }}>
-				<div className="flex flex-col gap-2 p-4">
-					{SCROLL_ITEMS.map((i) => (
-						<div
-							key={i}
-							className="flex h-14 items-center rounded-xl border border-white/20 bg-white/20 px-4"
-						>
-							<span className="text-sm font-medium text-white/90">Строка {i + 1}</span>
-						</div>
-					))}
-				</div>
-			</div>
-
+		<GlassBackground>
 			<div className="pointer-events-none absolute inset-0 z-10 flex items-center justify-center">
 				<div
 					ref={glass.ref}
@@ -42,9 +31,7 @@ function GlassPreview({ blur, saturate, scale, aberration, borderRadius }: Glass
 							АК
 						</div>
 						<div className="flex flex-col gap-0.5">
-							<span className="text-sm font-semibold leading-tight text-white">
-								Алексей Кириллов
-							</span>
+							<span className="text-sm font-semibold leading-tight text-white">Алексей Кириллов</span>
 							<span className="text-xs text-white/70">Frontend Developer</span>
 						</div>
 					</div>
@@ -54,7 +41,7 @@ function GlassPreview({ blur, saturate, scale, aberration, borderRadius }: Glass
 					</div>
 				</div>
 			</div>
-		</div>
+		</GlassBackground>
 	);
 }
 
@@ -99,7 +86,7 @@ export function HookPlaygroundExample() {
 				subtitle="Крутите слайдеры — эффект меняется в реальном времени. Настройте параметры и скопируйте готовый вызов хука в свой проект."
 			/>
 
-			<div className="grid grid-cols-[1fr_300px] gap-4">
+			<div className="grid grid-cols-[1fr_300px] items-stretch gap-4">
 				<GlassPreview
 					blur={blur}
 					saturate={saturate}
