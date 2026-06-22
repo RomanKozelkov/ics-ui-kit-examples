@@ -1,4 +1,4 @@
-import { PromoApi } from "../promo.api";
+import { IPromoCalendarApi } from "../promo.api";
 import { getStaticWithCache, type RawPromo } from "./mock.data";
 import { PromoCalendarItem } from "../promo.types";
 import { dateToIso } from "../../utils/dateToIso";
@@ -9,10 +9,8 @@ const toIso = (item: RawPromo): PromoCalendarItem => ({
 	title: item.title,
 	dateBegin: dateToIso(item.dateBegin),
 	dateEnd: dateToIso(item.dateEnd),
-	channelName: item.channelType,
-	companyName: item.companyName,
-	companyId: item.companyId,
-	channelId: item.channelId
+	channelName: item.channelName,
+	companyName: item.companyName
 });
 
 // Обратная конвертация границы: доменный ISO → сырое Date-представление mock.
@@ -21,15 +19,13 @@ const toRaw = (id: number, promo: Omit<PromoCalendarItem, "id">): RawPromo => ({
 	title: promo.title,
 	dateBegin: new Date(promo.dateBegin),
 	dateEnd: new Date(promo.dateEnd),
-	channelType: promo.channelName,
-	companyName: promo.companyName,
-	companyId: promo.companyId,
-	channelId: promo.channelId
+	channelName: promo.channelName,
+	companyName: promo.companyName
 });
 
 const nextId = (items: RawPromo[]): number => items.reduce((max, p) => Math.max(max, p.id), 0) + 1;
 
-export const mockPromoApi: PromoApi = {
+export const mockPromoApi: IPromoCalendarApi = {
 	fetchPromoCalendar: async (year: number): Promise<PromoCalendarItem[]> => {
 		const beginMs = new Date(year, 0, 1).getTime();
 		const endMs = new Date(year + 1, 0, 1).getTime() - 1;

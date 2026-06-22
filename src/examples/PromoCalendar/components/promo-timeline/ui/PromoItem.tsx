@@ -21,9 +21,7 @@ const toPromo = (item: PreparedPromoItem): PromoCalendarItem => ({
 	dateBegin: item.dateBegin,
 	dateEnd: item.dateEnd,
 	channelName: item.channelName,
-	companyName: item.companyName,
-	companyId: item.companyId,
-	channelId: item.channelId
+	companyName: item.companyName
 });
 
 export const PromoItem = memo(function PromoItem({ item }: { item: PreparedPromoItem }) {

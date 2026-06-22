@@ -6,23 +6,23 @@ import type { PromoCalendarItem } from "../../api/promo.types";
  * в реальный проект (там список каналов/клиентов придёт из своего источника). Метки каналов
  * здесь, т.к. в i18n-словаре их нет (channelType — сырой код).
  */
-export const CHANNEL_OPTIONS: { value: string; label: string; channelId: number }[] = [
-	{ value: "retail", label: "Розница", channelId: 1 },
-	{ value: "distrib", label: "Дистрибуция", channelId: 2 },
-	{ value: "ecom", label: "E-com", channelId: 3 },
-	{ value: "opt", label: "Опт", channelId: 4 },
-	{ value: "horeca", label: "HoReCa", channelId: 5 }
+export const CHANNEL_OPTIONS: { value: string; label: string }[] = [
+	{ value: "retail", label: "Розница" },
+	{ value: "distrib", label: "Дистрибуция" },
+	{ value: "ecom", label: "E-com" },
+	{ value: "opt", label: "Опт" },
+	{ value: "horeca", label: "HoReCa" }
 ];
 
-export const CLIENT_OPTIONS: { companyName: string; companyId: number }[] = [
-	{ companyName: "Магнит", companyId: 1 },
-	{ companyName: "X5 Group", companyId: 2 },
-	{ companyName: "Лента", companyId: 3 },
-	{ companyName: "Ашан", companyId: 4 },
-	{ companyName: "Перекрёсток", companyId: 5 },
-	{ companyName: "Дикси", companyId: 6 },
-	{ companyName: "Метро", companyId: 7 },
-	{ companyName: "ВкусВилл", companyId: 8 }
+export const CLIENT_OPTIONS: { companyName: string }[] = [
+	{ companyName: "Магнит" },
+	{ companyName: "X5 Group" },
+	{ companyName: "Лента" },
+	{ companyName: "Ашан" },
+	{ companyName: "Перекрёсток" },
+	{ companyName: "Дикси" },
+	{ companyName: "Метро" },
+	{ companyName: "ВкусВилл" }
 ];
 
 const TITLES = [
@@ -65,8 +65,6 @@ export function makeRandomPromoDraft(year: number): Omit<PromoCalendarItem, "id"
 		dateBegin: toIso(beginMs),
 		dateEnd: toIso(endMs),
 		channelName: channel.value,
-		channelId: channel.channelId,
-		companyName: client.companyName,
-		companyId: client.companyId
+		companyName: client.companyName
 	};
 }

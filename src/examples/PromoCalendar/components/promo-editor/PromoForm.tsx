@@ -11,9 +11,7 @@ import { CHANNEL_OPTIONS, CLIENT_OPTIONS } from "./constants";
 type PromoFormValues = Omit<PromoCalendarItem, "id">;
 
 /**
- * Форма промо на простом локальном состоянии (без react-hook-form/zod): ics-ui-kit бандлит
- * собственную копию rhf, делить её контекст снаружи нельзя — поэтому переиспользуем только
- * презентационные примитивы кита. Валидации намеренно нет (демо).
+ * Форма промо на простом локальном состоянии (без react-hook-form/zod)
  */
 export function PromoForm({
 	defaultValues,
@@ -36,13 +34,11 @@ export function PromoForm({
 	const patch = (next: Partial<PromoFormValues>) => setValues((prev) => ({ ...prev, ...next }));
 
 	const handleChannelChange = (value: string) => {
-		const option = CHANNEL_OPTIONS.find((o) => o.value === value);
-		patch({ channelName: value, channelId: option?.channelId ?? values.channelId });
+		patch({ channelName: value });
 	};
 
 	const handleClientChange = (companyName: string) => {
-		const option = CLIENT_OPTIONS.find((o) => o.companyName === companyName);
-		patch({ companyName, companyId: option?.companyId ?? values.companyId });
+		patch({ companyName });
 	};
 
 	const handleSubmit: SubmitEventHandler = (e) => {
@@ -88,10 +84,11 @@ export function PromoForm({
 							</SelectTrigger>
 							<SelectContent>
 								{CLIENT_OPTIONS.map((o) => (
-									<SelectItem key={o.companyId} value={o.companyName}>
+									<SelectItem key={o.companyName} value={o.companyName}>
 										{o.companyName}
 									</SelectItem>
 								))}
+								1
 							</SelectContent>
 						</Select>
 					)}

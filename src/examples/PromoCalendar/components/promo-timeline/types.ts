@@ -2,11 +2,11 @@ import type { PromoCalendarItem } from "../../api/promo.types";
 import type { TextKey } from "../../i18n";
 import type { PromoColor } from "./utils/palette";
 
-export type GroupField = "channelType" | "companyName";
+export type GroupField = "channelName" | "companyName";
 
 /** Поле группировки → ключ перевода названия поля. */
 export const GROUP_FIELD_TEXT_KEY: Record<GroupField, TextKey> = {
-	channelType: "groupField.channel",
+	channelName: "groupField.channel",
 	companyName: "groupField.client"
 };
 

@@ -14,7 +14,8 @@ import { TextProvider, textFromLocalDictionary, useText } from "./i18n";
 import { selectDateRange } from "./components/management-panel/store/panel.selectors";
 import { useShallow } from "zustand/react/shallow";
 import { TooltipProvider } from "ics-ui-kit/components/tooltip";
-import { CalendarError, CalendarLoader } from "./components/feedback/CalendarFeedback";
+import { CalendarError } from "./components/feedback/CalendarError";
+import { CalendarLoader } from "./components/feedback/CalendarLoader";
 import { useYearsSuspenseQuery } from "./api/promo.queries";
 
 const defaultConfig: PromoCalendarConfig = {

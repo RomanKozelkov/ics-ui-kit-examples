@@ -8,10 +8,8 @@ export interface RawPromo {
 	title: string;
 	dateBegin: Date;
 	dateEnd: Date;
-	channelType: string;
+	channelName: string;
 	companyName: string;
-	companyId: number;
-	channelId: number;
 }
 
 // ─── Справочники ─────────────────────────────────────────────────────────────
@@ -103,10 +101,8 @@ function buildItem(rnd: () => number, id: number): RawPromo {
 		title: pick(rnd, TITLES),
 		dateBegin: toDateObj(startMs),
 		dateEnd: toDateObj(endMs),
-		channelType: weightedPick(rnd, CHANNELS, CHANNEL_WEIGHTS),
-		channelId: Math.floor(rnd() * 100),
-		companyName: pick(rnd, CLIENTS),
-		companyId: Math.floor(rnd() * 100)
+		channelName: weightedPick(rnd, CHANNELS, CHANNEL_WEIGHTS),
+		companyName: pick(rnd, CLIENTS)
 	};
 }
 
@@ -119,100 +115,80 @@ const ANCHORS: RawPromo[] = [
 		title: "Новогодний промо",
 		dateBegin: new Date(2024, 11, 15),
 		dateEnd: new Date(2025, 1, 10),
-		channelType: "retail",
-		channelId: 1,
-		companyName: "Магнит",
-		companyId: 1
+		channelName: "retail",
+		companyName: "Магнит"
 	},
 	{
 		id: 2,
 		title: "Новогодний промо",
 		dateBegin: new Date(2025, 10, 20),
 		dateEnd: new Date(2026, 0, 25),
-		channelType: "retail",
-		channelId: 1,
-		companyName: "X5 Group",
-		companyId: 2
+		channelName: "retail",
+		companyName: "X5 Group"
 	},
 	{
 		id: 3,
 		title: "Каждый день низкие цены",
 		dateBegin: new Date(2025, 0, 10),
 		dateEnd: new Date(2025, 11, 20),
-		channelType: "distrib",
-		channelId: 2,
-		companyName: "Лента",
-		companyId: 3
+		channelName: "distrib",
+		companyName: "Лента"
 	},
 	{
 		id: 4,
 		title: "Скидка 20%",
 		dateBegin: new Date(2025, 2, 3),
 		dateEnd: new Date(2025, 3, 14),
-		channelType: "retail",
-		channelId: 1,
-		companyName: "Магнит",
-		companyId: 1
+		channelName: "retail",
+		companyName: "Магнит"
 	},
 	{
 		id: 5,
 		title: "−30% на вторую",
 		dateBegin: new Date(2025, 2, 20),
 		dateEnd: new Date(2025, 4, 5),
-		channelType: "retail",
-		channelId: 1,
-		companyName: "Магнит",
-		companyId: 1
+		channelName: "retail",
+		companyName: "Магнит"
 	},
 	{
 		id: 6,
 		title: "Спецвыкладка",
 		dateBegin: new Date(2025, 2, 25),
 		dateEnd: new Date(2025, 3, 30),
-		channelType: "retail",
-		channelId: 1,
-		companyName: "Магнит",
-		companyId: 1
+		channelName: "retail",
+		companyName: "Магнит"
 	},
 	{
 		id: 7,
 		title: "Летний кэшбэк",
 		dateBegin: new Date(2025, 5, 1),
 		dateEnd: new Date(2025, 7, 31),
-		channelType: "ecom",
-		channelId: 3,
-		companyName: "ВкусВилл",
-		companyId: 8
+		channelName: "ecom",
+		companyName: "ВкусВилл"
 	},
 	{
 		id: 8,
 		title: "Чёрная пятница",
 		dateBegin: new Date(2025, 10, 24),
 		dateEnd: new Date(2025, 10, 30),
-		channelType: "ecom",
-		channelId: 3,
-		companyName: "ВкусВилл",
-		companyId: 8
+		channelName: "ecom",
+		companyName: "ВкусВилл"
 	},
 	{
 		id: 9,
 		title: "Школьный базар",
 		dateBegin: new Date(2025, 7, 10),
 		dateEnd: new Date(2025, 8, 15),
-		channelType: "retail",
-		channelId: 1,
-		companyName: "Перекрёсток",
-		companyId: 5
+		channelName: "retail",
+		companyName: "Перекрёсток"
 	},
 	{
 		id: 10,
 		title: "Дегустация",
 		dateBegin: new Date(2025, 4, 1),
 		dateEnd: new Date(2025, 4, 14),
-		channelType: "horeca",
-		channelId: 5,
-		companyName: "Метро",
-		companyId: 7
+		channelName: "horeca",
+		companyName: "Метро"
 	}
 ];
 
