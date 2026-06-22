@@ -6,7 +6,7 @@
  */
 import * as React from "react";
 
-function buildDisplacementMapSvg(width: number, height: number, _aberration: number): string {
+function buildDisplacementMapSvg(width: number, height: number): string {
 	const svg = `<svg viewBox="0 0 ${width} ${height}" xmlns="http://www.w3.org/2000/svg">
   <defs>
     <linearGradient id="red" x1="100%" y1="0%" x2="0%" y2="0%">
@@ -22,18 +22,6 @@ function buildDisplacementMapSvg(width: number, height: number, _aberration: num
   <rect x="0" y="0" width="${width}" height="${height}" fill="url(#red)"/>
   <rect x="0" y="0" width="${width}" height="${height}" fill="url(#blue)" style="mix-blend-mode:difference"/>
   <rect x="1.89" y="1.89" width="${width - 3.78}" height="${height - 3.78}" fill="hsl(0 0% 50% / 0.93)" style="filter:blur(11px)"/>
-  <!-- Мягкие края: градиент поверх нейтрального серого затухает к краям.
-       Серый 50% = нет смещения, прозрачный = displacement просвечивает насквозь.
-       Меняй 25%/75% чтобы регулировать ширину зоны затухания. -->
-  <defs>
-    <linearGradient id="fadeV" x1="0%" y1="0%" x2="0%" y2="100%">
-      <stop offset="0%"   stop-color="hsl(0 0% 50%)"/>
-      <stop offset="25%"  stop-color="transparent"/>
-      <stop offset="75%"  stop-color="transparent"/>
-      <stop offset="100%" stop-color="hsl(0 0% 50%)"/>
-    </linearGradient>
-  </defs>
-  <rect x="0" y="0" width="${width}" height="${height}" fill="url(#fadeV)"/>
 </svg>`;
 	return `data:image/svg+xml,${encodeURIComponent(svg)}`;
 }
@@ -69,7 +57,7 @@ export function useLiquidGlass({
 		const update = () => {
 			const { offsetWidth: w, offsetHeight: h } = el;
 			if (w === 0 || h === 0) return;
-			const href = buildDisplacementMapSvg(w, h, aberration);
+			const href = buildDisplacementMapSvg(w, h);
 			feImage.setAttribute("href", href);
 			feImage.setAttribute("width", String(w));
 			feImage.setAttribute("height", String(h));
