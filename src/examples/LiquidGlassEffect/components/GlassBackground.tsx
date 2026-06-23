@@ -73,7 +73,7 @@ const TEXT_BLOCKS = [
 export function GlassBackground({ children }: { children: React.ReactNode }) {
 	return (
 		<div className="relative h-full min-h-[400px] overflow-hidden rounded-2xl bg-gray-900">
-			<div className="absolute inset-0 overflow-y-auto px-80 py-20" style={{ scrollbarWidth: "none" }}>
+			<div className="absolute inset-0 overflow-y-auto px-40 py-20" style={{ scrollbarWidth: "none" }}>
 				<div className="flex flex-col">
 					{BG_SECTIONS.map((s, i) => (
 						<React.Fragment key={s.title}>
