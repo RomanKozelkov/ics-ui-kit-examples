@@ -1,7 +1,7 @@
 import * as React from "react";
 import { Button } from "ics-ui-kit/components/button";
-import { useLiquidGlass } from "../hooks/useLiquidGlass";
 import { GlassBackground } from "../components/GlassBackground";
+import { LiquidGlassContainer } from "../components/LiquidGlassContainer";
 import { ControlRow } from "../components/ControlRow";
 import { CodeBlock } from "../components/CodeBlock";
 import { SectionLabel } from "../components/SectionLabel";
@@ -16,16 +16,16 @@ interface GlassPreviewProps {
 }
 
 function GlassPreview({ blur, saturate, scale, aberration, borderRadius }: GlassPreviewProps) {
-	const glass = useLiquidGlass({ blur, saturate, scale, aberration, borderRadius });
-
 	return (
 		<GlassBackground>
 			<div className="pointer-events-none absolute inset-0 z-10 flex items-center justify-center">
-				<div
-					ref={glass.ref}
+				<LiquidGlassContainer
+					blur={blur}
+					saturate={saturate}
+					scale={scale}
+					aberration={aberration}
+					borderRadius={borderRadius}
 					style={{
-						...glass.style,
-						borderRadius,
 						border: "1px solid rgba(255,255,255,0.2)",
 						background: "rgba(255,255,255,0.12)",
 						resize: "both",
@@ -34,52 +34,42 @@ function GlassPreview({ blur, saturate, scale, aberration, borderRadius }: Glass
 					}}
 					className="pointer-events-auto flex flex-col gap-3 overflow-hidden p-5 shadow-lg"
 				>
-					{glass.svgElement}
 					<ProfileCard />
-				</div>
+				</LiquidGlassContainer>
 			</div>
 		</GlassBackground>
 	);
 }
 
-function generateHookCode(
-	blur: number,
-	saturate: number,
-	scale: number,
-	aberration: number,
-	borderRadius: number
-): string {
-	const lines = [
-		`const { ref, style, svgElement } = useLiquidGlass({`,
-		`  blur: ${blur},`,
-		`  saturate: ${saturate.toFixed(1)},`,
-		`  scale: ${scale},`,
-		`  aberration: ${aberration.toFixed(2)},`,
-		`});`,
-		``,
-		`// Применяйте к элементу:`,
-		`// <div ref={ref} style={{ ...style, borderRadius: ${borderRadius} }}>`,
-		`//   {svgElement}`,
-		`//   ...контент`,
-		`// </div>`
-	];
-	return lines.join("\n");
+function generateCode(blur: number, saturate: number, scale: number, aberration: number, borderRadius: number): string {
+	return [
+		`<LiquidGlassContainer`,
+		`  blur={${blur}}`,
+		`  saturate={${saturate.toFixed(1)}}`,
+		`  scale={${scale}}`,
+		`  aberration={${aberration.toFixed(2)}}`,
+		`  borderRadius={${borderRadius}}`,
+		`  className="..."`,
+		`>`,
+		`  {/* контент */}`,
+		`</LiquidGlassContainer>`
+	].join("\n");
 }
 
-export function HookPlaygroundExample() {
+export function LiquidGlassPlaygroundExample() {
 	const [blur, setBlur] = React.useState(7);
 	const [saturate, setSaturate] = React.useState(1.4);
 	const [scale, setScale] = React.useState(50);
 	const [aberration, setAberration] = React.useState(0.06);
 	const [borderRadius, setBorderRadius] = React.useState(20);
 
-	const code = generateHookCode(blur, saturate, scale, aberration, borderRadius);
+	const code = generateCode(blur, saturate, scale, aberration, borderRadius);
 
 	return (
 		<section className="flex flex-col gap-4">
 			<SectionLabel
 				number="2"
-				title="useLiquidGlass — интерактивный плейграунд"
+				title="Liquid Glass — интерактивный плейграунд"
 				subtitle="SVG-дисторсия + хроматическая аберрация — «живой» линзовый эффект в стиле Apple Liquid Glass. Подходит когда нужно искажение по краям, элемент меняет размер (ResizeObserver внутри), или контент под стеклом детализированный. Тяжелее Frosted Glass — не используйте для десятков элементов на экране."
 			/>
 
@@ -166,7 +156,7 @@ export function HookPlaygroundExample() {
 				</div>
 			</div>
 
-			<CodeBlock label="Готовый вызов хука" code={code} />
+			<CodeBlock label="Пример разметки" code={code} />
 		</section>
 	);
 }
