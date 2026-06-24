@@ -1,4 +1,4 @@
-import type { ApiGroup, HttpMethod } from "./types";
+import type { ApiGroup } from "./types";
 
 export const API_DATA: ApiGroup[] = [
 	{
@@ -393,11 +393,7 @@ export const API_DATA: ApiGroup[] = [
 				parameters: [],
 				requestBody: {
 					contentTypes: ["application/json"],
-					example: JSON.stringify(
-						{ name: "string", category: "string", price: 0, stock: 0 },
-						null,
-						2
-					)
+					example: JSON.stringify({ name: "string", category: "string", price: 0, stock: 0 }, null, 2)
 				},
 				responses: [
 					{

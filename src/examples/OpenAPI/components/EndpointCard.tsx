@@ -4,7 +4,7 @@ import { Button } from "ics-ui-kit/components/button";
 import { Collapsible, CollapsibleTrigger, CollapsibleContent } from "ics-ui-kit/components/collapsible";
 import type { Endpoint, HttpMethod } from "../types";
 import { ParametersTable } from "./ParametersTable";
-// import { ResponsesTable } from "./ResponsesTable";
+import { ResponsesTable } from "./ResponsesTable";
 import { RequestBodyBlock } from "./RequestBodyBlock";
 import { Icon } from "ics-ui-kit/components/icon";
 import { Badge } from "ics-ui-kit/components/badge";
@@ -51,7 +51,7 @@ export function EndpointCard({ endpoint }: EndpointCardProps) {
 						{endpoint.description && <p className="text-sm text-muted">{endpoint.description}</p>}
 						{endpoint.parameters.length > 0 && <ParametersTable parameters={endpoint.parameters} />}
 						{endpoint.requestBody && <RequestBodyBlock requestBody={endpoint.requestBody} />}
-						{/* <ResponsesTable responses={endpoint.responses} /> */}
+						<ResponsesTable responses={endpoint.responses} />
 					</div>
 				</CollapsibleContent>
 			</div>
