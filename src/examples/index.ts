@@ -5,5 +5,5 @@ export { SidebarNavigation } from "./SidebarNavigation/SidebarNavigation";
 export { DonutLegendSort } from "./DonutLegendSort/DonutLegendSort";
 export { RetailHeatmap } from "./RetailHeatmap/RetailHeatmap";
 export { LiquidGlassEffect } from "./LiquidGlassEffect/LiquidGlassEffect";
-
+export { OpenAPI } from "./OpenAPI/OpenAPI";
 export { PromoCalendar } from "./PromoCalendar/PromoCalendar";
