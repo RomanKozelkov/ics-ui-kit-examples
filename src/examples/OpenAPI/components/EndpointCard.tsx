@@ -3,7 +3,7 @@ import { ChevronDown, ChevronUp, Lock } from "lucide-react";
 import { Button } from "ics-ui-kit/components/button";
 import { Collapsible, CollapsibleTrigger, CollapsibleContent } from "ics-ui-kit/components/collapsible";
 import type { Endpoint, HttpMethod } from "../types";
-// import { ParametersTable } from "./ParametersTable";
+import { ParametersTable } from "./ParametersTable";
 // import { ResponsesTable } from "./ResponsesTable";
 // import { RequestBodyBlock } from "./RequestBodyBlock";
 import { Icon } from "ics-ui-kit/components/icon";
@@ -49,8 +49,8 @@ export function EndpointCard({ endpoint }: EndpointCardProps) {
 				<CollapsibleContent>
 					<div className="space-y-6 border-t border-primary-border bg-primary-bg px-4 py-5">
 						{endpoint.description && <p className="text-sm text-muted">{endpoint.description}</p>}
-						{/* {endpoint.parameters.length > 0 && <ParametersTable parameters={endpoint.parameters} />}
-						{endpoint.requestBody && <RequestBodyBlock requestBody={endpoint.requestBody} />}
+						{endpoint.parameters.length > 0 && <ParametersTable parameters={endpoint.parameters} />}
+						{/* {endpoint.requestBody && <RequestBodyBlock requestBody={endpoint.requestBody} />}
 						<ResponsesTable responses={endpoint.responses} /> */}
 					</div>
 				</CollapsibleContent>

@@ -15,7 +15,7 @@ export const API_DATA: ApiGroup[] = [
 						name: "page",
 						type: "integer",
 						location: "query",
-						description: "Номер страницы (начиная с 1)",
+						description: "Номер страницы",
 						defaultValue: 1,
 						placeholder: "1"
 					},

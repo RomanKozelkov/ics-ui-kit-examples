@@ -13,8 +13,6 @@ export interface Parameter {
 	required?: boolean;
 	defaultValue?: string | number;
 	placeholder?: string;
-	help?: string;
-	enum?: string[];
 	options?: ParameterOption[];
 }
 
