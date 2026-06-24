@@ -5,7 +5,7 @@ import { Collapsible, CollapsibleTrigger, CollapsibleContent } from "ics-ui-kit/
 import type { Endpoint, HttpMethod } from "../types";
 import { ParametersTable } from "./ParametersTable";
 // import { ResponsesTable } from "./ResponsesTable";
-// import { RequestBodyBlock } from "./RequestBodyBlock";
+import { RequestBodyBlock } from "./RequestBodyBlock";
 import { Icon } from "ics-ui-kit/components/icon";
 import { Badge } from "ics-ui-kit/components/badge";
 import { BadgeProps } from "ics-ui-kit/components/badge/Badge";
@@ -50,8 +50,8 @@ export function EndpointCard({ endpoint }: EndpointCardProps) {
 					<div className="space-y-6 border-t border-primary-border bg-primary-bg px-4 py-5">
 						{endpoint.description && <p className="text-sm text-muted">{endpoint.description}</p>}
 						{endpoint.parameters.length > 0 && <ParametersTable parameters={endpoint.parameters} />}
-						{/* {endpoint.requestBody && <RequestBodyBlock requestBody={endpoint.requestBody} />}
-						<ResponsesTable responses={endpoint.responses} /> */}
+						{endpoint.requestBody && <RequestBodyBlock requestBody={endpoint.requestBody} />}
+						{/* <ResponsesTable responses={endpoint.responses} /> */}
 					</div>
 				</CollapsibleContent>
 			</div>

@@ -95,9 +95,9 @@ export const API_DATA: ApiGroup[] = [
 				description: "Создаёт нового пользователя в системе.",
 				parameters: [],
 				requestBody: {
-					contentType: "application/json",
+					contentTypes: ["application/json"],
 					example: JSON.stringify(
-						{ name: "Иван Иванов", email: "ivan@example.com", role: "user", password: "secret" },
+						{ name: "string", email: "string", role: "string", password: "string" },
 						null,
 						2
 					)
@@ -231,8 +231,8 @@ export const API_DATA: ApiGroup[] = [
 				description: "Аутентифицирует пользователя и возвращает пару токенов доступа.",
 				parameters: [],
 				requestBody: {
-					contentType: "application/json",
-					example: JSON.stringify({ email: "ivan@example.com", password: "secret" }, null, 2)
+					contentTypes: ["application/json"],
+					example: JSON.stringify({ email: "string", password: "string" }, null, 2)
 				},
 				responses: [
 					{
@@ -279,7 +279,7 @@ export const API_DATA: ApiGroup[] = [
 				description: "Обновляет пару токенов по действующему refresh-токену.",
 				parameters: [],
 				requestBody: {
-					contentType: "application/json",
+					contentTypes: ["application/json"],
 					example: JSON.stringify({ refreshToken: "dGhpcyBp..." }, null, 2)
 				},
 				responses: [
@@ -392,9 +392,9 @@ export const API_DATA: ApiGroup[] = [
 				authLocked: true,
 				parameters: [],
 				requestBody: {
-					contentType: "application/json",
+					contentTypes: ["application/json"],
 					example: JSON.stringify(
-						{ name: "Ноутбук Pro", category: "electronics", price: 89990, stock: 15 },
+						{ name: "string", category: "string", price: 0, stock: 0 },
 						null,
 						2
 					)

@@ -31,7 +31,7 @@ export function ParametersTable({ parameters }: ParametersTableProps) {
 
 			<TabsContent value="description">
 				<div className="rounded-xl border border-secondary-border focus-visible:outline-none">
-					<Table>
+					<Table className="table-fixed">
 						<ParametersTableHead columns={["Параметр", "Описание"]} />
 						<TableBody>
 							{parameters.map((param) => (
@@ -50,7 +50,7 @@ export function ParametersTable({ parameters }: ParametersTableProps) {
 
 			<TabsContent value="execute">
 				<div className="rounded-xl border border-secondary-border focus-visible:outline-none">
-					<Table>
+					<Table className="table-fixed">
 						<ParametersTableHead columns={["Параметр", "Описание", "Значение"]} />
 						<TableBody>
 							{parameters.map((param) => (

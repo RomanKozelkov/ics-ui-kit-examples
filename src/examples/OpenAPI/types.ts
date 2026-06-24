@@ -41,7 +41,7 @@ export interface ResponseCode {
 }
 
 export interface RequestBody {
-	contentType: string;
+	contentTypes: string[];
 	example: string;
 }
 
