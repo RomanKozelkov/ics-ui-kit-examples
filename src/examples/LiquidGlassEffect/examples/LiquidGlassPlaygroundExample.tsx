@@ -72,7 +72,8 @@ const LIQUID_PRESETS: LiquidPreset[] = [
 	{
 		name: "liquid-subtle",
 		label: "деликатный",
-		description: "Маленькие элементы: теги, чипы, иконки, аватары. Эффект читается, но не «кричит». Хорошо работает в плотных списках.",
+		description:
+			"Маленькие элементы: теги, чипы, иконки, аватары. Эффект читается, но не «кричит». Хорошо работает в плотных списках.",
 		dots: 1,
 		blur: 3,
 		saturate: 1.1,
@@ -99,7 +100,7 @@ const LIQUID_PRESETS: LiquidPreset[] = [
 		blur: 5,
 		saturate: 1.7,
 		scale: 65,
-		aberration: 0.10,
+		aberration: 0.1,
 		borderRadius: 28
 	}
 ];
@@ -156,7 +157,7 @@ export function LiquidGlassPlaygroundExample() {
 									onClick={() => applyPreset(preset)}
 									className={`rounded-xl border p-3 text-left transition-colors ${
 										isActive
-											? "border-primary-accent bg-primary-accent/8 text-primary-fg"
+											? "bg-primary-accent/8 border-primary-accent text-primary-fg"
 											: "border-secondary-border bg-secondary-bg-hover text-secondary-fg hover:border-primary-border"
 									}`}
 								>
@@ -173,8 +174,9 @@ export function LiquidGlassPlaygroundExample() {
 										))}
 									</div>
 									<div className="mb-1 font-mono text-[10px] text-muted">
-										blur={`{${preset.blur}}`} saturate={`{${preset.saturate.toFixed(1)}}`} scale={`{${preset.scale}}`}
-										{"\n"}aberration={`{${preset.aberration.toFixed(2)}}`} borderRadius={`{${preset.borderRadius}}`}
+										{`blur={${preset.blur}} saturate={${preset.saturate.toFixed(1)}} scale={${preset.scale}}`}
+										{"\n"}
+										{`aberration={${preset.aberration.toFixed(2)}} borderRadius={${preset.borderRadius}}`}
 									</div>
 									<p className="text-[11px] leading-tight text-muted">{preset.description}</p>
 								</button>
@@ -192,7 +194,10 @@ export function LiquidGlassPlaygroundExample() {
 						max={20}
 						step={1}
 						format={(v) => `${v}px`}
-						onChange={setBlur}
+						onChange={(v) => {
+							clearPreset();
+							setBlur(v);
+						}}
 					/>
 
 					<ControlRow
@@ -203,7 +208,10 @@ export function LiquidGlassPlaygroundExample() {
 						max={3}
 						step={0.1}
 						format={(v) => `${v.toFixed(1)}`}
-						onChange={setSaturate}
+						onChange={(v) => {
+							clearPreset();
+							setSaturate(v);
+						}}
 					/>
 
 					<ControlRow
@@ -213,7 +221,10 @@ export function LiquidGlassPlaygroundExample() {
 						min={0}
 						max={100}
 						step={1}
-						onChange={setScale}
+						onChange={(v) => {
+							clearPreset();
+							setScale(v);
+						}}
 					/>
 
 					<ControlRow
@@ -224,7 +235,10 @@ export function LiquidGlassPlaygroundExample() {
 						max={0.5}
 						step={0.01}
 						format={(v) => v.toFixed(2)}
-						onChange={setAberration}
+						onChange={(v) => {
+							clearPreset();
+							setAberration(v);
+						}}
 					/>
 
 					<ControlRow
@@ -235,20 +249,17 @@ export function LiquidGlassPlaygroundExample() {
 						max={48}
 						step={2}
 						format={(v) => `${v}px`}
-						onChange={setBorderRadius}
+						onChange={(v) => {
+							clearPreset();
+							setBorderRadius(v);
+						}}
 					/>
 
 					<Button
 						variant="secondary"
 						size="sm"
 						className="mt-auto gap-2"
-						onClick={() => {
-							setBlur(7);
-							setSaturate(1.4);
-							setScale(50);
-							setAberration(0.06);
-							setBorderRadius(20);
-						}}
+						onClick={() => applyPreset(LIQUID_PRESETS[1])}
 					>
 						Сбросить
 					</Button>
