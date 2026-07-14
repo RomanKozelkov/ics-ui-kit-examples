@@ -32,10 +32,9 @@ function buildBackdropFilter(p: FrostedParams): string {
 	].join(" ");
 }
 
-function FrostedPreview(p: FrostedParams) {
-	const backdropFilter = buildBackdropFilter(p);
+function FrostedPreview({ params, presetClassName }: { params: FrostedParams; presetClassName: string | null }) {
 	const cardStyle: React.CSSProperties = {
-		backdropFilter,
+		backdropFilter: presetClassName ? undefined : buildBackdropFilter(params),
 		background: "rgba(255,255,255,0.12)",
 		border: "1px solid rgba(255,255,255,0.2)",
 		borderRadius: 20
@@ -46,7 +45,7 @@ function FrostedPreview(p: FrostedParams) {
 			<div className="pointer-events-none absolute inset-0 z-10 flex items-center justify-center">
 				<div
 					style={{ ...cardStyle, resize: "both", minWidth: 226, minHeight: 130 }}
-					className="pointer-events-auto flex flex-col gap-3 overflow-hidden p-5 shadow-lg"
+					className={`pointer-events-auto flex flex-col gap-3 overflow-hidden p-5 shadow-lg ${presetClassName ?? ""}`}
 				>
 					<ProfileCard />
 				</div>
@@ -76,39 +75,32 @@ const DEFAULTS: FrostedParams = {
 
 interface Preset {
 	name: string;
+	className: string;
 	description: string;
-	params: FrostedParams;
 }
 
 const PRESETS: Preset[] = [
 	{
 		name: "glass-clear",
-		description: "Почти прозрачный — для accessibility-зон, hover-states, фоновых разделителей",
-		params: { blur: 4, brightness: 100, contrast: 100, saturate: 100, grayscale: 0, sepia: 0, hueRotate: 0, invert: 0, opacity: 0.6 }
+		className: "backdrop-glass-clear",
+		description: "Почти прозрачный — для accessibility-зон, hover-states, фоновых разделителей"
 	},
 	{
 		name: "glass-thin",
-		description: "Chips, теги, badge, tooltip, hover-подсветки",
-		params: { blur: 8, brightness: 108, contrast: 100, saturate: 120, grayscale: 0, sepia: 0, hueRotate: 0, invert: 0, opacity: 1 }
+		className: "backdrop-glass-thin",
+		description: "Chips, теги, badge, tooltip, hover-подсветки"
 	},
 	{
 		name: "glass-regular",
-		description: "Карточки, панели, sidebar, попапы — основной рабочий пресет",
-		params: { blur: 16, brightness: 100, contrast: 100, saturate: 180, grayscale: 0, sepia: 0, hueRotate: 0, invert: 0, opacity: 1 }
+		className: "backdrop-glass-regular",
+		description: "Карточки, панели, sidebar, попапы — основной рабочий пресет"
 	},
 	{
 		name: "glass-thick",
-		description: "Модальные окна, drawer, fullscreen overlay",
-		params: { blur: 24, brightness: 96, contrast: 102, saturate: 200, grayscale: 0, sepia: 0, hueRotate: 0, invert: 0, opacity: 1 }
+		className: "backdrop-glass-thick",
+		description: "Модальные окна, drawer, fullscreen overlay"
 	}
 ];
-
-function formatPresetValues(p: FrostedParams): string {
-	const parts = [`blur(${p.blur}px)`, `brightness(${p.brightness}%)`, `saturate(${p.saturate}%)`];
-	if (p.contrast !== 100) parts.push(`contrast(${p.contrast}%)`);
-	if (p.opacity !== 1) parts.push(`opacity(${p.opacity})`);
-	return parts.join(" ");
-}
 
 export function FrostedGlassPlaygroundExample() {
 	const [params, setParams] = React.useState<FrostedParams>(DEFAULTS);
@@ -122,15 +114,16 @@ export function FrostedGlassPlaygroundExample() {
 		};
 
 	const applyPreset = (preset: Preset) => {
-		setParams(preset.params);
 		setActivePreset(preset.name);
 	};
 
-	const code = activePreset
-		? `<div class="${activePreset}">...</div>`
+	const activePresetData = PRESETS.find((preset) => preset.name === activePreset) ?? null;
+
+	const code = activePresetData
+		? `<div class="${activePresetData.className}">...</div>`
 		: generateCss(params);
 
-	const codeLabel = activePreset ? "Tailwind" : "Готовый CSS";
+	const codeLabel = activePresetData ? "Tailwind" : "Готовый CSS";
 
 	return (
 		<section className="flex flex-col gap-4">
@@ -141,7 +134,7 @@ export function FrostedGlassPlaygroundExample() {
 			/>
 
 			<div className="grid grid-cols-[1fr_300px] items-stretch gap-4">
-				<FrostedPreview {...params} />
+				<FrostedPreview params={params} presetClassName={activePresetData?.className ?? null} />
 
 				<div className="flex flex-col gap-4 rounded-2xl border border-secondary-border bg-secondary-bg p-5">
 					<p className="text-[11px] font-semibold uppercase tracking-widest text-secondary-fg">
@@ -162,7 +155,7 @@ export function FrostedGlassPlaygroundExample() {
 									}`}
 								>
 									<p className="mb-0.5 font-mono text-xs font-semibold">{preset.name}</p>
-									<p className="mb-1 font-mono text-[10px] text-muted">{formatPresetValues(preset.params)}</p>
+									<p className="mb-1 font-mono text-[10px] text-muted">.{preset.className}</p>
 									<p className="text-[11px] leading-tight text-muted">{preset.description}</p>
 								</button>
 							);
