@@ -55,37 +55,36 @@ export const FloatingPanel = ({ id, title, icon: Icon, onClose }: FloatingPanelP
 			onMouseDown={() => bringToFront(id)}
 		>
 			<div className="backdrop-glass-thick pointer-events-none absolute inset-0 -z-10" />
+			<div
+				{...listeners}
+				{...attributes}
+				className={cn(
+					"backdrop-glass-thick absolute left-0 right-0 top-0 z-10 flex select-none items-center justify-between gap-4 p-2 pl-4 pt-3 focus-visible:outline-none",
+					isDragging ? "cursor-grabbing" : "cursor-grab"
+				)}
+				style={{
+					maskImage: "linear-gradient(to bottom, black 80%, transparent 100%)",
+					background: "linear-gradient(to bottom, hsl(var(--secondary-bg) / 0.9) 0%, transparent 100%)"
+				}}
+			>
+				<span className="flex flex-row items-center gap-2 text-base font-semibold">
+					<Icon className="h-4 w-4" />
+					{title}
+				</span>
+				<div className="flex flex-row items-center">
+					<IconButton icon={Filter} size="sm" variant="text" />
+					<IconButton icon={Maximize2} size="sm" variant="text" />
+					<IconButton icon={X} size="sm" variant="text" onClick={onClose} />
+				</div>
+			</div>
 
 			<div
 				ref={setNodeRef}
-				className="relative flex flex-col overflow-y-auto"
+				className="flex min-h-0 flex-1 flex-col overflow-y-auto"
 				style={{ scrollbarWidth: "none" }}
 				onScroll={handleScroll}
 			>
-				<div
-					{...listeners}
-					{...attributes}
-					className={cn(
-						"backdrop-glass-thick sticky top-0 z-10 flex select-none items-center justify-between gap-4 p-2 pl-4 pt-3 focus-visible:outline-none",
-						isDragging ? "cursor-grabbing" : "cursor-grab"
-					)}
-					style={{
-						maskImage: "linear-gradient(to bottom, black 80%, transparent 100%)",
-						background: "linear-gradient(to bottom, hsl(var(--secondary-bg) / 0.9) 0%, transparent 100%)"
-					}}
-				>
-					<span className="flex flex-row items-center gap-2 text-base font-semibold">
-						<Icon className="h-4 w-4" />
-						{title}
-					</span>
-					<div className="flex flex-row items-center">
-						<IconButton icon={Filter} size="sm" variant="text" />
-						<IconButton icon={Maximize2} size="sm" variant="text" />
-						<IconButton icon={X} size="sm" variant="text" onClick={onClose} />
-					</div>
-				</div>
-
-				<div className="flex flex-col px-1 pb-1">
+				<div className="flex flex-col px-1 pb-1 pt-14">
 					<Container type="round">
 						<div className="flex flex-row gap-3">
 							<Avatar size="sm">
