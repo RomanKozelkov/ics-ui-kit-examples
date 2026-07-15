@@ -11,6 +11,7 @@ import { Filter, GitCompare, History, Maximize2, X } from "lucide-react";
 import { useFloatingPanelStore } from "../store/useFloatingPanelStore";
 import { useState } from "react";
 import { WINDOW_MAX_HEIGHT, WINDOW_WIDTH } from "../FloatingPanel";
+import { cn } from "ics-ui-kit/lib/utils";
 
 const WINDOW_ID = "draggable-window";
 
@@ -28,7 +29,10 @@ export const FloatingPanel = ({ onClose }: { onClose: () => void }) => {
 
 	return (
 		<div
-			className="absolute flex flex-col overflow-hidden rounded-2xl border border-secondary-bg shadow-2xl"
+			className={cn(
+				"absolute flex flex-col overflow-hidden rounded-2xl border border-secondary-bg shadow-2xl",
+				isDragging && "border-muted"
+			)}
 			style={{
 				left: position.x,
 				top: position.y,
@@ -46,9 +50,10 @@ export const FloatingPanel = ({ onClose }: { onClose: () => void }) => {
 				<div
 					{...listeners}
 					{...attributes}
-					className={`backdrop-glass-thin sticky top-0 z-10 flex select-none items-center justify-between gap-4 p-2 pl-4 pt-3 focus-visible:outline-none ${
+					className={cn(
+						"backdrop-glass-thick sticky top-0 z-10 flex select-none items-center justify-between gap-4 p-2 pl-4 pt-3 focus-visible:outline-none",
 						isDragging ? "cursor-grabbing" : "cursor-grab"
-					}`}
+					)}
 					style={{
 						maskImage: "linear-gradient(to bottom, black 80%, transparent 100%)",
 						background: "linear-gradient(to bottom, hsl(var(--secondary-bg) / 0.9) 0%, transparent 100%)"
