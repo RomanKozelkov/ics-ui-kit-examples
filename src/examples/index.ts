@@ -8,3 +8,4 @@ export { LiquidGlassEffect } from "./LiquidGlassEffect/LiquidGlassEffect";
 
 export { PromoCalendar } from "./PromoCalendar/PromoCalendar";
 export { FloatingPanel } from "./FloatingPanel/FloatingPanel";
+export { DraggableWindow } from "./DraggableWindow/DraggableWindow";
