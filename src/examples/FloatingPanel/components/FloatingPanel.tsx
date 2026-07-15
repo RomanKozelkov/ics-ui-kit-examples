@@ -1,4 +1,4 @@
-import { DndContext, useDraggable, type DragEndEvent } from "@dnd-kit/core";
+import { useDraggable } from "@dnd-kit/core";
 import { CSS } from "@dnd-kit/utilities";
 import { IconButton } from "ics-ui-kit/components/button";
 import { Container } from "ics-ui-kit/components/container";
@@ -7,17 +7,23 @@ import { Label } from "ics-ui-kit/components/label";
 import { Description } from "ics-ui-kit/components/description";
 import { Indicator } from "ics-ui-kit/components/indicator";
 import { Text } from "ics-ui-kit/components/text";
-import { Filter, GitCompare, Maximize2, X } from "lucide-react";
+import { Filter, Maximize2, X, type LucideIcon } from "lucide-react";
 import { useFloatingPanelStore } from "../store/useFloatingPanelStore";
 import { useState } from "react";
 import { cn } from "ics-ui-kit/lib/utils";
 import { PANEL_MAX_HEIGHT, PANEL_WIDTH } from "../constants";
+import { PanelId } from "../types/FloatingPanelTypes";
 
-const WINDOW_ID = "draggable-window";
+type FloatingPanelProps = {
+	id: PanelId;
+	title: string;
+	icon: LucideIcon;
+	onClose: () => void;
+};
 
-export const FloatingPanel = ({ onClose }: { onClose: () => void }) => {
-	const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({ id: WINDOW_ID });
-	const position = useFloatingPanelStore((state) => state.position);
+export const FloatingPanel = ({ id, title, icon: Icon, onClose }: FloatingPanelProps) => {
+	const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({ id });
+	const position = useFloatingPanelStore((state) => state.panels[id].position);
 	const [isAtBottom, setIsAtBottom] = useState(false);
 
 	if (!position) return null;
@@ -30,7 +36,7 @@ export const FloatingPanel = ({ onClose }: { onClose: () => void }) => {
 	return (
 		<div
 			className={cn(
-				"absolute flex flex-col overflow-hidden rounded-2xl border border-secondary-bg shadow-2xl",
+				"absolute flex flex-col overflow-hidden rounded-2xl border border-secondary-bg bg-alpha-20 shadow-2xl",
 				isDragging && "border-muted"
 			)}
 			style={{
@@ -59,9 +65,11 @@ export const FloatingPanel = ({ onClose }: { onClose: () => void }) => {
 						background: "linear-gradient(to bottom, hsl(var(--secondary-bg) / 0.9) 0%, transparent 100%)"
 					}}
 				>
-					<span className="text-base font-semibold">История</span>
+					<span className="flex flex-row items-center gap-2 text-base font-semibold">
+						<Icon className="h-4 w-4" />
+						{title}
+					</span>
 					<div className="flex flex-row items-center">
-						<IconButton icon={GitCompare} size="sm" variant="text" />
 						<IconButton icon={Filter} size="sm" variant="text" />
 						<IconButton icon={Maximize2} size="sm" variant="text" />
 						<IconButton icon={X} size="sm" variant="text" onClick={onClose} />
