@@ -1,7 +1,6 @@
 import { DndContext, type DragEndEvent, type DragStartEvent } from "@dnd-kit/core";
 import { Bell, History, MessageSquare } from "lucide-react";
 import { useFloatingPanelStore } from "./store/useFloatingPanelStore";
-import { FloatingPanel } from "./components/FloatingPanel";
 import { clampPosition } from "./utils/clampPosition";
 import { PANEL_WIDTH } from "./constants";
 import { PanelConfig, PanelId } from "./types/FloatingPanelTypes";
@@ -14,7 +13,7 @@ const PANELS: PanelConfig[] = [
 	{ id: "comments", title: "Комментарии", icon: MessageSquare }
 ];
 
-export const FloatingPanelExample = () => {
+export const FloatingPanel = () => {
 	const panels = useFloatingPanelStore((state) => state.panels);
 	const setPosition = useFloatingPanelStore((state) => state.setPosition);
 	const bringToFront = useFloatingPanelStore((state) => state.bringToFront);

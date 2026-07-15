@@ -7,4 +7,4 @@ export { RetailHeatmap } from "./RetailHeatmap/RetailHeatmap";
 export { LiquidGlassEffect } from "./LiquidGlassEffect/LiquidGlassEffect";
 
 export { PromoCalendar } from "./PromoCalendar/PromoCalendar";
-export { FloatingPanelExample as FloatingPanel } from "./FloatingPanel/FloatingPanelExample";
+export { FloatingPanel } from "./FloatingPanel/FloatingPanel";

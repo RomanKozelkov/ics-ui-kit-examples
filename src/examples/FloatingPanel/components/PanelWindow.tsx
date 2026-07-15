@@ -1,6 +1,6 @@
 import { useFloatingPanelStore } from "../store/useFloatingPanelStore";
 import { PanelConfig } from "../types/FloatingPanelTypes";
-import { FloatingPanel } from "./FloatingPanel";
+import { Panel } from "./Panel";
 
 export const PanelWindow = ({ id, title, icon }: PanelConfig) => {
 	const isOpen = useFloatingPanelStore((state) => state.panels[id].isOpen);
@@ -8,5 +8,5 @@ export const PanelWindow = ({ id, title, icon }: PanelConfig) => {
 
 	if (!isOpen) return null;
 
-	return <FloatingPanel id={id} title={title} icon={icon} onClose={() => setIsOpen(id, false)} />;
+	return <Panel id={id} title={title} icon={icon} onClose={() => setIsOpen(id, false)} />;
 };

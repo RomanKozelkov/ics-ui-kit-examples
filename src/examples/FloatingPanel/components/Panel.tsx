@@ -14,14 +14,14 @@ import { cn } from "ics-ui-kit/lib/utils";
 import { PANEL_MAX_HEIGHT, PANEL_WIDTH } from "../constants";
 import { PanelId } from "../types/FloatingPanelTypes";
 
-type FloatingPanelProps = {
+type PanelProps = {
 	id: PanelId;
 	title: string;
 	icon: LucideIcon;
 	onClose: () => void;
 };
 
-export const FloatingPanel = ({ id, title, icon: Icon, onClose }: FloatingPanelProps) => {
+export const Panel = ({ id, title, icon: Icon, onClose }: PanelProps) => {
 	const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({ id });
 	const position = useFloatingPanelStore((state) => state.panels[id].position);
 	const zIndex = useFloatingPanelStore((state) => state.panels[id].zIndex);
