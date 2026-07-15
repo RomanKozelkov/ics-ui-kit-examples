@@ -36,7 +36,7 @@ export const FloatingPanel = () => {
 					<PanelWindow key={panel.id} {...panel} />
 				))}
 			</DndContext>
-			<div className="absolute bottom-40 right-40 flex flex-row gap-2">
+			<div className="absolute bottom-20 right-40 flex flex-row gap-2">
 				{PANELS.map((panel) => (
 					<PanelToggleButton key={panel.id} {...panel} />
 				))}
