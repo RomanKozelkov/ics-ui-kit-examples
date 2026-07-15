@@ -10,7 +10,7 @@ import { Text } from "ics-ui-kit/components/text";
 import { Filter, GitCompare, History, Maximize2, X } from "lucide-react";
 import { useFloatingPanelStore } from "../store/useFloatingPanelStore";
 import { useState } from "react";
-import { WINDOW_MAX_HEIGHT } from "../FloatingPanel";
+import { WINDOW_MAX_HEIGHT, WINDOW_WIDTH } from "../FloatingPanel";
 
 const WINDOW_ID = "draggable-window";
 
@@ -28,133 +28,137 @@ export const FloatingPanel = ({ onClose }: { onClose: () => void }) => {
 
 	return (
 		<div
-			ref={setNodeRef}
-			className="absolute flex w-80 flex-col rounded-2xl border border-secondary-bg shadow-2xl"
+			className="absolute flex flex-col overflow-hidden rounded-2xl border border-secondary-bg shadow-2xl"
 			style={{
 				left: position.x,
 				top: position.y,
+				width: WINDOW_WIDTH,
 				maxHeight: WINDOW_MAX_HEIGHT,
-				overflowY: "auto",
-				scrollbarWidth: "none",
 				transform: CSS.Translate.toString(transform)
 			}}
-			onScroll={handleScroll}
 		>
 			<div
-				{...listeners}
-				{...attributes}
-				className={`backdrop-glass-thin sticky top-0 z-10 flex select-none items-center justify-between gap-4 p-2 pl-4 pt-3 ${
-					isDragging ? "cursor-grabbing" : "cursor-grab"
-				}`}
-				style={{
-					maskImage: "linear-gradient(to bottom, black 80%, transparent 100%)",
-					background: "linear-gradient(to bottom, hsl(var(--secondary-bg) / 0.9) 0%, transparent 100%)"
-				}}
+				ref={setNodeRef}
+				className="flex flex-col overflow-y-auto"
+				style={{ scrollbarWidth: "none" }}
+				onScroll={handleScroll}
 			>
-				<span className="text-base font-semibold">История</span>
-				<div className="flex flex-row items-center">
-					<IconButton icon={GitCompare} size="sm" variant="text" />
-					<IconButton icon={Filter} size="sm" variant="text" />
-					<IconButton icon={Maximize2} size="sm" variant="text" />
-					<IconButton icon={X} size="sm" variant="text" onClick={onClose} />
+				<div
+					{...listeners}
+					{...attributes}
+					className={`backdrop-glass-thin sticky top-0 z-10 flex select-none items-center justify-between gap-4 p-2 pl-4 pt-3 focus-visible:outline-none ${
+						isDragging ? "cursor-grabbing" : "cursor-grab"
+					}`}
+					style={{
+						maskImage: "linear-gradient(to bottom, black 80%, transparent 100%)",
+						background: "linear-gradient(to bottom, hsl(var(--secondary-bg) / 0.9) 0%, transparent 100%)"
+					}}
+				>
+					<span className="text-base font-semibold">История</span>
+					<div className="flex flex-row items-center">
+						<IconButton icon={GitCompare} size="sm" variant="text" />
+						<IconButton icon={Filter} size="sm" variant="text" />
+						<IconButton icon={Maximize2} size="sm" variant="text" />
+						<IconButton icon={X} size="sm" variant="text" onClick={onClose} />
+					</div>
 				</div>
-			</div>
 
-			<div className="flex flex-col px-1 pb-1">
-				<Container type="round">
-					<div className="flex flex-row gap-3">
-						<Avatar size="sm">
-							<AvatarImage src="https://github.com/shadcn.png" />
-							<AvatarFallback>CN</AvatarFallback>
-						</Avatar>
-						<div className="flex w-full flex-col">
-							<div className="relative flex flex-row items-baseline gap-2">
-								<Label className="leading-5">Nikita Strapilov</Label>
-								<Description size="xs">1 hour ago</Description>
-								<Indicator className="absolute right-px top-px bg-status-error" rounded size="sm" />
+				<div className="flex flex-col px-1 pb-1">
+					<Container type="round">
+						<div className="flex flex-row gap-3">
+							<Avatar size="sm">
+								<AvatarImage src="https://github.com/shadcn.png" />
+								<AvatarFallback>CN</AvatarFallback>
+							</Avatar>
+							<div className="flex w-full flex-col">
+								<div className="relative flex flex-row items-baseline gap-2">
+									<Label className="leading-5">Nikita Strapilov</Label>
+									<Description size="xs">1 hour ago</Description>
+									<Indicator className="absolute right-px top-px bg-status-error" rounded size="sm" />
+								</div>
+								<Text>Added event handler to dropdown component.</Text>
 							</div>
-							<Text>Added event handler to dropdown component.</Text>
 						</div>
-					</div>
-				</Container>
+					</Container>
 
-				<Container type="round">
-					<div className="flex flex-row gap-3">
-						<Avatar size="sm">
-							<AvatarImage src="https://github.com/leerob.png" />
-							<AvatarFallback>AK</AvatarFallback>
-						</Avatar>
-						<div className="flex w-full flex-col">
-							<div className="relative flex flex-row items-baseline gap-2">
-								<Label className="leading-5">Alexander Kurbatov</Label>
-								<Description size="xs">yesterday</Description>
-								<Indicator className="absolute right-px top-px bg-status-error" rounded size="sm" />
+					<Container type="round">
+						<div className="flex flex-row gap-3">
+							<Avatar size="sm">
+								<AvatarImage src="https://github.com/leerob.png" />
+								<AvatarFallback>AK</AvatarFallback>
+							</Avatar>
+							<div className="flex w-full flex-col">
+								<div className="relative flex flex-row items-baseline gap-2">
+									<Label className="leading-5">Alexander Kurbatov</Label>
+									<Description size="xs">yesterday</Description>
+									<Indicator className="absolute right-px top-px bg-status-error" rounded size="sm" />
+								</div>
+								<Text>Added event handler to dropdown component.</Text>
 							</div>
-							<Text>Added event handler to dropdown component.</Text>
 						</div>
-					</div>
-				</Container>
+					</Container>
 
-				<Container type="round">
-					<div className="flex flex-row gap-3">
-						<Avatar size="sm">
-							<AvatarFallback>SP</AvatarFallback>
-						</Avatar>
-						<div className="flex w-full flex-col">
-							<div className="relative flex flex-row items-baseline gap-2">
-								<Label className="leading-5">Stanislav Peremychkin</Label>
-								<Description size="xs">1 day ago</Description>
-								<Indicator className="absolute right-px top-px bg-status-error" rounded size="sm" />
+					<Container type="round">
+						<div className="flex flex-row gap-3">
+							<Avatar size="sm">
+								<AvatarFallback>SP</AvatarFallback>
+							</Avatar>
+							<div className="flex w-full flex-col">
+								<div className="relative flex flex-row items-baseline gap-2">
+									<Label className="leading-5">Stanislav Peremychkin</Label>
+									<Description size="xs">1 day ago</Description>
+									<Indicator className="absolute right-px top-px bg-status-error" rounded size="sm" />
+								</div>
+								<Text>Added event handler to dropdown component.</Text>
 							</div>
-							<Text>Added event handler to dropdown component.</Text>
 						</div>
-					</div>
-				</Container>
+					</Container>
 
-				<Container type="round">
-					<div className="flex flex-row gap-3">
-						<Avatar size="sm">
-							<AvatarFallback>KB</AvatarFallback>
-						</Avatar>
-						<div className="flex w-full flex-col">
-							<div className="relative flex flex-row items-baseline gap-2">
-								<Label className="leading-5">Konstantin Borodinsky</Label>
-								<Description size="xs">11 months ago</Description>
+					<Container type="round">
+						<div className="flex flex-row gap-3">
+							<Avatar size="sm">
+								<AvatarFallback>KB</AvatarFallback>
+							</Avatar>
+							<div className="flex w-full flex-col">
+								<div className="relative flex flex-row items-baseline gap-2">
+									<Label className="leading-5">Konstantin Borodinsky</Label>
+									<Description size="xs">11 months ago</Description>
+								</div>
+								<Text>Added event handler to dropdown component.</Text>
 							</div>
-							<Text>Added event handler to dropdown component.</Text>
 						</div>
-					</div>
-				</Container>
+					</Container>
 
-				<Container type="round">
-					<div className="flex flex-row gap-3">
-						<Avatar size="sm">
-							<AvatarFallback>BV</AvatarFallback>
-						</Avatar>
-						<div className="flex w-full flex-col">
-							<div className="relative flex flex-row items-baseline gap-2">
-								<Label className="leading-5">Borislav Vronsky</Label>
-								<Description size="xs">1 year ago</Description>
+					<Container type="round">
+						<div className="flex flex-row gap-3">
+							<Avatar size="sm">
+								<AvatarFallback>BV</AvatarFallback>
+							</Avatar>
+							<div className="flex w-full flex-col">
+								<div className="relative flex flex-row items-baseline gap-2">
+									<Label className="leading-5">Borislav Vronsky</Label>
+									<Description size="xs">1 year ago</Description>
+								</div>
+								<Text>Added event handler to dropdown component, updated 3 files.</Text>
 							</div>
-							<Text>Added event handler to dropdown component, updated 3 files.</Text>
 						</div>
-					</div>
-				</Container>
+					</Container>
 
-				<Container type="round">
-					<div className="flex flex-row gap-3">
-						<Avatar size="sm">
-							<AvatarFallback>NS</AvatarFallback>
-						</Avatar>
-						<div className="flex w-full flex-col">
-							<div className="relative flex flex-row items-baseline gap-2">
-								<Label className="leading-5">Nikolai Sorokin</Label>
-								<Description size="xs">2 years ago</Description>
+					<Container type="round">
+						<div className="flex flex-row gap-3">
+							<Avatar size="sm">
+								<AvatarFallback>NS</AvatarFallback>
+							</Avatar>
+							<div className="flex w-full flex-col">
+								<div className="relative flex flex-row items-baseline gap-2">
+									<Label className="leading-5">Nikolai Sorokin</Label>
+									<Description size="xs">2 years ago</Description>
+								</div>
+								<Text>Refactored the sidebar navigation component.</Text>
 							</div>
-							<Text>Refactored the sidebar navigation component.</Text>
 						</div>
-					</div>
-				</Container>
+					</Container>
+				</div>
 			</div>
 
 			{!isAtBottom && (
