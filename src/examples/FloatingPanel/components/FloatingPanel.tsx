@@ -24,6 +24,8 @@ type FloatingPanelProps = {
 export const FloatingPanel = ({ id, title, icon: Icon, onClose }: FloatingPanelProps) => {
 	const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({ id });
 	const position = useFloatingPanelStore((state) => state.panels[id].position);
+	const zIndex = useFloatingPanelStore((state) => state.panels[id].zIndex);
+	const bringToFront = useFloatingPanelStore((state) => state.bringToFront);
 	const [isAtBottom, setIsAtBottom] = useState(false);
 
 	if (!position) return null;
@@ -44,8 +46,10 @@ export const FloatingPanel = ({ id, title, icon: Icon, onClose }: FloatingPanelP
 				top: position.y,
 				width: PANEL_WIDTH,
 				maxHeight: PANEL_MAX_HEIGHT,
+				zIndex,
 				transform: CSS.Translate.toString(transform)
 			}}
+			onMouseDown={() => bringToFront(id)}
 		>
 			<div
 				ref={setNodeRef}

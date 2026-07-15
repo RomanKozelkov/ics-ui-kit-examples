@@ -1,4 +1,4 @@
-import { DndContext, type DragEndEvent } from "@dnd-kit/core";
+import { DndContext, type DragEndEvent, type DragStartEvent } from "@dnd-kit/core";
 import { Bell, History, MessageSquare } from "lucide-react";
 import { useFloatingPanelStore } from "./store/useFloatingPanelStore";
 import { FloatingPanel } from "./components/FloatingPanel";
@@ -17,6 +17,11 @@ const PANELS: PanelConfig[] = [
 export const FloatingPanelExample = () => {
 	const panels = useFloatingPanelStore((state) => state.panels);
 	const setPosition = useFloatingPanelStore((state) => state.setPosition);
+	const bringToFront = useFloatingPanelStore((state) => state.bringToFront);
+
+	const handleDragStart = (event: DragStartEvent) => {
+		bringToFront(event.active.id as PanelId);
+	};
 
 	const handleDragEnd = (event: DragEndEvent) => {
 		const id = event.active.id as PanelId;
@@ -27,7 +32,7 @@ export const FloatingPanelExample = () => {
 
 	return (
 		<div className="relative h-screen w-full overflow-hidden bg-alpha-80">
-			<DndContext onDragEnd={handleDragEnd}>
+			<DndContext onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
 				{PANELS.map((panel) => (
 					<PanelWindow key={panel.id} {...panel} />
 				))}

@@ -2,18 +2,23 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { PanelId, Position } from "../types/FloatingPanelTypes";
 
+const INITIAL_Z_INDEX = 10;
+
 type PanelState = {
 	position: Position | null;
 	isOpen: boolean;
+	zIndex: number;
 };
 
 type FloatingPanelState = {
 	panels: Record<PanelId, PanelState>;
+	nextZIndex: number;
 	setPosition: (id: PanelId, position: Position) => void;
 	setIsOpen: (id: PanelId, isOpen: boolean) => void;
+	bringToFront: (id: PanelId) => void;
 };
 
-const createPanelState = (): PanelState => ({ position: null, isOpen: false });
+const createPanelState = (): PanelState => ({ position: null, isOpen: false, zIndex: INITIAL_Z_INDEX });
 
 export const useFloatingPanelStore = create<FloatingPanelState>()(
 	persist(
@@ -23,6 +28,7 @@ export const useFloatingPanelStore = create<FloatingPanelState>()(
 				notifications: createPanelState(),
 				comments: createPanelState()
 			},
+			nextZIndex: INITIAL_Z_INDEX + 1,
 			setPosition: (id, position) =>
 				set((state) => ({
 					panels: { ...state.panels, [id]: { ...state.panels[id], position } }
@@ -30,6 +36,11 @@ export const useFloatingPanelStore = create<FloatingPanelState>()(
 			setIsOpen: (id, isOpen) =>
 				set((state) => ({
 					panels: { ...state.panels, [id]: { ...state.panels[id], isOpen } }
+				})),
+			bringToFront: (id) =>
+				set((state) => ({
+					panels: { ...state.panels, [id]: { ...state.panels[id], zIndex: state.nextZIndex } },
+					nextZIndex: state.nextZIndex + 1
 				}))
 		}),
 		{ name: "draggable-window-position" }
