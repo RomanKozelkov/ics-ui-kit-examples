@@ -1,7 +1,7 @@
 import { DndContext, type DragEndEvent } from "@dnd-kit/core";
-import { IconButton } from "ics-ui-kit/components/button";
+import { TriggerButton } from "ics-ui-kit/components/button";
 import { History } from "lucide-react";
-import { useRef, useState } from "react";
+import { useRef } from "react";
 import { useFloatingPanelStore } from "./store/useFloatingPanelStore";
 import { FloatingPanel } from "./components/FloatingPanel";
 import { clampPosition } from "./utils/clampPosition";
@@ -10,7 +10,8 @@ import { PANEL_GAP, PANEL_MAX_HEIGHT, PANEL_WIDTH } from "./constants";
 export const FloatingPanelExample = () => {
 	const position = useFloatingPanelStore((state) => state.position);
 	const setPosition = useFloatingPanelStore((state) => state.setPosition);
-	const [isOpen, setIsOpen] = useState(false);
+	const isOpen = useFloatingPanelStore((state) => state.isOpen);
+	const setIsOpen = useFloatingPanelStore((state) => state.setIsOpen);
 	const toggleButtonRef = useRef<HTMLButtonElement>(null);
 
 	const handleDragEnd = (event: DragEndEvent) => {
@@ -28,7 +29,7 @@ export const FloatingPanelExample = () => {
 				});
 			}
 		}
-		setIsOpen((prev) => !prev);
+		setIsOpen(!isOpen);
 	};
 
 	return (
@@ -36,11 +37,12 @@ export const FloatingPanelExample = () => {
 			<DndContext onDragEnd={handleDragEnd}>
 				{isOpen && <FloatingPanel onClose={() => setIsOpen(false)} />}
 			</DndContext>
-			<IconButton
+			<TriggerButton
 				ref={toggleButtonRef}
 				className="absolute bottom-40 right-40"
-				icon={History}
+				startIcon={History}
 				variant="outline"
+				data-state={isOpen ? "open" : "closed"}
 				onClick={handleToggle}
 			/>
 		</div>
