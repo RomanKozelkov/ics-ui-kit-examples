@@ -38,7 +38,7 @@ export const FloatingPanel = ({ id, title, icon: Icon, onClose }: FloatingPanelP
 	return (
 		<div
 			className={cn(
-				"absolute flex flex-col overflow-hidden rounded-2xl border border-secondary-bg bg-alpha-20 shadow-2xl",
+				"backdrop-glass-thick absolute flex flex-col overflow-hidden rounded-2xl border border-secondary-bg bg-alpha-80",
 				isDragging && "border-muted"
 			)}
 			style={{
@@ -47,7 +47,10 @@ export const FloatingPanel = ({ id, title, icon: Icon, onClose }: FloatingPanelP
 				width: PANEL_WIDTH,
 				maxHeight: PANEL_MAX_HEIGHT,
 				zIndex,
-				transform: CSS.Translate.toString(transform)
+				transform: CSS.Translate.toString(transform),
+				// TODO: Убрать тень, поменять на переменную из ui kit
+				boxShadow:
+					"0 2px 1px 0 #FFF inset, 0 -6px 3px 0 #FFF inset, 0 50px 200px -20px rgba(161, 161, 170, 0.12) inset, 1.25px 0 0 -0.75px var(--tailwind-colors-zinc-400, #A1A1AA), -1.25px 0 0 -0.75px var(--tailwind-colors-zinc-400, #A1A1AA), 0 0 0 0.5px var(--base-secondary-border, #E4E4E7), 0 4px 24px 0 rgba(0, 0, 0, 0.12)"
 			}}
 			onMouseDown={() => bringToFront(id)}
 		>

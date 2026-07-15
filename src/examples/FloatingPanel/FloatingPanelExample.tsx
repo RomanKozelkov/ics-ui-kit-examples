@@ -31,7 +31,7 @@ export const FloatingPanelExample = () => {
 	};
 
 	return (
-		<div className="relative h-screen w-full overflow-hidden bg-alpha-80">
+		<div className="relative h-screen w-full overflow-hidden">
 			<DndContext onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
 				{PANELS.map((panel) => (
 					<PanelWindow key={panel.id} {...panel} />
