@@ -6,12 +6,12 @@ type Position = {
 	y: number;
 };
 
-type WindowPositionState = {
+type FloatingPanelPositionState = {
 	position: Position | null;
 	setPosition: (position: Position) => void;
 };
 
-export const useWindowPositionStore = create<WindowPositionState>()(
+export const useFloatingPanelStore = create<FloatingPanelPositionState>()(
 	persist(
 		(set) => ({
 			position: null,

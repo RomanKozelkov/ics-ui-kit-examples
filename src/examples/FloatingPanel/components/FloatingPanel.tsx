@@ -8,17 +8,15 @@ import { Description } from "ics-ui-kit/components/description";
 import { Indicator } from "ics-ui-kit/components/indicator";
 import { Text } from "ics-ui-kit/components/text";
 import { Filter, GitCompare, History, Maximize2, X } from "lucide-react";
-import { useRef, useState } from "react";
-import { useWindowPositionStore } from "./store/useWindowPositionStore";
+import { useFloatingPanelStore } from "../store/useFloatingPanelStore";
+import { useState } from "react";
+import { WINDOW_MAX_HEIGHT } from "../FloatingPanel";
 
 const WINDOW_ID = "draggable-window";
-const WINDOW_WIDTH = 320;
-const WINDOW_MAX_HEIGHT = 480;
-const WINDOW_GAP = 12;
 
-const Window = ({ onClose }: { onClose: () => void }) => {
+export const FloatingPanel = ({ onClose }: { onClose: () => void }) => {
 	const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({ id: WINDOW_ID });
-	const position = useWindowPositionStore((state) => state.position);
+	const position = useFloatingPanelStore((state) => state.position);
 	const [isAtBottom, setIsAtBottom] = useState(false);
 
 	if (!position) return null;
@@ -169,47 +167,6 @@ const Window = ({ onClose }: { onClose: () => void }) => {
 					}}
 				/>
 			)}
-		</div>
-	);
-};
-
-export const DraggableWindow = () => {
-	const position = useWindowPositionStore((state) => state.position);
-	const setPosition = useWindowPositionStore((state) => state.setPosition);
-	const [isOpen, setIsOpen] = useState(false);
-	const toggleButtonRef = useRef<HTMLButtonElement>(null);
-
-	const handleDragEnd = (event: DragEndEvent) => {
-		if (!position) return;
-		setPosition({
-			x: position.x + event.delta.x,
-			y: position.y + event.delta.y
-		});
-	};
-
-	const handleToggle = () => {
-		if (!isOpen && !position) {
-			const buttonRect = toggleButtonRef.current?.getBoundingClientRect();
-			if (buttonRect) {
-				setPosition({
-					x: buttonRect.right - WINDOW_WIDTH,
-					y: buttonRect.top - WINDOW_MAX_HEIGHT - WINDOW_GAP
-				});
-			}
-		}
-		setIsOpen((prev) => !prev);
-	};
-
-	return (
-		<div className="relative h-screen w-full overflow-hidden bg-alpha-80">
-			<DndContext onDragEnd={handleDragEnd}>{isOpen && <Window onClose={() => setIsOpen(false)} />}</DndContext>
-			<IconButton
-				ref={toggleButtonRef}
-				className="absolute bottom-40 right-40"
-				icon={History}
-				variant="outline"
-				onClick={handleToggle}
-			/>
 		</div>
 	);
 };
