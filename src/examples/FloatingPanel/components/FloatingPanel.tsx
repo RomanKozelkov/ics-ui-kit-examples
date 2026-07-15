@@ -7,11 +7,11 @@ import { Label } from "ics-ui-kit/components/label";
 import { Description } from "ics-ui-kit/components/description";
 import { Indicator } from "ics-ui-kit/components/indicator";
 import { Text } from "ics-ui-kit/components/text";
-import { Filter, GitCompare, History, Maximize2, X } from "lucide-react";
+import { Filter, GitCompare, Maximize2, X } from "lucide-react";
 import { useFloatingPanelStore } from "../store/useFloatingPanelStore";
 import { useState } from "react";
-import { WINDOW_MAX_HEIGHT, WINDOW_WIDTH } from "../FloatingPanel";
 import { cn } from "ics-ui-kit/lib/utils";
+import { PANEL_MAX_HEIGHT, PANEL_WIDTH } from "../constants";
 
 const WINDOW_ID = "draggable-window";
 
@@ -36,8 +36,8 @@ export const FloatingPanel = ({ onClose }: { onClose: () => void }) => {
 			style={{
 				left: position.x,
 				top: position.y,
-				width: WINDOW_WIDTH,
-				maxHeight: WINDOW_MAX_HEIGHT,
+				width: PANEL_WIDTH,
+				maxHeight: PANEL_MAX_HEIGHT,
 				transform: CSS.Translate.toString(transform)
 			}}
 		>

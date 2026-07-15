@@ -4,10 +4,8 @@ import { History } from "lucide-react";
 import { useRef, useState } from "react";
 import { useFloatingPanelStore } from "./store/useFloatingPanelStore";
 import { FloatingPanel } from "./components/FloatingPanel";
-
-export const WINDOW_WIDTH = 320;
-export const WINDOW_MAX_HEIGHT = 480;
-export const WINDOW_GAP = 12;
+import { clampPosition } from "./utils/clampPosition";
+import { PANEL_GAP, PANEL_MAX_HEIGHT, PANEL_WIDTH } from "./constants";
 
 export const FloatingPanelExample = () => {
 	const position = useFloatingPanelStore((state) => state.position);
@@ -17,10 +15,7 @@ export const FloatingPanelExample = () => {
 
 	const handleDragEnd = (event: DragEndEvent) => {
 		if (!position) return;
-		setPosition({
-			x: position.x + event.delta.x,
-			y: position.y + event.delta.y
-		});
+		setPosition(clampPosition({ x: position.x + event.delta.x, y: position.y + event.delta.y }, PANEL_WIDTH));
 	};
 
 	const handleToggle = () => {
@@ -28,8 +23,8 @@ export const FloatingPanelExample = () => {
 			const buttonRect = toggleButtonRef.current?.getBoundingClientRect();
 			if (buttonRect) {
 				setPosition({
-					x: buttonRect.right - WINDOW_WIDTH,
-					y: buttonRect.top - WINDOW_MAX_HEIGHT - WINDOW_GAP
+					x: buttonRect.right - PANEL_WIDTH,
+					y: buttonRect.top - PANEL_MAX_HEIGHT - PANEL_GAP
 				});
 			}
 		}

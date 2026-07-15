@@ -1,10 +1,6 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-
-type Position = {
-	x: number;
-	y: number;
-};
+import { Position } from "../types/FloatingPanelTypes";
 
 type FloatingPanelPositionState = {
 	position: Position | null;
