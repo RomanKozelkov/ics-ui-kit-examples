@@ -1,18 +1,13 @@
 import { useDraggable } from "@dnd-kit/core";
 import { CSS } from "@dnd-kit/utilities";
 import { IconButton } from "ics-ui-kit/components/button";
-import { Container } from "ics-ui-kit/components/container";
-import { Avatar, AvatarImage, AvatarFallback } from "ics-ui-kit/components/avatar";
-import { Label } from "ics-ui-kit/components/label";
-import { Description } from "ics-ui-kit/components/description";
-import { Indicator } from "ics-ui-kit/components/indicator";
-import { Text } from "ics-ui-kit/components/text";
 import { Filter, Maximize2, X, type LucideIcon } from "lucide-react";
 import { useFloatingPanelStore } from "../store/useFloatingPanelStore";
 import { useState } from "react";
 import { cn } from "ics-ui-kit/lib/utils";
 import { PANEL_MAX_HEIGHT, PANEL_WIDTH } from "../constants";
 import { PanelId } from "../types/FloatingPanelTypes";
+import { ActivityItem } from "./ActivityItem";
 
 type PanelProps = {
 	id: PanelId;
@@ -85,100 +80,52 @@ export const Panel = ({ id, title, icon: Icon, onClose }: PanelProps) => {
 				onScroll={handleScroll}
 			>
 				<div className="flex flex-col px-1 pb-1 pt-14">
-					<Container type="round">
-						<div className="flex flex-row gap-3">
-							<Avatar size="sm">
-								<AvatarImage src="https://github.com/shadcn.png" />
-								<AvatarFallback>CN</AvatarFallback>
-							</Avatar>
-							<div className="flex w-full flex-col">
-								<div className="relative flex flex-row items-baseline gap-2">
-									<Label className="leading-5">Nikita Strapilov</Label>
-									<Description size="xs">1 hour ago</Description>
-									<Indicator className="absolute right-px top-px bg-status-error" rounded size="sm" />
-								</div>
-								<Text>Added event handler to dropdown component.</Text>
-							</div>
-						</div>
-					</Container>
+					<ActivityItem
+						avatarSrc="https://github.com/shadcn.png"
+						avatarFallback="CN"
+						author="Nikita Strapilov"
+						time="1 hour ago"
+						description="Added event handler to dropdown component."
+						showIndicator
+					/>
 
-					<Container type="round">
-						<div className="flex flex-row gap-3">
-							<Avatar size="sm">
-								<AvatarImage src="https://github.com/leerob.png" />
-								<AvatarFallback>AK</AvatarFallback>
-							</Avatar>
-							<div className="flex w-full flex-col">
-								<div className="relative flex flex-row items-baseline gap-2">
-									<Label className="leading-5">Alexander Kurbatov</Label>
-									<Description size="xs">yesterday</Description>
-									<Indicator className="absolute right-px top-px bg-status-error" rounded size="sm" />
-								</div>
-								<Text>Added event handler to dropdown component.</Text>
-							</div>
-						</div>
-					</Container>
+					<ActivityItem
+						avatarSrc="https://github.com/leerob.png"
+						avatarFallback="AK"
+						author="Alexander Kurbatov"
+						time="yesterday"
+						description="Added event handler to dropdown component."
+						showIndicator
+					/>
 
-					<Container type="round">
-						<div className="flex flex-row gap-3">
-							<Avatar size="sm">
-								<AvatarFallback>SP</AvatarFallback>
-							</Avatar>
-							<div className="flex w-full flex-col">
-								<div className="relative flex flex-row items-baseline gap-2">
-									<Label className="leading-5">Stanislav Peremychkin</Label>
-									<Description size="xs">1 day ago</Description>
-									<Indicator className="absolute right-px top-px bg-status-error" rounded size="sm" />
-								</div>
-								<Text>Added event handler to dropdown component.</Text>
-							</div>
-						</div>
-					</Container>
+					<ActivityItem
+						avatarFallback="SP"
+						author="Stanislav Peremychkin"
+						time="1 day ago"
+						description="Added event handler to dropdown component."
+						showIndicator
+					/>
 
-					<Container type="round">
-						<div className="flex flex-row gap-3">
-							<Avatar size="sm">
-								<AvatarFallback>KB</AvatarFallback>
-							</Avatar>
-							<div className="flex w-full flex-col">
-								<div className="relative flex flex-row items-baseline gap-2">
-									<Label className="leading-5">Konstantin Borodinsky</Label>
-									<Description size="xs">11 months ago</Description>
-								</div>
-								<Text>Added event handler to dropdown component.</Text>
-							</div>
-						</div>
-					</Container>
+					<ActivityItem
+						avatarFallback="KB"
+						author="Konstantin Borodinsky"
+						time="11 months ago"
+						description="Added event handler to dropdown component."
+					/>
 
-					<Container type="round">
-						<div className="flex flex-row gap-3">
-							<Avatar size="sm">
-								<AvatarFallback>BV</AvatarFallback>
-							</Avatar>
-							<div className="flex w-full flex-col">
-								<div className="relative flex flex-row items-baseline gap-2">
-									<Label className="leading-5">Borislav Vronsky</Label>
-									<Description size="xs">1 year ago</Description>
-								</div>
-								<Text>Added event handler to dropdown component, updated 3 files.</Text>
-							</div>
-						</div>
-					</Container>
+					<ActivityItem
+						avatarFallback="BV"
+						author="Borislav Vronsky"
+						time="1 year ago"
+						description="Added event handler to dropdown component, updated 3 files."
+					/>
 
-					<Container type="round">
-						<div className="flex flex-row gap-3">
-							<Avatar size="sm">
-								<AvatarFallback>NS</AvatarFallback>
-							</Avatar>
-							<div className="flex w-full flex-col">
-								<div className="relative flex flex-row items-baseline gap-2">
-									<Label className="leading-5">Nikolai Sorokin</Label>
-									<Description size="xs">2 years ago</Description>
-								</div>
-								<Text>Refactored the sidebar navigation component.</Text>
-							</div>
-						</div>
-					</Container>
+					<ActivityItem
+						avatarFallback="NS"
+						author="Nikolai Sorokin"
+						time="2 years ago"
+						description="Refactored the sidebar navigation component."
+					/>
 				</div>
 			</div>
 

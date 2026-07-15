@@ -29,6 +29,7 @@
 		"lucide-react": "^1.7.0",
 		"prettier-plugin-tailwindcss": "^0.7.2",
 		"prism-react-renderer": "^2.4.1",
+		"re-resizable": "^6.11.2",
 		"react": "^19.2.4",
 		"react-dom": "^19.2.4",
 		"tailwind-variants": "^3.2.2",
