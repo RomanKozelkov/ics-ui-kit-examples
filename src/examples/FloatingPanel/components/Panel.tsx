@@ -13,11 +13,10 @@ import { PanelContent } from "./PanelContent";
 type PanelProps = {
 	id: PanelId;
 	title: string;
-	icon: LucideIcon;
 	onClose: () => void;
 };
 
-export const Panel = ({ id, title, icon: Icon, onClose }: PanelProps) => {
+export const Panel = ({ id, title, onClose }: PanelProps) => {
 	const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({ id });
 	const position = useFloatingPanelStore((state) => state.panels[id].position);
 	const size = useFloatingPanelStore((state) => state.panels[id].size);
@@ -76,7 +75,7 @@ export const Panel = ({ id, title, icon: Icon, onClose }: PanelProps) => {
 					{...listeners}
 					{...attributes}
 					className={cn(
-						"backdrop-glass-thick absolute left-0 right-0 top-0 z-10 flex select-none items-center justify-between gap-4 p-2 pl-4 pt-3 focus-visible:outline-none",
+						"backdrop-glass-thick absolute left-0 right-0 top-0 z-10 flex select-none items-center justify-between gap-4 p-2 pl-4 pt-2 focus-visible:outline-none",
 						isDragging ? "cursor-grabbing" : "cursor-grab"
 					)}
 					style={{
@@ -84,10 +83,7 @@ export const Panel = ({ id, title, icon: Icon, onClose }: PanelProps) => {
 						background: "linear-gradient(to bottom, hsl(var(--secondary-bg) / 0.9) 0%, transparent 100%)"
 					}}
 				>
-					<span className="flex flex-row items-center gap-2 text-base font-semibold">
-						<Icon className="h-4 w-4" />
-						{title}
-					</span>
+					<span className="flex flex-row items-center gap-2 text-base font-semibold">{title}</span>
 					<div className="flex flex-row items-center">
 						<IconButton icon={Filter} size="sm" variant="text" />
 						<IconButton icon={Maximize2} size="sm" variant="text" />

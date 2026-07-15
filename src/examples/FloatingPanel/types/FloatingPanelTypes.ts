@@ -17,4 +17,4 @@ export type Size = {
 
 export type PanelId = "history" | "notifications" | "comments";
 
-export type PanelConfig = { id: PanelId; title: string; icon: LucideIcon };
+export type PanelConfig = { id: PanelId; title: string; icon?: LucideIcon };
