@@ -1,11 +1,13 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { PanelId, Position } from "../types/FloatingPanelTypes";
+import { PANEL_DEFAULT_HEIGHT, PANEL_DEFAULT_WIDTH } from "../constants";
+import { PanelId, Position, Size } from "../types/FloatingPanelTypes";
 
 const INITIAL_Z_INDEX = 10;
 
 type PanelState = {
 	position: Position | null;
+	size: Size;
 	isOpen: boolean;
 	zIndex: number;
 };
@@ -14,11 +16,17 @@ type FloatingPanelState = {
 	panels: Record<PanelId, PanelState>;
 	nextZIndex: number;
 	setPosition: (id: PanelId, position: Position) => void;
+	setSize: (id: PanelId, size: Size) => void;
 	setIsOpen: (id: PanelId, isOpen: boolean) => void;
 	bringToFront: (id: PanelId) => void;
 };
 
-const createPanelState = (): PanelState => ({ position: null, isOpen: false, zIndex: INITIAL_Z_INDEX });
+const createPanelState = (): PanelState => ({
+	position: null,
+	size: { width: PANEL_DEFAULT_WIDTH, height: PANEL_DEFAULT_HEIGHT },
+	isOpen: false,
+	zIndex: INITIAL_Z_INDEX
+});
 
 export const useFloatingPanelStore = create<FloatingPanelState>()(
 	persist(
@@ -32,6 +40,10 @@ export const useFloatingPanelStore = create<FloatingPanelState>()(
 			setPosition: (id, position) =>
 				set((state) => ({
 					panels: { ...state.panels, [id]: { ...state.panels[id], position } }
+				})),
+			setSize: (id, size) =>
+				set((state) => ({
+					panels: { ...state.panels, [id]: { ...state.panels[id], size } }
 				})),
 			setIsOpen: (id, isOpen) =>
 				set((state) => ({
