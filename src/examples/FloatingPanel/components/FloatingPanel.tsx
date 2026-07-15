@@ -38,7 +38,7 @@ export const FloatingPanel = ({ id, title, icon: Icon, onClose }: FloatingPanelP
 	return (
 		<div
 			className={cn(
-				"backdrop-glass-thick absolute flex flex-col overflow-hidden rounded-2xl border border-secondary-bg bg-alpha-80",
+				"absolute flex flex-col overflow-hidden rounded-2xl border border-secondary-bg bg-alpha-80",
 				isDragging && "border-muted"
 			)}
 			style={{
@@ -54,9 +54,11 @@ export const FloatingPanel = ({ id, title, icon: Icon, onClose }: FloatingPanelP
 			}}
 			onMouseDown={() => bringToFront(id)}
 		>
+			<div className="backdrop-glass-thick pointer-events-none absolute inset-0 -z-10" />
+
 			<div
 				ref={setNodeRef}
-				className="flex flex-col overflow-y-auto"
+				className="relative flex flex-col overflow-y-auto"
 				style={{ scrollbarWidth: "none" }}
 				onScroll={handleScroll}
 			>
