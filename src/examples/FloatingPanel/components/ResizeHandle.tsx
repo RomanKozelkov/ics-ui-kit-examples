@@ -1,7 +1,7 @@
 export const ResizeHandle = () => {
 	return (
 		<svg
-			className="pointer-events-none absolute bottom-3 right-3 text-muted"
+			className="pointer-events-none absolute bottom-[11px] right-[11px] text-muted"
 			xmlns="http://www.w3.org/2000/svg"
 			width="12"
 			height="11"
