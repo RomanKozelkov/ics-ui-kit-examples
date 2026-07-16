@@ -3,7 +3,9 @@ import { SIDE_ZONE_MAX_WIDTH, SIDE_ZONE_MIN_WIDTH } from "../constants";
 import { useFloatingPanelStore } from "../store/useFloatingPanelStore";
 import { SideZoneSide } from "../types/FloatingPanelTypes";
 
-type SideZoneProps = SideZoneSide;
+type SideZoneProps = {
+	side: SideZoneSide;
+};
 
 export const SideZone = ({ side }: SideZoneProps) => {
 	const width = useFloatingPanelStore((state) => state.sideZoneWidths[side]);
