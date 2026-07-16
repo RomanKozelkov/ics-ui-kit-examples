@@ -10,7 +10,6 @@ type PanelState = {
 	size: Size;
 	isOpen: boolean;
 	zIndex: number;
-	dockedIn: SideZoneSide | null;
 };
 
 type FloatingPanelState = {
@@ -22,15 +21,13 @@ type FloatingPanelState = {
 	setIsOpen: (id: PanelId, isOpen: boolean) => void;
 	bringToFront: (id: PanelId) => void;
 	setSideZoneWidth: (side: SideZoneSide, width: number) => void;
-	setDockedIn: (id: PanelId, side: SideZoneSide | null) => void;
 };
 
 const createPanelState = (): PanelState => ({
 	position: null,
 	size: { width: PANEL_DEFAULT_WIDTH, height: PANEL_DEFAULT_HEIGHT },
 	isOpen: false,
-	zIndex: INITIAL_Z_INDEX,
-	dockedIn: null
+	zIndex: INITIAL_Z_INDEX
 });
 
 export const useFloatingPanelStore = create<FloatingPanelState>()(
@@ -63,10 +60,6 @@ export const useFloatingPanelStore = create<FloatingPanelState>()(
 			setSideZoneWidth: (side, width) =>
 				set((state) => ({
 					sideZoneWidths: { ...state.sideZoneWidths, [side]: width }
-				})),
-			setDockedIn: (id, side) =>
-				set((state) => ({
-					panels: { ...state.panels, [id]: { ...state.panels[id], dockedIn: side } }
 				}))
 		}),
 		{ name: "draggable-window-position" }
