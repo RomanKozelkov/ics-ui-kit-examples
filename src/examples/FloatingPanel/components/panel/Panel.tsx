@@ -1,16 +1,13 @@
 import { useDraggable } from "@dnd-kit/core";
 import { CSS } from "@dnd-kit/utilities";
-import { IconButton } from "ics-ui-kit/components/button";
-import { Filter, Maximize2, X, type LucideIcon } from "lucide-react";
-import { useFloatingPanelStore } from "../store/useFloatingPanelStore";
+import { useFloatingPanelStore } from "../../store/useFloatingPanelStore";
 import { Resizable } from "re-resizable";
 import { cn } from "ics-ui-kit/lib/utils";
-import { PANEL_MAX_HEIGHT, PANEL_MAX_WIDTH, PANEL_MIN_HEIGHT, PANEL_MIN_WIDTH } from "../constants";
-import { PanelId } from "../types/FloatingPanelTypes";
-import { PanelContent } from "./PanelContent";
-import { usePanelResize } from "../hooks/usePanelResize";
-import { useAtBottomScroll } from "../hooks/useAtBottomScroll";
-import { BottomShadow } from "./BottomShadow";
+import { PANEL_MAX_HEIGHT, PANEL_MAX_WIDTH, PANEL_MIN_HEIGHT, PANEL_MIN_WIDTH } from "../../constants";
+import { PanelId } from "../../types/FloatingPanelTypes";
+import { usePanelResize } from "../../hooks/usePanelResize";
+import { PanelHeader } from "./PanelHeader";
+import { PanelBody } from "./PanelBody";
 import { ResizeHandle } from "./ResizeHandle";
 
 type PanelProps = {
@@ -21,7 +18,6 @@ type PanelProps = {
 
 export const Panel = ({ id, title, onClose }: PanelProps) => {
 	const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({ id });
-	const { isAtBottom, handleScroll } = useAtBottomScroll();
 	const position = useFloatingPanelStore((state) => state.panels[id].position);
 	const zIndex = useFloatingPanelStore((state) => state.panels[id].zIndex);
 	const bringToFront = useFloatingPanelStore((state) => state.bringToFront);
@@ -71,33 +67,15 @@ export const Panel = ({ id, title, onClose }: PanelProps) => {
 				onMouseDown={() => bringToFront(id)}
 			>
 				<div className="backdrop-glass-regular pointer-events-none absolute inset-0 -z-10" />
-				<div
-					{...listeners}
-					{...attributes}
-					className={cn(
-						"backdrop-glass-regular absolute left-0 right-0 top-0 z-10 flex select-none items-center justify-between gap-4 p-2 pl-4 pt-2 focus-visible:outline-none",
-						isDragging ? "cursor-grabbing" : "cursor-grab"
-					)}
-					style={{
-						maskImage: "linear-gradient(to bottom, black 80%, transparent 100%)",
-						background: "linear-gradient(to bottom, hsl(var(--secondary-bg) / 0.9) 0%, transparent 100%)"
-					}}
-				>
-					<span className="flex flex-row items-center gap-2 text-base font-semibold">{title}</span>
-					<div className="flex flex-row items-center" onPointerDown={(e) => e.stopPropagation()}>
-						<IconButton icon={Filter} size="sm" variant="text" />
-						<IconButton icon={Maximize2} size="sm" variant="text" />
-						<IconButton icon={X} size="sm" variant="text" onClick={onClose} />
-					</div>
-				</div>
-				<div
-					className="flex min-h-0 flex-1 flex-col overflow-y-auto"
-					style={{ scrollbarWidth: "none" }}
-					onScroll={handleScroll}
-				>
-					<PanelContent />
-				</div>
-				{!isAtBottom && <BottomShadow />}
+				<PanelHeader
+					title={title}
+					isDragging={isDragging}
+					listeners={listeners}
+					attributes={attributes}
+					onClose={onClose}
+					className="backdrop-glass-regular"
+				/>
+				<PanelBody />
 			</div>
 		</Resizable>
 	);
