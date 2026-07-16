@@ -1,0 +1,51 @@
+import { CSS } from "@dnd-kit/utilities";
+import { cn } from "ics-ui-kit/lib/utils";
+import { PanelContent } from "./PanelContent";
+import { PanelHeader } from "./PanelHeader";
+import { PanelDragState } from "../../hooks/usePanelDrag";
+
+type DockedPanelViewProps = {
+	title: string;
+	zIndex: number;
+	drag: PanelDragState;
+	onDragStart: () => void;
+	onClose: () => void;
+};
+
+export const DockedPanelView = ({ title, zIndex, drag, onDragStart, onClose }: DockedPanelViewProps) => {
+	const { attributes, listeners, setNodeRef, transform, isDragging, dockedDragRect } = drag;
+	const isFloatingWhileDragging = isDragging && dockedDragRect;
+
+	return (
+		<div
+			ref={setNodeRef}
+			className={cn(
+				"flex flex-shrink-0 flex-col overflow-hidden rounded-2xl border border-secondary-bg",
+				isFloatingWhileDragging ? "w-80" : "relative w-full",
+				isDragging && "border-muted"
+			)}
+			style={
+				isFloatingWhileDragging
+					? {
+							position: "fixed",
+							left: dockedDragRect.left,
+							top: dockedDragRect.top,
+							zIndex,
+							transform: CSS.Translate.toString(transform)
+						}
+					: undefined
+			}
+			onMouseDown={onDragStart}
+		>
+			<div className="backdrop-glass-regular pointer-events-none absolute inset-0 -z-10" />
+			<PanelHeader
+				title={title}
+				onClose={onClose}
+				listeners={listeners}
+				attributes={attributes}
+				isDragging={isDragging}
+			/>
+			<PanelContent />
+		</div>
+	);
+};
