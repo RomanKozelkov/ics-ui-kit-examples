@@ -84,7 +84,7 @@ export const Panel = ({ id, title, onClose }: PanelProps) => {
 					}}
 				>
 					<span className="flex flex-row items-center gap-2 text-base font-semibold">{title}</span>
-					<div className="flex flex-row items-center">
+					<div className="flex flex-row items-center" onPointerDown={(e) => e.stopPropagation()}>
 						<IconButton icon={Filter} size="sm" variant="text" />
 						<IconButton icon={Maximize2} size="sm" variant="text" />
 						<IconButton icon={X} size="sm" variant="text" onClick={onClose} />
