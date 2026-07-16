@@ -2,7 +2,7 @@ import { DndContext, type DragEndEvent, type DragStartEvent } from "@dnd-kit/cor
 import { Bell, History, MessageSquare } from "lucide-react";
 import { useFloatingPanelStore } from "./store/useFloatingPanelStore";
 import { clampPosition } from "./utils/clampPosition";
-import { PANEL_WIDTH } from "./constants";
+import { PANEL_DEFAULT_WIDTH } from "./constants";
 import { PanelConfig, PanelId } from "./types/FloatingPanelTypes";
 import { PanelToggleButton } from "./components/PanelToggleButton";
 import { PanelWindow } from "./components/PanelWindow";
@@ -26,7 +26,10 @@ export const FloatingPanel = () => {
 		const id = event.active.id as PanelId;
 		const position = panels[id].position;
 		if (!position) return;
-		setPosition(id, clampPosition({ x: position.x + event.delta.x, y: position.y + event.delta.y }, PANEL_WIDTH));
+		setPosition(
+			id,
+			clampPosition({ x: position.x + event.delta.x, y: position.y + event.delta.y }, PANEL_DEFAULT_WIDTH)
+		);
 	};
 
 	return (

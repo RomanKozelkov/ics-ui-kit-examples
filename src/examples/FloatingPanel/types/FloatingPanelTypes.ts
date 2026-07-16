@@ -10,6 +10,11 @@ export type Viewport = {
 	height: number;
 };
 
+export type Size = {
+	width: number;
+	height: number;
+};
+
 export type PanelId = "history" | "notifications" | "comments";
 
-export type PanelConfig = { id: PanelId; title: string; icon: LucideIcon };
+export type PanelConfig = { id: PanelId; title: string; icon?: LucideIcon };
