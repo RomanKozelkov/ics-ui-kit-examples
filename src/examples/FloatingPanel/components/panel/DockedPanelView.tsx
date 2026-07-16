@@ -3,6 +3,7 @@ import { cn } from "ics-ui-kit/lib/utils";
 import { PanelContent } from "./PanelContent";
 import { PanelHeader } from "./PanelHeader";
 import { PanelDragState } from "../../hooks/usePanelDrag";
+import { PANEL_DEFAULT_HEIGHT } from "../../constants";
 
 type DockedPanelViewProps = {
 	title: string;
@@ -20,8 +21,8 @@ export const DockedPanelView = ({ title, zIndex, drag, onDragStart, onClose }: D
 		<div
 			ref={setNodeRef}
 			className={cn(
-				"flex flex-shrink-0 flex-col overflow-hidden rounded-2xl border border-secondary-bg",
-				isFloatingWhileDragging ? "w-80" : "relative w-full",
+				"flex flex-col overflow-hidden rounded-2xl border border-secondary-bg",
+				isFloatingWhileDragging ? "w-80 bg-alpha-40" : "relative h-full w-full",
 				isDragging && "border-muted"
 			)}
 			style={
@@ -30,6 +31,7 @@ export const DockedPanelView = ({ title, zIndex, drag, onDragStart, onClose }: D
 							position: "fixed",
 							left: dockedDragRect.left,
 							top: dockedDragRect.top,
+							height: PANEL_DEFAULT_HEIGHT,
 							zIndex,
 							transform: CSS.Translate.toString(transform)
 						}

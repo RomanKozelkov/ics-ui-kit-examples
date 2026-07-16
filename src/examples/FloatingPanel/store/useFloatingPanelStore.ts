@@ -29,7 +29,7 @@ type FloatingPanelState = {
 const createPanelState = (): PanelState => ({
 	position: null,
 	size: { width: PANEL_DEFAULT_WIDTH, height: PANEL_DEFAULT_HEIGHT },
-	isOpen: false,
+	isOpen: true,
 	zIndex: INITIAL_Z_INDEX,
 	dockedSide: null
 });
