@@ -8,3 +8,7 @@ export const PANEL_MAX_HEIGHT = 640;
 
 export const PANEL_GAP = 12;
 export const HEADER_HEIGHT = 56;
+
+export const SIDE_ZONE_DEFAULT_WIDTH = 280;
+export const SIDE_ZONE_MIN_WIDTH = 220;
+export const SIDE_ZONE_MAX_WIDTH = 400;
