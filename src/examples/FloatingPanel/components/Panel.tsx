@@ -45,7 +45,7 @@ export const Panel = ({ id, title, onClose }: PanelProps) => {
 				transform: CSS.Translate.toString(transform),
 				// TODO: Убрать тень, поменять на переменную из ui kit
 				boxShadow:
-					"0 2px 1px 0 #FFF inset, 0 -6px 3px 0 #FFF inset, 0 50px 200px -20px rgba(161, 161, 170, 0.12) inset, 1.25px 0 0 -0.75px var(--tailwind-colors-zinc-400, #A1A1AA), -1.25px 0 0 -0.75px var(--tailwind-colors-zinc-400, #A1A1AA), 0 0 0 0.5px var(--base-secondary-border, #E4E4E7), 0 4px 24px 0 rgba(0, 0, 0, 0.12)"
+					"0 1.5px 1.5px -0.5px rgb(255, 255, 255) inset, 0 -6px 3px -3px rgb(255, 255, 255) inset, 1.25px 0 0 -0.75px var(--tailwind-colors-zinc-400, #A1A1AA), -1.25px 0 0 -0.75px var(--tailwind-colors-zinc-400, #A1A1AA), 0 0 0 0.5px var(--base-primary-border, #D4D4D8), 0 4px 24px 0 rgba(0, 0, 0, 0.12)"
 			}}
 			defaultSize={size}
 			minWidth={PANEL_MIN_WIDTH}
@@ -70,12 +70,12 @@ export const Panel = ({ id, title, onClose }: PanelProps) => {
 				className="absolute inset-0 flex flex-col overflow-hidden rounded-2xl"
 				onMouseDown={() => bringToFront(id)}
 			>
-				<div className="backdrop-glass-thick pointer-events-none absolute inset-0 -z-10" />
+				<div className="backdrop-glass-regular pointer-events-none absolute inset-0 -z-10" />
 				<div
 					{...listeners}
 					{...attributes}
 					className={cn(
-						"backdrop-glass-thick absolute left-0 right-0 top-0 z-10 flex select-none items-center justify-between gap-4 p-2 pl-4 pt-2 focus-visible:outline-none",
+						"backdrop-glass-regular absolute left-0 right-0 top-0 z-10 flex select-none items-center justify-between gap-4 p-2 pl-4 pt-2 focus-visible:outline-none",
 						isDragging ? "cursor-grabbing" : "cursor-grab"
 					)}
 					style={{
