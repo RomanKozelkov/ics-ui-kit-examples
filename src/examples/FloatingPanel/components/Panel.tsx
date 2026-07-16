@@ -34,7 +34,7 @@ export const Panel = ({ id, title, onClose }: PanelProps) => {
 		<Resizable
 			ref={resizableRef}
 			className={cn(
-				"flex flex-col overflow-hidden rounded-2xl border border-secondary-bg bg-alpha-80",
+				"flex flex-col overflow-hidden rounded-2xl border border-secondary-bg bg-alpha-40",
 				(isDragging || isResizing) && "border-muted"
 			)}
 			style={{
