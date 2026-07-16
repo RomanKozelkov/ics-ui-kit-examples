@@ -3,12 +3,13 @@ import { CSS } from "@dnd-kit/utilities";
 import { IconButton } from "ics-ui-kit/components/button";
 import { Filter, Maximize2, X, type LucideIcon } from "lucide-react";
 import { useFloatingPanelStore } from "../store/useFloatingPanelStore";
-import { useCallback, useState } from "react";
 import { Resizable } from "re-resizable";
 import { cn } from "ics-ui-kit/lib/utils";
 import { PANEL_MAX_HEIGHT, PANEL_MAX_WIDTH, PANEL_MIN_HEIGHT, PANEL_MIN_WIDTH } from "../constants";
 import { PanelId } from "../types/FloatingPanelTypes";
 import { PanelContent } from "./PanelContent";
+import { usePanelResize } from "../hooks/usePanelResize";
+import { useAtBottomScroll } from "../hooks/useAtBottomScroll";
 
 type PanelProps = {
 	id: PanelId;
@@ -18,24 +19,13 @@ type PanelProps = {
 
 export const Panel = ({ id, title, onClose }: PanelProps) => {
 	const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({ id });
+	const { size, resizableRef, handleResizeStop } = usePanelResize(id, setNodeRef);
+	const { isAtBottom, handleScroll } = useAtBottomScroll();
 	const position = useFloatingPanelStore((state) => state.panels[id].position);
-	const size = useFloatingPanelStore((state) => state.panels[id].size);
 	const zIndex = useFloatingPanelStore((state) => state.panels[id].zIndex);
 	const bringToFront = useFloatingPanelStore((state) => state.bringToFront);
-	const setSize = useFloatingPanelStore((state) => state.setSize);
-	const [isAtBottom, setIsAtBottom] = useState(false);
-
-	const resizableRef = useCallback(
-		(resizable: Resizable | null) => setNodeRef(resizable?.resizable ?? null),
-		[setNodeRef]
-	);
 
 	if (!position) return null;
-
-	const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
-		const el = e.currentTarget;
-		setIsAtBottom(el.scrollTop + el.clientHeight >= el.scrollHeight - 1);
-	};
 
 	return (
 		<Resizable
@@ -59,12 +49,7 @@ export const Panel = ({ id, title, onClose }: PanelProps) => {
 			maxWidth={PANEL_MAX_WIDTH}
 			minHeight={PANEL_MIN_HEIGHT}
 			maxHeight={PANEL_MAX_HEIGHT}
-			onResizeStop={(_event, _direction, _ref, delta) => {
-				setSize(id, {
-					width: size.width + delta.width,
-					height: size.height + delta.height
-				});
-			}}
+			onResizeStop={handleResizeStop}
 		>
 			<div
 				className="absolute inset-0 flex flex-col overflow-hidden rounded-2xl"
