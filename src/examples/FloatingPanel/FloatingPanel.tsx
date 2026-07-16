@@ -1,11 +1,13 @@
 import { DndContext, type DragEndEvent, type DragStartEvent } from "@dnd-kit/core";
 import { Bell, History, MessageSquare } from "lucide-react";
+import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "ics-ui-kit/components/resizable";
 import { useFloatingPanelStore } from "./store/useFloatingPanelStore";
 import { clampPosition } from "./utils/clampPosition";
 import { PANEL_DEFAULT_WIDTH } from "./constants";
 import { PanelConfig, PanelId } from "./types/FloatingPanelTypes";
 import { PanelToggleButton } from "./components/PanelToggleButton";
 import { PanelWindow } from "./components/PanelWindow";
+import { SideZone } from "./components/SideZone";
 
 const PANELS: PanelConfig[] = [
 	{ id: "history", title: "История", icon: History },
@@ -33,17 +35,25 @@ export const FloatingPanel = () => {
 	};
 
 	return (
-		<div className="relative h-screen w-full overflow-hidden">
-			<DndContext onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
-				{PANELS.map((panel) => (
-					<PanelWindow key={panel.id} {...panel} />
-				))}
-			</DndContext>
-			<div className="absolute bottom-20 right-40 flex flex-row gap-2">
-				{PANELS.map((panel) => (
-					<PanelToggleButton key={panel.id} {...panel} />
-				))}
-			</div>
-		</div>
+		<ResizablePanelGroup direction="horizontal" className="relative h-screen w-full overflow-hidden">
+			<SideZone className="h-full bg-secondary-bg" />
+			<ResizableHandle />
+
+			<ResizablePanel defaultSize={70} className="relative h-full">
+				<DndContext onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
+					{PANELS.map((panel) => (
+						<PanelWindow key={panel.id} {...panel} />
+					))}
+				</DndContext>
+				<div className="absolute bottom-20 right-40 flex flex-row gap-2">
+					{PANELS.map((panel) => (
+						<PanelToggleButton key={panel.id} {...panel} />
+					))}
+				</div>
+			</ResizablePanel>
+
+			<ResizableHandle />
+			<SideZone className="h-full bg-secondary-bg" />
+		</ResizablePanelGroup>
 	);
 };
