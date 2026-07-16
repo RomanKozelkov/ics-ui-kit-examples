@@ -16,7 +16,7 @@ type FloatingPanelState = {
 	panels: Record<PanelId, PanelState>;
 	nextZIndex: number;
 	setPosition: (id: PanelId, position: Position) => void;
-	setSize: (id: PanelId, size: Size) => void;
+	setSizeAndPosition: (id: PanelId, size: Size, position: Position) => void;
 	setIsOpen: (id: PanelId, isOpen: boolean) => void;
 	bringToFront: (id: PanelId) => void;
 };
@@ -41,9 +41,9 @@ export const useFloatingPanelStore = create<FloatingPanelState>()(
 				set((state) => ({
 					panels: { ...state.panels, [id]: { ...state.panels[id], position } }
 				})),
-			setSize: (id, size) =>
+			setSizeAndPosition: (id, size, position) =>
 				set((state) => ({
-					panels: { ...state.panels, [id]: { ...state.panels[id], size } }
+					panels: { ...state.panels, [id]: { ...state.panels[id], size, position } }
 				})),
 			setIsOpen: (id, isOpen) =>
 				set((state) => ({

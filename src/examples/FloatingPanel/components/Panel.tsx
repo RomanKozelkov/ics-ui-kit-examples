@@ -10,6 +10,8 @@ import { PanelId } from "../types/FloatingPanelTypes";
 import { PanelContent } from "./PanelContent";
 import { usePanelResize } from "../hooks/usePanelResize";
 import { useAtBottomScroll } from "../hooks/useAtBottomScroll";
+import { BottomShadow } from "./BottomShadow";
+import { ResizeHandle } from "./ResizeHandle";
 
 type PanelProps = {
 	id: PanelId;
@@ -19,25 +21,26 @@ type PanelProps = {
 
 export const Panel = ({ id, title, onClose }: PanelProps) => {
 	const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({ id });
-	const { size, resizableRef, handleResizeStop } = usePanelResize(id, setNodeRef);
 	const { isAtBottom, handleScroll } = useAtBottomScroll();
 	const position = useFloatingPanelStore((state) => state.panels[id].position);
 	const zIndex = useFloatingPanelStore((state) => state.panels[id].zIndex);
 	const bringToFront = useFloatingPanelStore((state) => state.bringToFront);
+	const { size, livePosition, isResizing, resizableRef, handleResizeStart, handleResize, handleResizeStop } =
+		usePanelResize(id, position, setNodeRef);
 
-	if (!position) return null;
+	if (!position || !livePosition) return null;
 
 	return (
 		<Resizable
 			ref={resizableRef}
 			className={cn(
 				"flex flex-col overflow-hidden rounded-2xl border border-secondary-bg bg-alpha-80",
-				isDragging && "border-muted"
+				(isDragging || isResizing) && "border-muted"
 			)}
 			style={{
 				position: "absolute",
-				left: position.x,
-				top: position.y,
+				left: livePosition.x,
+				top: livePosition.y,
 				zIndex,
 				transform: CSS.Translate.toString(transform),
 				// TODO: Убрать тень, поменять на переменную из ui kit
@@ -49,7 +52,19 @@ export const Panel = ({ id, title, onClose }: PanelProps) => {
 			maxWidth={PANEL_MAX_WIDTH}
 			minHeight={PANEL_MIN_HEIGHT}
 			maxHeight={PANEL_MAX_HEIGHT}
+			onResizeStart={handleResizeStart}
+			onResize={handleResize}
 			onResizeStop={handleResizeStop}
+			handleStyles={{
+				top: { zIndex: 20 },
+				topLeft: { zIndex: 20, cursor: "nwse-resize" },
+				topRight: { zIndex: 20, cursor: "nesw-resize" },
+				bottomRight: { zIndex: 20, cursor: "nwse-resize" },
+				bottomLeft: { cursor: "nesw-resize" }
+			}}
+			handleComponent={{
+				bottomRight: <ResizeHandle />
+			}}
 		>
 			<div
 				className="absolute inset-0 flex flex-col overflow-hidden rounded-2xl"
@@ -82,17 +97,7 @@ export const Panel = ({ id, title, onClose }: PanelProps) => {
 				>
 					<PanelContent />
 				</div>
-				{!isAtBottom && (
-					<div
-						className="pointer-events-none absolute bottom-0 left-0 right-0"
-						style={{
-							height: 32,
-							background:
-								"linear-gradient(to bottom, transparent 0%, hsl(var(--secondary-bg) / 0.8) 100%)",
-							zIndex: 10
-						}}
-					/>
-				)}
+				{!isAtBottom && <BottomShadow />}
 			</div>
 		</Resizable>
 	);
