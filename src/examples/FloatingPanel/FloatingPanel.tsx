@@ -6,7 +6,7 @@ import { PANEL_DEFAULT_WIDTH } from "./constants";
 import { PanelConfig, PanelId } from "./types/FloatingPanelTypes";
 import { PanelToggleButton } from "./components/PanelToggleButton";
 import { PanelWindow } from "./components/PanelWindow";
-import { SideZone } from "./components/SideZone";
+import { SideZone } from "./components/zone/SideZone";
 
 const PANELS: PanelConfig[] = [
 	{ id: "history", title: "История", icon: History },

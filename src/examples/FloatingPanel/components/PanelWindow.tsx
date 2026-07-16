@@ -1,6 +1,6 @@
 import { useFloatingPanelStore } from "../store/useFloatingPanelStore";
 import { PanelConfig } from "../types/FloatingPanelTypes";
-import { Panel } from "./Panel";
+import { Panel } from "./panel/Panel";
 
 export const PanelWindow = ({ id, title }: PanelConfig) => {
 	const isOpen = useFloatingPanelStore((state) => state.panels[id].isOpen);

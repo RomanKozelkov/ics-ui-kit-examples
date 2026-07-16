@@ -2,15 +2,15 @@ import { useDraggable } from "@dnd-kit/core";
 import { CSS } from "@dnd-kit/utilities";
 import { IconButton } from "ics-ui-kit/components/button";
 import { Filter, Maximize2, X, type LucideIcon } from "lucide-react";
-import { useFloatingPanelStore } from "../store/useFloatingPanelStore";
 import { Resizable } from "re-resizable";
 import { cn } from "ics-ui-kit/lib/utils";
-import { PANEL_MAX_HEIGHT, PANEL_MAX_WIDTH, PANEL_MIN_HEIGHT, PANEL_MIN_WIDTH } from "../constants";
-import { PanelId } from "../types/FloatingPanelTypes";
 import { PanelContent } from "./PanelContent";
-import { usePanelResize } from "../hooks/usePanelResize";
-import { useAtBottomScroll } from "../hooks/useAtBottomScroll";
 import { BottomShadow } from "./BottomShadow";
+import { PanelId } from "../../types/FloatingPanelTypes";
+import { useAtBottomScroll } from "../../hooks/useAtBottomScroll";
+import { useFloatingPanelStore } from "../../store/useFloatingPanelStore";
+import { usePanelResize } from "../../hooks/usePanelResize";
+import { PANEL_MAX_HEIGHT, PANEL_MAX_WIDTH, PANEL_MIN_HEIGHT, PANEL_MIN_WIDTH } from "../../constants";
 import { ResizeHandle } from "./ResizeHandle";
 
 type PanelProps = {

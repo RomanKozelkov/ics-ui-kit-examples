@@ -1,7 +1,7 @@
 import { Resizable } from "re-resizable";
-import { SIDE_ZONE_MAX_WIDTH, SIDE_ZONE_MIN_WIDTH } from "../constants";
-import { useFloatingPanelStore } from "../store/useFloatingPanelStore";
-import { SideZoneSide } from "../types/FloatingPanelTypes";
+import { useFloatingPanelStore } from "../../store/useFloatingPanelStore";
+import { SideZoneSide } from "../../types/FloatingPanelTypes";
+import { SIDE_ZONE_MAX_WIDTH, SIDE_ZONE_MIN_WIDTH } from "../../constants";
 
 type SideZoneProps = {
 	side: SideZoneSide;
