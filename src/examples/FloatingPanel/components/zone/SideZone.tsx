@@ -1,11 +1,12 @@
 import { Fragment } from "react";
 import { Resizable } from "re-resizable";
-import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "ics-ui-kit/components/resizable";
+import { ResizablePanel, ResizablePanelGroup } from "ics-ui-kit/components/resizable";
 import { cn } from "ics-ui-kit/lib/utils";
 import { useFloatingPanelStore } from "../../store/useFloatingPanelStore";
 import { PanelConfig, SideZoneSide } from "../../types/FloatingPanelTypes";
 import { SIDE_ZONE_MAX_WIDTH, SIDE_ZONE_MIN_WIDTH } from "../../constants";
 import { Panel } from "../panel/Panel";
+import { PanelResizeHandle } from "./PanelResizeHandle";
 
 type SideZoneProps = {
 	side: SideZoneSide;
@@ -28,15 +29,14 @@ export const SideZone = ({ side, panels, isOver }: SideZoneProps) => {
 		>
 			<div
 				className={cn(
-					"m-2.5 h-[calc(100%-1rem)] overflow-hidden rounded-2xl transition-colors",
-					panels.length > 0 && "border border-secondary-border bg-secondary-bg shadow-lg",
+					"m-2.5 h-[calc(100%-1rem)] rounded-2xl transition-colors",
 					isOver && "border border-dashed border-muted bg-secondary-bg-hover"
 				)}
 			>
 				<ResizablePanelGroup direction="vertical" autoSaveId={`side-zone-${side}`}>
 					{panels.map(({ id, title }, index) => (
 						<Fragment key={id}>
-							{index > 0 && <ResizableHandle />}
+							{index > 0 && <PanelResizeHandle />}
 							<ResizablePanel id={id} order={index} minSize={15}>
 								<Panel id={id} title={title} onClose={() => setIsOpen(id, false)} />
 							</ResizablePanel>
