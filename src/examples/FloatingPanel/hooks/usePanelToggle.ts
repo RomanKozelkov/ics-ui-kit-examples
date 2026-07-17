@@ -29,5 +29,5 @@ export const usePanelToggle = (id: PanelId, buttonRef: RefObject<HTMLButtonEleme
 		setIsOpen(id, !isOpen);
 	};
 
-	return { isOpen, handleToggle };
+	return { handleToggle };
 };
