@@ -1,7 +1,5 @@
-import { HEADER_HEIGHT } from "../constants";
+import { HEADER_HEIGHT, MIN_VISIBLE } from "../constants";
 import { Position } from "../types/FloatingPanelTypes";
-
-const MIN_VISIBLE = 40;
 
 export const clampPosition = (position: Position, panelWidth: number): Position => {
 	const viewport = { width: window.innerWidth, height: window.innerHeight };
