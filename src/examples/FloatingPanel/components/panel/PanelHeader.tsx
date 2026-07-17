@@ -27,7 +27,8 @@ export const PanelHeader = ({ title, onClose, listeners, attributes, isDragging,
 			)}
 			style={{
 				maskImage: "linear-gradient(to bottom, black 80%, transparent 100%)",
-				background: "linear-gradient(to bottom, hsl(var(--secondary-bg) / 0.9) 0%, transparent 100%)"
+				background: "linear-gradient(to bottom, hsl(var(--secondary-bg) / 0.9) 0%, transparent 100%)",
+				touchAction: "none"
 			}}
 		>
 			<span className="flex flex-row items-center gap-2 text-base font-semibold">{title}</span>

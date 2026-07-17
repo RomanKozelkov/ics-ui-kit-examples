@@ -39,8 +39,8 @@ importers:
         specifier: ^3.0.6
         version: 3.0.6(echarts@6.1.0)(react@19.2.7)
       ics-ui-kit:
-        specifier: 0.1.4
-        version: 0.1.4(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
+        specifier: 0.1.5
+        version: 0.1.5(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       leaflet:
         specifier: ^1.9.4
         version: 1.9.4
@@ -1449,8 +1449,8 @@ packages:
     resolution: {integrity: sha512-T2UbfbBEF32wiepXIsMlTW9+dDYC6wMh/t/vYA4tuOMKqWz/n3vr1NFSxQiyP+zk2mXsoMA/i/7qV6LKut1t1A==}
     engines: {node: '>= 0.4'}
 
-  ics-ui-kit@0.1.4:
-    resolution: {integrity: sha512-31DL1Q01EgZutu2W18QagQ9NWFKWGY7nqp64SbyTHuqyItn3FpOvY0Mzn8SmDDpp78j6+42fO8c60fVUEMw98Q==}
+  ics-ui-kit@0.1.5:
+    resolution: {integrity: sha512-KwHH5PCS66e6adRsf4bTBgtggNI2Des8iqoB+B/ZqOIVVEt3Vhp5Ejtp39TPNsByQaADlr4n81oFJdRQwg2wrw==}
     peerDependencies:
       react: '>=17.0.0'
       react-dom: '>=17.0.0'
@@ -3643,7 +3643,7 @@ snapshots:
     dependencies:
       function-bind: 1.1.2
 
-  ics-ui-kit@0.1.4(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.7))(react@19.2.7):
+  ics-ui-kit@0.1.5(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.7))(react@19.2.7):
     dependencies:
       '@dnd-kit/core': 6.3.1(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       '@dnd-kit/modifiers': 8.0.0(@dnd-kit/core@6.3.1(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(react@19.2.7)
