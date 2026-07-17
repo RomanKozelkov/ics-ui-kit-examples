@@ -4,7 +4,7 @@ import { Bell, History, MessageSquare } from "lucide-react";
 import { useFloatingPanelStore } from "./store/useFloatingPanelStore";
 import { clampPosition } from "./utils/clampPosition";
 import { PANEL_DEFAULT_WIDTH } from "./constants";
-import { PanelConfig, PanelId } from "./types/FloatingPanelTypes";
+import { PanelConfig, PanelId, SideZoneSide } from "./types/FloatingPanelTypes";
 import { PanelToggleButton } from "./components/PanelToggleButton";
 import { PanelWindow } from "./components/PanelWindow";
 import { SideZone } from "./components/zone/SideZone";
@@ -29,7 +29,7 @@ export const FloatingPanel = () => {
 
 	const handleDragEnd = (event: DragEndEvent) => {
 		const id = event.active.id as PanelId;
-		const dropSide = event.over?.id as "left" | "right" | undefined;
+		const dropSide = event.over?.id as SideZoneSide | undefined;
 
 		if (dropSide === "left" || dropSide === "right") {
 			dockPanel(id, dropSide);
@@ -37,13 +37,13 @@ export const FloatingPanel = () => {
 		}
 
 		if (panels[id].dockedSide) {
-			const rect = event.active.rect.current.initial;
+			const rect = event.active.rect.current.translated;
 			const columnRect = middleColumnRef.current?.getBoundingClientRect();
 			if (rect && columnRect) {
-				undockPanel(id, {
-					x: rect.left + event.delta.x - columnRect.left,
-					y: rect.top + event.delta.y - columnRect.top
-				});
+				undockPanel(
+					id,
+					clampPosition({ x: rect.left - columnRect.left, y: rect.top - columnRect.top }, PANEL_DEFAULT_WIDTH)
+				);
 			}
 			return;
 		}
@@ -56,7 +56,7 @@ export const FloatingPanel = () => {
 		);
 	};
 
-	const dockedPanels = (side: "left" | "right") =>
+	const dockedPanels = (side: SideZoneSide) =>
 		PANELS.filter((panel) => panels[panel.id].isOpen && panels[panel.id].dockedSide === side);
 
 	return (
