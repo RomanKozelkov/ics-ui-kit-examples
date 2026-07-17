@@ -74,6 +74,6 @@ export const useFloatingPanelStore = create<FloatingPanelState>()(
 					panels: { ...state.panels, [id]: { ...state.panels[id], dockedSide: null, position } }
 				}))
 		}),
-		{ name: "draggable-window-position" }
+		{ name: "floating-panel-state" }
 	)
 );

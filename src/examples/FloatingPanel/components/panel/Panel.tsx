@@ -1,4 +1,4 @@
-import { PanelId } from "../../types/FloatingPanelTypes";
+import { PanelId, SideZoneSide } from "../../types/FloatingPanelTypes";
 import { useFloatingPanelStore } from "../../store/useFloatingPanelStore";
 import { usePanelDrag } from "../../hooks/usePanelDrag";
 import { clampPosition } from "../../utils/clampPosition";
@@ -22,7 +22,7 @@ export const Panel = ({ id, title, onClose }: PanelProps) => {
 	const drag = usePanelDrag(id);
 
 	const handleDragStart = () => bringToFront(id);
-	const handleDock = (side: "left" | "right") => dockPanel(id, side);
+	const handleDock = (side: SideZoneSide) => dockPanel(id, side);
 	const handleUndock = () => undockPanel(id, position ?? clampPosition({ x: 0, y: 0 }, PANEL_DEFAULT_WIDTH));
 
 	if (dockedSide) {
