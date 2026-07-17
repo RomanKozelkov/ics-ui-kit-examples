@@ -9,3 +9,4 @@ export { LiquidGlassEffect } from "./LiquidGlassEffect/LiquidGlassEffect";
 export { PromoCalendar } from "./PromoCalendar/PromoCalendar";
 export { FloatingPanel } from "./FloatingPanel/FloatingPanel";
 export { VisitReport } from "./VisitReport/VisitReport";
+export { PopoverExample } from "./PopoverExample/PopoverExample";
