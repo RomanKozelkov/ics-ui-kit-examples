@@ -1,5 +1,4 @@
 import { Fragment } from "react";
-import { useDroppable } from "@dnd-kit/core";
 import { Resizable } from "re-resizable";
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "ics-ui-kit/components/resizable";
 import { cn } from "ics-ui-kit/lib/utils";
@@ -11,13 +10,13 @@ import { Panel } from "../panel/Panel";
 type SideZoneProps = {
 	side: SideZoneSide;
 	panels: PanelConfig[];
+	isOver: boolean;
 };
 
-export const SideZone = ({ side, panels }: SideZoneProps) => {
+export const SideZone = ({ side, panels, isOver }: SideZoneProps) => {
 	const width = useFloatingPanelStore((state) => state.sideZoneWidths[side]);
 	const setSideZoneWidth = useFloatingPanelStore((state) => state.setSideZoneWidth);
 	const setIsOpen = useFloatingPanelStore((state) => state.setIsOpen);
-	const { setNodeRef, isOver } = useDroppable({ id: side });
 
 	return (
 		<Resizable
@@ -28,7 +27,6 @@ export const SideZone = ({ side, panels }: SideZoneProps) => {
 			onResizeStop={(_event, _direction, _ref, delta) => setSideZoneWidth(side, width + delta.width)}
 		>
 			<div
-				ref={setNodeRef}
 				className={cn(
 					"m-2.5 h-[calc(100%-1rem)] overflow-hidden rounded-2xl transition-colors",
 					panels.length > 0 && "border border-secondary-border bg-secondary-bg shadow-lg",

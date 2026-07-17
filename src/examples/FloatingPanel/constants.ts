@@ -12,5 +12,6 @@ export const HEADER_HEIGHT = 56;
 export const SIDE_ZONE_DEFAULT_WIDTH = 292;
 export const SIDE_ZONE_MIN_WIDTH = 270;
 export const SIDE_ZONE_MAX_WIDTH = 400;
+export const SIDE_ZONE_DROP_THRESHOLD = 128;
 
 export const MIN_VISIBLE = 48;
