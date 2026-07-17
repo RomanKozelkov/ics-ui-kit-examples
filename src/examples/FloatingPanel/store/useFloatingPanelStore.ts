@@ -17,6 +17,7 @@ type FloatingPanelState = {
 	panels: Record<PanelId, PanelState>;
 	nextZIndex: number;
 	sideZoneWidths: Record<SideZoneSide, number>;
+	isResizingDockedPanels: boolean;
 	setPosition: (id: PanelId, position: Position) => void;
 	setSizeAndPosition: (id: PanelId, size: Size, position: Position) => void;
 	setIsOpen: (id: PanelId, isOpen: boolean) => void;
@@ -24,6 +25,7 @@ type FloatingPanelState = {
 	setSideZoneWidth: (side: SideZoneSide, width: number) => void;
 	dockPanel: (id: PanelId, side: SideZoneSide) => void;
 	undockPanel: (id: PanelId, position: Position) => void;
+	setIsResizingDockedPanels: (isResizing: boolean) => void;
 };
 
 const createPanelState = (): PanelState => ({
@@ -44,6 +46,7 @@ export const useFloatingPanelStore = create<FloatingPanelState>()(
 			},
 			nextZIndex: INITIAL_Z_INDEX + 1,
 			sideZoneWidths: { left: SIDE_ZONE_DEFAULT_WIDTH, right: SIDE_ZONE_DEFAULT_WIDTH },
+			isResizingDockedPanels: false,
 			setPosition: (id, position) =>
 				set((state) => ({
 					panels: { ...state.panels, [id]: { ...state.panels[id], position } }
@@ -72,7 +75,8 @@ export const useFloatingPanelStore = create<FloatingPanelState>()(
 			undockPanel: (id, position) =>
 				set((state) => ({
 					panels: { ...state.panels, [id]: { ...state.panels[id], dockedSide: null, position } }
-				}))
+				})),
+			setIsResizingDockedPanels: (isResizing) => set({ isResizingDockedPanels: isResizing })
 		}),
 		{ name: "floating-panel-state" }
 	)
