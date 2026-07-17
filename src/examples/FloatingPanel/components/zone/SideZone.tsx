@@ -30,7 +30,7 @@ export const SideZone = ({ side, panels }: SideZoneProps) => {
 			<div
 				ref={setNodeRef}
 				className={cn(
-					"m-2 h-[calc(100%-1rem)] overflow-hidden rounded-2xl transition-colors",
+					"m-2.5 h-[calc(100%-1rem)] overflow-hidden rounded-2xl transition-colors",
 					panels.length > 0 && "border border-secondary-border bg-secondary-bg shadow-lg",
 					isOver && "border border-dashed border-muted bg-secondary-bg-hover"
 				)}
