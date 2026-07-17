@@ -1,6 +1,22 @@
 .sidebar-nav-floating {
+	padding: 10px !important;
 	margin-top: 3.75rem !important;
 	height: calc(100% - 4.25rem) !important;
+}
+
+.sidebar-nav-floating [data-sidebar="sidebar"] {
+	border-radius: 20px !important;
+}
+
+[data-sidebar="menu-button"][data-active="true"]:hover,
+[data-sidebar="menu-sub-button"][data-active="true"]:hover {
+	background-color: hsl(var(--primary-bg-hover)) !important;
+	color: hsl(var(--primary-accent)) !important;
+}
+
+.sidebar-nav-mode-floating {
+	margin-top: 0 !important;
+	height: 100% !important;
 }
 
 .sidebar-nav-floating-open {

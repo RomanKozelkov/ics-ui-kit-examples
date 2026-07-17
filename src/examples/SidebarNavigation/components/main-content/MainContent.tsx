@@ -1,8 +1,7 @@
-import { SidebarRail, SidebarTrigger, useSidebar } from "ics-ui-kit/components/sidebar";
+import { SidebarTrigger } from "ics-ui-kit/components/sidebar";
 import {
 	Tooltip,
 	TooltipContent,
-	TooltipProvider,
 	TooltipShortcut,
 	TooltipText,
 	TooltipTrigger
@@ -10,23 +9,18 @@ import {
 import { cn } from "ics-ui-kit/lib/utils";
 import { IconButton } from "ics-ui-kit/components/button";
 import { Search } from "lucide-react";
-import { Divider } from "ics-ui-kit/components/divider";
 import { BreadcrumbListComponent } from "./BreadcrumbListComponent";
 import { SIDEBAR_TRIGGER_ATTR } from "../../hooks/useSidebarFloating";
 
 const sidebarTriggerFloatingProps = { [SIDEBAR_TRIGGER_ATTR]: true };
 
-export function MainContent() {
-	const { state } = useSidebar();
-	const isCollapsed = state === "collapsed";
+interface MainContentProps {
+	isCollapsed: boolean;
+}
 
+export function MainContent({ isCollapsed }: MainContentProps) {
 	return (
-		<div
-			className={cn(
-				"relative flex h-full min-h-0 w-full flex-col bg-primary-bg p-2 pr-0",
-				isCollapsed && "bg-secondary-bg p-0 pl-72"
-			)}
-		>
+		<div className="relative flex h-full min-h-0 w-full flex-col bg-secondary-bg p-0 pl-[293px]">
 			{isCollapsed ? (
 				<>
 					<div
@@ -62,43 +56,21 @@ export function MainContent() {
 						</Tooltip>
 					</div>
 
-					<div className={cn("w-full rounded-t-2xl bg-secondary-bg py-2.5 pl-14 pr-4")}>
+					<div className="w-full py-2.5 pl-14 pr-4">
 						<BreadcrumbListComponent />
 					</div>
 				</>
 			) : (
-				<div className="h-14 w-full rounded-t-2xl rounded-tr-none border border-r-0 border-secondary-border bg-secondary-bg py-2.5 pl-3.5 pr-2">
-					<div className="flex items-center gap-3.5">
-						<Tooltip>
-							<TooltipTrigger asChild>
-								<SidebarTrigger className="h-auto rounded-md p-1.5" />
-							</TooltipTrigger>
-							<TooltipContent focus="high">Скрыть боковую панель</TooltipContent>
-						</Tooltip>
-						<Divider orientation="vertical" className="h-4 shrink-0" />
-						<BreadcrumbListComponent />
-					</div>
+				<div className="w-full py-2.5 pl-14 pr-4">
+					<BreadcrumbListComponent />
 				</div>
 			)}
 			<div
 				className={cn(
-					"relative h-full min-h-0 w-full border-l border-secondary-border bg-secondary-bg p-4",
+					"relative h-full min-h-0 w-full bg-secondary-bg p-4",
 					isCollapsed && "border-0"
 				)}
-			>
-				{!isCollapsed && (
-					<TooltipProvider delayDuration={700}>
-						<Tooltip>
-							<TooltipTrigger asChild>
-								<SidebarRail className="left-0 cursor-w-resize" />
-							</TooltipTrigger>
-							<TooltipContent side="right" focus="high">
-								Скрыть боковую панель
-							</TooltipContent>
-						</Tooltip>
-					</TooltipProvider>
-				)}
-			</div>
+			/>
 		</div>
 	);
 }

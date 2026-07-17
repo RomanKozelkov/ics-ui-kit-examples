@@ -1,11 +1,15 @@
 import { IconButton } from "ics-ui-kit/components/button";
-import { Tooltip, TooltipContent, TooltipShortcut, TooltipText, TooltipTrigger } from "ics-ui-kit/components/tooltip";
-import { Ellipsis, Grip, Search } from "lucide-react";
+import { Tooltip, TooltipContent, TooltipTrigger } from "ics-ui-kit/components/tooltip";
+import { Ellipsis, Grip, PanelLeft } from "lucide-react";
 import { GramaxIcon } from "./GramaxIcon";
 
-export function SidebarHeader() {
+interface SidebarHeaderProps {
+	onCollapse: () => void;
+}
+
+export function SidebarHeader({ onCollapse }: SidebarHeaderProps) {
 	return (
-		<div className="flex items-center gap-1 px-2 py-3 pr-4">
+		<div className="flex h-[52px] items-center gap-1 p-2.5">
 			<Tooltip>
 				<TooltipTrigger asChild>
 					<IconButton
@@ -42,17 +46,15 @@ export function SidebarHeader() {
 			<Tooltip>
 				<TooltipTrigger asChild>
 					<IconButton
-						icon={Search}
+						icon={PanelLeft}
 						size="sm"
 						variant="ghost"
 						className="shrink-0 rounded-md p-2"
 						iconClassName="size-4"
+						onClick={onCollapse}
 					/>
 				</TooltipTrigger>
-				<TooltipContent focus="high" className="flex flex-row gap-2">
-					<TooltipText>Поиск</TooltipText>
-					<TooltipShortcut>⌘/</TooltipShortcut>
-				</TooltipContent>
+				<TooltipContent focus="high">Свернуть панель</TooltipContent>
 			</Tooltip>
 		</div>
 	);
