@@ -6,8 +6,9 @@ import { PanelHeader } from "./PanelHeader";
 import { ResizeHandle } from "./ResizeHandle";
 import { PanelDragState } from "../../hooks/usePanelDrag";
 import { usePanelResize } from "../../hooks/usePanelResize";
-import { PanelId, Position } from "../../types/FloatingPanelTypes";
+import { PanelId, Position, SideZoneSide } from "../../types/FloatingPanelTypes";
 import { PANEL_MAX_HEIGHT, PANEL_MAX_WIDTH, PANEL_MIN_HEIGHT, PANEL_MIN_WIDTH } from "../../constants";
+import { DockAction } from "./actions/DockAction";
 
 type FloatingPanelViewProps = {
 	id: PanelId;
@@ -17,6 +18,7 @@ type FloatingPanelViewProps = {
 	drag: PanelDragState;
 	onDragStart: () => void;
 	onClose: () => void;
+	onDock: (side: SideZoneSide) => void;
 };
 
 export const FloatingPanelView = ({
@@ -26,7 +28,8 @@ export const FloatingPanelView = ({
 	zIndex,
 	drag,
 	onDragStart,
-	onClose
+	onClose,
+	onDock
 }: FloatingPanelViewProps) => {
 	const { attributes, listeners, setNodeRef, transform, isDragging } = drag;
 	const { size, livePosition, isResizing, resizableRef, handleResizeStart, handleResize, handleResizeStop } =
@@ -78,6 +81,7 @@ export const FloatingPanelView = ({
 					listeners={listeners}
 					attributes={attributes}
 					isDragging={isDragging}
+					action={<DockAction onDock={onDock} />}
 				/>
 				<PanelContent />
 			</div>

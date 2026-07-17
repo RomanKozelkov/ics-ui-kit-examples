@@ -2,7 +2,10 @@ import { DraggableAttributes } from "@dnd-kit/core";
 import { SyntheticListenerMap } from "@dnd-kit/core/dist/hooks/utilities";
 import { IconButton } from "ics-ui-kit/components/button";
 import { cn } from "ics-ui-kit/lib/utils";
-import { Filter, Maximize2, X } from "lucide-react";
+import { Filter, X } from "lucide-react";
+import { SideZoneSide } from "../../types/FloatingPanelTypes";
+import { UndockAction } from "./actions/UndockAction";
+import { DockAction } from "./actions/DockAction";
 
 type PanelHeaderProps = {
 	title: string;
@@ -10,9 +13,10 @@ type PanelHeaderProps = {
 	listeners: SyntheticListenerMap | undefined;
 	attributes: DraggableAttributes | undefined;
 	isDragging: boolean;
+	action: React.ReactNode;
 };
 
-export const PanelHeader = ({ title, onClose, listeners, attributes, isDragging }: PanelHeaderProps) => {
+export const PanelHeader = ({ title, onClose, listeners, attributes, isDragging, action }: PanelHeaderProps) => {
 	return (
 		<div
 			{...listeners}
@@ -29,7 +33,7 @@ export const PanelHeader = ({ title, onClose, listeners, attributes, isDragging 
 			<span className="flex flex-row items-center gap-2 text-base font-semibold">{title}</span>
 			<div className="flex flex-row items-center" onPointerDown={(e) => e.stopPropagation()}>
 				<IconButton icon={Filter} size="sm" variant="text" />
-				<IconButton icon={Maximize2} size="sm" variant="text" />
+				{action}
 				<IconButton icon={X} size="sm" variant="text" onClick={onClose} />
 			</div>
 		</div>

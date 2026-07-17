@@ -4,6 +4,7 @@ import { PanelContent } from "./PanelContent";
 import { PanelHeader } from "./PanelHeader";
 import { PanelDragState } from "../../hooks/usePanelDrag";
 import { PANEL_DEFAULT_HEIGHT } from "../../constants";
+import { UndockAction } from "./actions/UndockAction";
 
 type DockedPanelViewProps = {
 	title: string;
@@ -11,9 +12,10 @@ type DockedPanelViewProps = {
 	drag: PanelDragState;
 	onDragStart: () => void;
 	onClose: () => void;
+	onUndock: () => void;
 };
 
-export const DockedPanelView = ({ title, zIndex, drag, onDragStart, onClose }: DockedPanelViewProps) => {
+export const DockedPanelView = ({ title, zIndex, drag, onDragStart, onClose, onUndock }: DockedPanelViewProps) => {
 	const { attributes, listeners, setNodeRef, transform, isDragging, dockedDragRect } = drag;
 	const isFloatingWhileDragging = isDragging && dockedDragRect;
 
@@ -46,6 +48,7 @@ export const DockedPanelView = ({ title, zIndex, drag, onDragStart, onClose }: D
 				listeners={listeners}
 				attributes={attributes}
 				isDragging={isDragging}
+				action={<UndockAction onUndock={onUndock} />}
 			/>
 			<PanelContent />
 		</div>
