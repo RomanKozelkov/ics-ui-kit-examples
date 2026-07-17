@@ -41,7 +41,7 @@ export const FloatingPanelView = ({
 		<Resizable
 			ref={resizableRef}
 			className={cn(
-				"flex flex-col overflow-hidden rounded-2xl border border-secondary-bg bg-alpha-40",
+				"shadow-glass-md flex flex-col overflow-hidden rounded-2xl border border-secondary-bg bg-alpha-40",
 				(isDragging || isResizing) && "border-muted"
 			)}
 			style={{
@@ -49,10 +49,7 @@ export const FloatingPanelView = ({
 				left: livePosition.x,
 				top: livePosition.y,
 				zIndex,
-				transform: CSS.Translate.toString(transform),
-				// TODO: Убрать тень, поменять на переменную из ui kit
-				boxShadow:
-					"0 1.5px 1.5px -0.5px rgb(255, 255, 255) inset, 0 -6px 3px -3px rgb(255, 255, 255) inset, 1.25px 0 0 -0.75px var(--tailwind-colors-zinc-400, #A1A1AA), -1.25px 0 0 -0.75px var(--tailwind-colors-zinc-400, #A1A1AA), 0 0 0 0.5px var(--base-primary-border, #D4D4D8), 0 4px 24px 0 rgba(0, 0, 0, 0.12)"
+				transform: CSS.Translate.toString(transform)
 			}}
 			defaultSize={size}
 			minWidth={PANEL_MIN_WIDTH}
