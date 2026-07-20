@@ -1,4 +1,5 @@
 import { Bell, MessageSquare, History } from "lucide-react";
+import { GlassToolbar, GlassToolbarToggleGroup } from "ics-ui-kit/components/glass-toolbar";
 import { useActiveDropSide } from "../hooks/useActiveDropSide";
 import { useFloatingPanelStore } from "../store/useFloatingPanelStore";
 import { PanelConfig, SideZoneSide } from "../types/FloatingPanelTypes";
@@ -23,6 +24,8 @@ export const FloatingPanelZones = ({
 	const dockedPanels = (side: SideZoneSide) =>
 		PANELS.filter((panel) => panels[panel.id].isOpen && panels[panel.id].dockedSide === side);
 
+	const openPanelIds = PANELS.filter((panel) => panels[panel.id].isOpen).map((panel) => panel.id);
+
 	return (
 		<>
 			<SideZone side="left" panels={dockedPanels("left")} isOver={activeDropSide === "left"} />
@@ -31,10 +34,14 @@ export const FloatingPanelZones = ({
 				{PANELS.map((panel) => (
 					<PanelWindow key={panel.id} {...panel} />
 				))}
-				<div className="absolute bottom-20 right-40 flex flex-row gap-2">
-					{PANELS.map((panel) => (
-						<PanelToggleButton key={panel.id} {...panel} />
-					))}
+				<div className="absolute bottom-20 right-0">
+					<GlassToolbar>
+						<GlassToolbarToggleGroup type="multiple" value={openPanelIds}>
+							{PANELS.map((panel) => (
+								<PanelToggleButton key={panel.id} {...panel} />
+							))}
+						</GlassToolbarToggleGroup>
+					</GlassToolbar>
 				</div>
 			</div>
 
