@@ -4,6 +4,7 @@ import { PanelContent } from "./PanelContent";
 import { PanelHeader } from "./PanelHeader";
 import { PanelDragState } from "../../hooks/usePanelDrag";
 import { PANEL_DEFAULT_HEIGHT } from "../../constants";
+import { useFloatingPanelStore } from "../../store/useFloatingPanelStore";
 import { UndockAction } from "./actions/UndockAction";
 
 type DockedPanelViewProps = {
@@ -17,15 +18,16 @@ type DockedPanelViewProps = {
 
 export const DockedPanelView = ({ title, zIndex, drag, onDragStart, onClose, onUndock }: DockedPanelViewProps) => {
 	const { attributes, listeners, setNodeRef, transform, isDragging, dockedDragRect } = drag;
+	const isResizingDockedPanels = useFloatingPanelStore((state) => state.isResizingDockedPanels);
 	const isFloatingWhileDragging = isDragging && dockedDragRect;
 
 	return (
 		<div
 			ref={setNodeRef}
 			className={cn(
-				"flex flex-col overflow-hidden rounded-2xl border border-secondary-bg",
+				"flex flex-col overflow-hidden rounded-2xl border border-secondary-border bg-secondary-bg",
 				isFloatingWhileDragging ? "w-80 bg-alpha-40" : "relative h-full w-full",
-				isDragging && "border-muted"
+				(isDragging || isResizingDockedPanels) && "border-muted"
 			)}
 			style={
 				isFloatingWhileDragging
