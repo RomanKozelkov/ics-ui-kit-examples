@@ -3,7 +3,6 @@ import { cn } from "ics-ui-kit/lib/utils";
 import { PanelContent } from "../PanelContent";
 import { PanelHeader } from "../PanelHeader";
 import { PanelDragState } from "../../../hooks/usePanelDrag";
-import { PANEL_DEFAULT_HEIGHT } from "../../../constants";
 import { useFloatingPanelStore } from "../../../store/useFloatingPanelStore";
 import { UndockAction } from "../actions/UndockAction";
 import { DockedPanelPlaceholder } from "./DockedPanelPlaceholder";
@@ -29,7 +28,7 @@ export const DockedPanelView = ({ title, zIndex, drag, onDragStart, onClose, onU
 				ref={setNodeRef}
 				className={cn(
 					"shadow-glass-sm flex flex-col overflow-hidden rounded-2xl border border-secondary-border bg-secondary-bg",
-					isFloatingWhileDragging ? "w-80 bg-alpha-40" : "relative h-full w-full",
+					isFloatingWhileDragging ? "bg-alpha-40" : "relative h-full w-full",
 					(isDragging || isResizingDockedPanels) && "border-muted"
 				)}
 				style={
@@ -38,7 +37,8 @@ export const DockedPanelView = ({ title, zIndex, drag, onDragStart, onClose, onU
 								position: "fixed",
 								left: dockedDragRect.left,
 								top: dockedDragRect.top,
-								height: PANEL_DEFAULT_HEIGHT,
+								width: dockedDragRect.width,
+								height: dockedDragRect.height,
 								zIndex,
 								transform: CSS.Translate.toString(transform)
 							}
