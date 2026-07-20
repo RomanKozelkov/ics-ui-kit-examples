@@ -29,7 +29,7 @@ export const SideZone = ({ side, panels, isOver }: SideZoneProps) => {
 		>
 			<div
 				className={cn(
-					"m-2.5 h-[calc(100%-1rem)] rounded-2xl border border-transparent transition-colors",
+					"my-2.5 h-[calc(100%-1rem)] rounded-2xl border border-transparent transition-colors",
 					isOver && "border-dashed border-muted bg-secondary-bg-hover"
 				)}
 			>
