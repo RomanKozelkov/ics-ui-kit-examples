@@ -1,14 +1,14 @@
 import { CSS } from "@dnd-kit/utilities";
 import { Resizable } from "re-resizable";
 import { cn } from "ics-ui-kit/lib/utils";
-import { PanelContent } from "./PanelContent";
-import { PanelHeader } from "./PanelHeader";
-import { ResizeHandle } from "./ResizeHandle";
-import { PanelDragState } from "../../hooks/usePanelDrag";
-import { usePanelResize } from "../../hooks/usePanelResize";
-import { PanelId, Position, SideZoneSide } from "../../types/FloatingPanelTypes";
-import { PANEL_MAX_HEIGHT, PANEL_MAX_WIDTH, PANEL_MIN_HEIGHT, PANEL_MIN_WIDTH } from "../../constants";
-import { DockAction } from "./actions/DockAction";
+import { usePanelResize } from "../../../hooks/usePanelResize";
+import { PANEL_MAX_HEIGHT, PANEL_MAX_WIDTH, PANEL_MIN_HEIGHT, PANEL_MIN_WIDTH } from "../../../constants";
+import { ResizeHandle } from "../ResizeHandle";
+import { PanelHeader } from "../PanelHeader";
+import { DockAction } from "../actions/DockAction";
+import { PanelContent } from "../PanelContent";
+import { PanelId, Position, SideZoneSide } from "../../../types/FloatingPanelTypes";
+import { PanelDragState } from "../../../hooks/usePanelDrag";
 
 type FloatingPanelViewProps = {
 	id: PanelId;

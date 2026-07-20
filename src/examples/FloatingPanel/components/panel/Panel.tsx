@@ -3,8 +3,8 @@ import { useFloatingPanelStore } from "../../store/useFloatingPanelStore";
 import { usePanelDrag } from "../../hooks/usePanelDrag";
 import { clampPosition } from "../../utils/clampPosition";
 import { PANEL_DEFAULT_WIDTH } from "../../constants";
-import { DockedPanelView } from "./DockedPanelView";
-import { FloatingPanelView } from "./FloatingPanelView";
+import { DockedPanelView } from "./docked-panel/DockedPanelView";
+import { FloatingPanelView } from "./floating-panel/FloatingPanelView";
 
 type PanelProps = {
 	id: PanelId;
