@@ -33,11 +33,20 @@ export const SideZone = ({ side, panels, isOver }: SideZoneProps) => {
 					isOver && "border-dashed border-muted bg-secondary-bg-hover"
 				)}
 			>
-				<ResizablePanelGroup direction="vertical" autoSaveId={`side-zone-${side}`}>
+				<ResizablePanelGroup
+					direction="vertical"
+					autoSaveId={`side-zone-${side}`}
+					style={{ overflow: "visible" }}
+				>
 					{panels.map(({ id, title }, index) => (
 						<Fragment key={id}>
 							{index > 0 && <PanelResizeHandle />}
-							<ResizablePanel id={id} order={index} minSize={15}>
+							<ResizablePanel
+								id={id}
+								order={index}
+								minSize={15}
+								style={{ overflow: "visible", minHeight: 0 }}
+							>
 								<Panel id={id} title={title} onClose={() => setIsOpen(id, false)} />
 							</ResizablePanel>
 						</Fragment>
