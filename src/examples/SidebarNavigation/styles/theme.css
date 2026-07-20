@@ -6,12 +6,17 @@
 
 .sidebar-nav-floating [data-sidebar="sidebar"] {
 	border-radius: 20px !important;
+	overflow: hidden !important;
+	background-color: hsl(var(--alpha-60)) !important;
+	backdrop-filter: var(--glass-regular) !important;
+	-webkit-backdrop-filter: var(--glass-regular) !important;
+	--tw-shadow: var(--shadow-glass-sm) !important;
+	box-shadow: var(--shadow-glass-sm) !important;
+	border: none !important;
 }
 
-[data-sidebar="menu-button"][data-active="true"]:hover,
-[data-sidebar="menu-sub-button"][data-active="true"]:hover {
-	background-color: hsl(var(--primary-bg-hover)) !important;
-	color: hsl(var(--primary-accent)) !important;
+.sidebar-nav-floating [data-sidebar="menu-button"]:not([data-active="true"]):not(:hover):not([data-highlighted]) {
+	background-color: transparent !important;
 }
 
 .sidebar-nav-mode-floating {
@@ -39,6 +44,33 @@
     --tertiary-accent: 240 4% 46%;
     --muted: 240 4% 46%;
     --sidebar-bg: 0 0% 99%;
+
+    /** Alpha **/
+    --alpha-03: 0 0% 100% / 3%;
+    --alpha-05: 0 0% 100% / 5%;
+    --alpha-08: 0 0% 100% / 8%;
+    --alpha-10: 0 0% 100% / 10%;
+    --alpha-20: 0 0% 100% / 20%;
+    --alpha-30: 0 0% 100% / 30%;
+    --alpha-40: 0 0% 100% / 40%;
+    --alpha-50: 0 0% 100% / 50%;
+    --alpha-60: 0 0% 100% / 60%;
+    --alpha-70: 0 0% 100% / 70%;
+    --alpha-80: 0 0% 100% / 80%;
+    --alpha-90: 0 0% 100% / 90%;
+
+    --alpha-high-03: 0 0% 0% / 3%;
+    --alpha-high-05: 0 0% 0% / 5%;
+    --alpha-high-08: 0 0% 0% / 8%;
+    --alpha-high-10: 0 0% 0% / 10%;
+    --alpha-high-20: 0 0% 0% / 20%;
+    --alpha-high-30: 0 0% 0% / 30%;
+    --alpha-high-40: 0 0% 0% / 40%;
+    --alpha-high-50: 0 0% 0% / 50%;
+    --alpha-high-60: 0 0% 0% / 60%;
+    --alpha-high-70: 0 0% 0% / 70%;
+    --alpha-high-80: 0 0% 0% / 80%;
+    --alpha-high-90: 0 0% 0% / 90%;
 }
 
 .dark {
@@ -58,5 +90,32 @@
         --tertiary-accent: 240 5% 65%;
         --muted: 240 5% 65%;
         --sidebar-bg: 240 10% 4%;
-    }    
+
+        /** Alpha **/
+        --alpha-03: 0 0% 100% / 3%;
+        --alpha-05: 0 0% 100% / 5%;
+        --alpha-08: 0 0% 100% / 8%;
+        --alpha-10: 0 0% 100% / 10%;
+        --alpha-20: 0 0% 100% / 20%;
+        --alpha-30: 0 0% 100% / 30%;
+        --alpha-40: 0 0% 100% / 40%;
+        --alpha-50: 0 0% 100% / 50%;
+        --alpha-60: 0 0% 100% / 60%;
+        --alpha-70: 0 0% 100% / 70%;
+        --alpha-80: 0 0% 100% / 80%;
+        --alpha-90: 0 0% 100% / 90%;
+
+        --alpha-high-03: 0 0% 0% / 3%;
+        --alpha-high-05: 0 0% 0% / 5%;
+        --alpha-high-08: 0 0% 0% / 8%;
+        --alpha-high-10: 0 0% 0% / 10%;
+        --alpha-high-20: 0 0% 0% / 20%;
+        --alpha-high-30: 0 0% 0% / 30%;
+        --alpha-high-40: 0 0% 0% / 40%;
+        --alpha-high-50: 0 0% 0% / 50%;
+        --alpha-high-60: 0 0% 0% / 60%;
+        --alpha-high-70: 0 0% 0% / 70%;
+        --alpha-high-80: 0 0% 0% / 80%;
+        --alpha-high-90: 0 0% 0% / 90%;
+    }
 }

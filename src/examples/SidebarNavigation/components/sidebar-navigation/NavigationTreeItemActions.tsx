@@ -4,7 +4,7 @@ import { MoreHorizontal, Plus } from "lucide-react";
 
 export function NavigationTreeItemActions() {
 	return (
-		<span className="ml-auto hidden shrink-0 items-center gap-1 group-hover/nav:flex">
+		<span className="absolute right-1.5 top-1/2 -translate-y-1/2 invisible flex shrink-0 items-center gap-1 group-hover/nav:visible">
 			<Tooltip>
 				<TooltipTrigger asChild>
 					<span

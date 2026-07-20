@@ -47,9 +47,11 @@ export function SideMenuItemContent({
 				type="button"
 				onClick={onSelect}
 				isActive={isSelected}
+				data-highlighted={isHighlighted || undefined}
 				className={cn(
 					"group/nav h-7 gap-1 py-1.5 pr-1.5 data-[active=true]:font-medium",
-					isHighlighted && "bg-secondary-bg-hover"
+					"hover:!bg-secondary-border data-[active=true]:!bg-primary-border data-[active=true]:hover:!bg-primary-border",
+					isHighlighted && "!bg-secondary-border"
 				)}
 				{...dragListeners}
 				{...dragAttributes}

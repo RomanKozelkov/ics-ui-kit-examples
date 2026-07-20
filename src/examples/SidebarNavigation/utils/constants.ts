@@ -1,4 +1,4 @@
-export const SIDEBAR_MENU_SUB_INDENT = 24;
+export const SIDEBAR_MENU_SUB_INDENT = 16;
 export const INSERTION_BUTTON_SIZE = 12;
 
 export const AFTER_CONTAINER_HOVER_OFFSET_PX = 12;
