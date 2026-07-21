@@ -23,7 +23,7 @@ export const DockedPanelView = ({ title, zIndex, drag, onDragStart, onClose, onU
 
 	return (
 		<>
-			{isFloatingWhileDragging && <DockedPanelPlaceholder title={title} onClose={onClose} onUndock={onUndock} />}
+			{/* {isFloatingWhileDragging && <DockedPanelPlaceholder title={title} onClose={onClose} onUndock={onUndock} />} */}
 			<div
 				ref={setNodeRef}
 				className={cn(
