@@ -53,7 +53,7 @@ export function SidebarNavigation() {
 				>
 					{!isCollapsed && <SidebarHeader onCollapse={() => setMode("collapsed")} />}
 					<SidebarContent>
-						<NavigationTree />
+						<NavigationTree isCollapsed={isCollapsed} />
 					</SidebarContent>
 					{isCollapsed && (
 						<TooltipProvider delayDuration={700}>

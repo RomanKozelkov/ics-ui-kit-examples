@@ -9,7 +9,7 @@ export function InsertionDepthIcon({
 	style,
 	onClick,
 	onMouseEnter,
-	onMouseLeave,
+	onMouseLeave
 }: {
 	isHidden: boolean;
 	isPlaceholder: boolean;
@@ -31,7 +31,7 @@ export function InsertionDepthIcon({
 				icon={CircleFadingPlus}
 				size="sm"
 				className={cn(
-					"absolute text-muted transition-opacity duration-[160ms]",
+					"duration-[160ms] absolute text-muted transition-opacity",
 					isHidden || isActive ? "opacity-0" : "opacity-100",
 					isPlaceholder && "text-primary-border"
 				)}
@@ -40,7 +40,7 @@ export function InsertionDepthIcon({
 				icon={CirclePlus}
 				size="sm"
 				className={cn(
-					"absolute text-primary-fg transition-opacity duration-[160ms]",
+					"duration-[160ms] absolute text-primary-fg transition-opacity",
 					isActive ? "opacity-100" : "opacity-0"
 				)}
 			/>

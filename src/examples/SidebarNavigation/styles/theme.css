@@ -37,14 +37,6 @@
 	transition: background-color 0ms;
 }
 
-.sidebar-nav-mode-floating .nav-tree-root {
-	margin-top: 0.75rem !important;
-}
-
-.sidebar-nav-floating:not(.sidebar-nav-mode-floating) .nav-tree-root {
-	margin-top: 0.875rem !important;
-}
-
 .gramax {
     /** Base **/
     --primary-accent: 240 6% 10%;
