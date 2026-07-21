@@ -1,10 +1,4 @@
-import {
-	Sidebar,
-	SidebarContent,
-	SidebarInset,
-	SidebarProvider,
-	SidebarRail
-} from "ics-ui-kit/components/sidebar";
+import { Sidebar, SidebarContent, SidebarInset, SidebarProvider, SidebarRail } from "ics-ui-kit/components/sidebar";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "ics-ui-kit/components/tooltip";
 import { cn } from "ics-ui-kit/lib/utils";
 import React from "react";
@@ -21,9 +15,9 @@ export function SidebarNavigation() {
 	const sidebarRef = React.useRef<HTMLDivElement>(null);
 
 	const isCollapsed = mode === "collapsed";
-	const { isSidebarFloating } = useSidebarFloating(sidebarRef as React.RefObject<HTMLDivElement>, isCollapsed);
+	const { isHoverActive } = useSidebarFloating(sidebarRef as React.RefObject<HTMLDivElement>, isCollapsed);
 
-	const isSidebarVisible = !isCollapsed || isSidebarFloating;
+	const isSidebarVisible = !isCollapsed || isHoverActive;
 
 	return (
 		<div className="gramax h-full w-full bg-primary-bg">
@@ -37,7 +31,9 @@ export function SidebarNavigation() {
 				className="h-full w-full"
 				style={{ "--sidebar-width": "293px" } as React.CSSProperties}
 				open={false}
-				onOpenChange={(open) => { if (open) setMode("floating"); }}
+				onOpenChange={(open) => {
+					if (open) setMode("floating");
+				}}
 			>
 				<Sidebar
 					ref={sidebarRef}
@@ -47,7 +43,7 @@ export function SidebarNavigation() {
 					className={cn(
 						"pl-2 pt-2 group-data-[side=left]:border-none",
 						"sidebar-nav-floating",
-						!isCollapsed && "sidebar-nav-mode-floating",
+						!isCollapsed && "sidebar-nav-visible",
 						isSidebarVisible && "sidebar-nav-floating-open"
 					)}
 				>

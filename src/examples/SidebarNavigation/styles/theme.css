@@ -15,23 +15,13 @@
 	border: none !important;
 }
 
-
-.sidebar-nav-mode-floating {
+.sidebar-nav-visible {
 	margin-top: 0 !important;
 	height: 100% !important;
 }
 
 .sidebar-nav-floating-open {
 	left: 0 !important;
-}
-
-
-.sidebar-nav-floating [data-sidebar="menu-button"]:hover {
-	transition: background-color 0ms 200ms;
-}
-
-.sidebar-nav-floating [data-sidebar="menu-button"]:not(:hover) {
-	transition: background-color 0ms;
 }
 
 .gramax {
