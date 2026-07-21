@@ -30,11 +30,11 @@ export const usePanelResize = (
 			const start = resizeStartPositionRef.current;
 			if (!start) return null;
 			const dir = direction.toLowerCase();
-			const position = {
+			const nextPosition = {
 				x: dir.includes("left") ? start.x - delta.width : start.x,
 				y: dir.includes("top") ? start.y - delta.height : start.y
 			};
-			return clampPosition(position, size.width + delta.width);
+			return clampPosition(nextPosition, size.width + delta.width);
 		},
 		[size.width]
 	);

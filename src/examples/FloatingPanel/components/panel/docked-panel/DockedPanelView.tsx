@@ -1,7 +1,6 @@
 import { CSS } from "@dnd-kit/utilities";
 import { cn } from "ics-ui-kit/lib/utils";
-import { PanelContent } from "../common-components/PanelContent";
-import { PanelHeader } from "../common-components/PanelHeader";
+import { PanelBody } from "../common-components/PanelBody";
 import { PanelDragState } from "../../../hooks/usePanelDrag";
 import { useFloatingPanelStore } from "../../../store/useFloatingPanelStore";
 import { DockedAction } from "./DockedAction";
@@ -46,16 +45,12 @@ export const DockedPanelView = ({ title, zIndex, drag, onDragStart, onClose, onU
 				}
 				onMouseDown={onDragStart}
 			>
-				<div className="backdrop-glass-regular pointer-events-none absolute inset-0 -z-10" />
-				<PanelHeader
+				<PanelBody
 					title={title}
 					onClose={onClose}
-					listeners={listeners}
-					attributes={attributes}
-					isDragging={isDragging}
+					drag={{ listeners, attributes, isDragging }}
 					action={<DockedAction onUndock={onUndock} />}
 				/>
-				<PanelContent />
 			</div>
 		</>
 	);

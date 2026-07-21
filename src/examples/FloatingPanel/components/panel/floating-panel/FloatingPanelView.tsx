@@ -4,8 +4,7 @@ import { cn } from "ics-ui-kit/lib/utils";
 import { usePanelResize } from "../../../hooks/usePanelResize";
 import { PANEL_MAX_HEIGHT, PANEL_MAX_WIDTH, PANEL_MIN_HEIGHT, PANEL_MIN_WIDTH } from "../../../constants";
 import { ResizeHandle } from "./ResizeHandle";
-import { PanelHeader } from "../common-components/PanelHeader";
-import { PanelContent } from "../common-components/PanelContent";
+import { PanelBody } from "../common-components/PanelBody";
 import { PanelId, Position, SideZoneSide } from "../../../types/FloatingPanelTypes";
 import { PanelDragState } from "../../../hooks/usePanelDrag";
 import { FloatingAction } from "./FloatingAction";
@@ -71,16 +70,12 @@ export const FloatingPanelView = ({
 			}}
 		>
 			<div className="absolute inset-0 flex flex-col overflow-hidden rounded-2xl" onMouseDown={onDragStart}>
-				<div className="backdrop-glass-regular pointer-events-none absolute inset-0 -z-10" />
-				<PanelHeader
+				<PanelBody
 					title={title}
 					onClose={onClose}
-					listeners={listeners}
-					attributes={attributes}
-					isDragging={isDragging}
+					drag={{ listeners, attributes, isDragging }}
 					action={<FloatingAction onDock={onDock} />}
 				/>
-				<PanelContent />
 			</div>
 		</Resizable>
 	);

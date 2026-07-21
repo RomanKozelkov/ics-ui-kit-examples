@@ -4,7 +4,7 @@ import { ResizablePanel, ResizablePanelGroup } from "ics-ui-kit/components/resiz
 import { cn } from "ics-ui-kit/lib/utils";
 import { useFloatingPanelStore } from "../../store/useFloatingPanelStore";
 import { PanelConfig, SideZoneSide } from "../../types/FloatingPanelTypes";
-import { SIDE_ZONE_MAX_WIDTH, SIDE_ZONE_MIN_WIDTH } from "../../constants";
+import { SIDE_ZONE_MAX_WIDTH, SIDE_ZONE_MIN_WIDTH, SIDE_ZONE_PANEL_MIN_SIZE } from "../../constants";
 import { Panel } from "../panel/Panel";
 import { PanelResizeHandle } from "./PanelResizeHandle";
 
@@ -45,7 +45,7 @@ export const SideZone = ({ side, panels, isOver }: SideZoneProps) => {
 							<ResizablePanel
 								id={id}
 								order={index}
-								minSize={15}
+								minSize={SIDE_ZONE_PANEL_MIN_SIZE}
 								style={{ overflow: "visible", minHeight: 0 }}
 							>
 								<Panel id={id} title={title} onClose={() => setIsOpen(id, false)} />

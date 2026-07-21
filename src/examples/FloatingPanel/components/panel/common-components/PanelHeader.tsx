@@ -5,31 +5,35 @@ import { cn } from "ics-ui-kit/lib/utils";
 import { Filter, X } from "lucide-react";
 import { useState } from "react";
 
+export type PanelHeaderDragProps = {
+	listeners: SyntheticListenerMap | undefined;
+	attributes: DraggableAttributes;
+	isDragging: boolean;
+};
+
 type PanelHeaderProps = {
 	title: string;
 	onClose: () => void;
-	listeners: SyntheticListenerMap | undefined;
-	attributes: DraggableAttributes | undefined;
-	isDragging: boolean;
+	drag?: PanelHeaderDragProps;
 	action: React.ReactNode;
 };
 
-export const PanelHeader = ({ title, onClose, listeners, attributes, isDragging, action }: PanelHeaderProps) => {
+export const PanelHeader = ({ title, onClose, drag, action }: PanelHeaderProps) => {
 	const [isPressed, setIsPressed] = useState(false);
 
 	return (
 		<div
-			{...listeners}
-			{...attributes}
+			{...drag?.listeners}
+			{...drag?.attributes}
 			onPointerDown={(e) => {
 				setIsPressed(true);
-				listeners?.onPointerDown?.(e);
+				drag?.listeners?.onPointerDown?.(e);
 			}}
 			onPointerUp={() => setIsPressed(false)}
 			onPointerCancel={() => setIsPressed(false)}
 			className={cn(
 				"backdrop-glass-regular absolute left-0 right-0 top-0 z-10 flex select-none items-center justify-between gap-4 p-2 pl-4 pt-2 focus-visible:outline-none",
-				isDragging || isPressed ? "cursor-grabbing" : "cursor-grab"
+				drag?.isDragging || isPressed ? "cursor-grabbing" : "cursor-grab"
 			)}
 			style={{
 				maskImage: "linear-gradient(to bottom, black 80%, transparent 100%)",
