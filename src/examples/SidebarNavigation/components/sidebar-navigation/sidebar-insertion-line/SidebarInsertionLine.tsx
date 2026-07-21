@@ -12,11 +12,10 @@ export type SidebarInsertionLineProps = {
 	level: number;
 	onAdd: (depth: number) => void;
 	onParentHover?: (depth: number | null) => void;
-	isActive?: boolean;
 };
 
 export const SidebarInsertionLine = React.forwardRef<HTMLDivElement, SidebarInsertionLineProps>(
-	({ className, minDepth, maxDepth, level, onAdd, onParentHover, isActive }, ref) => {
+	({ className, minDepth, maxDepth, level, onAdd, onParentHover }, ref) => {
 		const { items, tailLeft, isTailSolid, clickableDepth, handleMouseMove, handleMouseLeave } = useInsertionLine({
 			minDepth,
 			maxDepth,
@@ -34,7 +33,6 @@ export const SidebarInsertionLine = React.forwardRef<HTMLDivElement, SidebarInse
 				data-sidebar="sidebar-insertion-line"
 				className={cn(
 					"group/insertion absolute inset-x-0 bottom-0 z-10 h-2",
-					!isActive && "opacity-0",
 					clickableDepth && "cursor-pointer",
 					className
 				)}

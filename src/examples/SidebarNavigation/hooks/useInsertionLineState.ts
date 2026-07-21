@@ -31,30 +31,9 @@ export function useInsertionLineState(id: string, level: number, isFolder: boole
 		return getParentIdAtDepth(id, level, targetDepth, parentMap);
 	};
 
-	const [isActive, setIsActive] = useState(false);
-	const timerRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
-	const isHoveredRef = useRef(false);
-
-	useEffect(() => () => clearTimeout(timerRef.current), []);
-
 	const handleParentHover = (depth: number | null) => {
-		if (depth === null) {
-			clearTimeout(timerRef.current);
-			isHoveredRef.current = false;
-			setIsActive(false);
-			setHover(null, null);
-		} else if (!isHoveredRef.current) {
-			clearTimeout(timerRef.current);
-			const parentId = getParentId(depth);
-			const anchorId = getParentId(depth + 1);
-			timerRef.current = setTimeout(() => {
-				isHoveredRef.current = true;
-				setIsActive(true);
-				setHover(parentId, anchorId);
-			}, 180);
-		} else {
-			setHover(getParentId(depth), getParentId(depth + 1));
-		}
+		if (depth === null) setHover(null, null);
+		else setHover(getParentId(depth), getParentId(depth + 1));
 	};
 
 	const handleAdd = (targetDepth: number) => {
@@ -63,5 +42,5 @@ export function useInsertionLineState(id: string, level: number, isFolder: boole
 		console.log(`Вставить в "${parentName}" после "${items[id]?.name}"`);
 	};
 
-	return { minDepth, maxDepth, handleAdd, handleParentHover, showsLine, isAnchor, isActive };
+	return { minDepth, maxDepth, handleAdd, handleParentHover, showsLine, isAnchor };
 }
