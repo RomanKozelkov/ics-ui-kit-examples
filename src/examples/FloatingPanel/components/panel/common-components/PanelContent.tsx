@@ -1,4 +1,4 @@
-import { useAtBottomScroll } from "../../hooks/useAtBottomScroll";
+import { useAtBottomScroll } from "../../../hooks/useAtBottomScroll";
 import { ActivityItem } from "./ActivityItem";
 import { BottomShadow } from "./BottomShadow";
 

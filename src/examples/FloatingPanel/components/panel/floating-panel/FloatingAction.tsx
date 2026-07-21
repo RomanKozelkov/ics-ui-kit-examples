@@ -9,7 +9,7 @@ import { Maximize2, PanelLeft, PanelRight } from "lucide-react";
 import { SideZoneSide } from "../../../types/FloatingPanelTypes";
 import { Icon } from "ics-ui-kit/components/icon";
 
-export const DockAction = ({ onDock }: { onDock: (side: SideZoneSide) => void }) => {
+export const FloatingAction = ({ onDock }: { onDock: (side: SideZoneSide) => void }) => {
 	return (
 		<DropdownMenu>
 			<DropdownMenuTrigger asChild>

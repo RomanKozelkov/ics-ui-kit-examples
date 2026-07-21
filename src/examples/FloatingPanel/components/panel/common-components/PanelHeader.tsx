@@ -4,9 +4,6 @@ import { IconButton } from "ics-ui-kit/components/button";
 import { cn } from "ics-ui-kit/lib/utils";
 import { Filter, X } from "lucide-react";
 import { useState } from "react";
-import { SideZoneSide } from "../../types/FloatingPanelTypes";
-import { UndockAction } from "./actions/UndockAction";
-import { DockAction } from "./actions/DockAction";
 
 type PanelHeaderProps = {
 	title: string;
