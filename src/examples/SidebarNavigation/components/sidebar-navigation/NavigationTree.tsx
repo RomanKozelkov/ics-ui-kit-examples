@@ -34,7 +34,7 @@ export function NavigationTree() {
 			onDragEnd={onDragEnd}
 			onDragCancel={onDragCancel}
 		>
-			<div ref={containerRef} className="relative mt-4 flex flex-col gap-3">
+			<div ref={containerRef} className="nav-tree-root relative mt-4 flex flex-col gap-3">
 				{groupIds.map((groupId, index) => {
 					const groupData = items[groupId];
 					if (!groupData) return null;

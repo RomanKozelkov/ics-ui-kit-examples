@@ -1,14 +1,8 @@
 import { SidebarTrigger } from "ics-ui-kit/components/sidebar";
-import {
-	Tooltip,
-	TooltipContent,
-	TooltipShortcut,
-	TooltipText,
-	TooltipTrigger
-} from "ics-ui-kit/components/tooltip";
+import { Tooltip, TooltipContent, TooltipTrigger } from "ics-ui-kit/components/tooltip";
 import { cn } from "ics-ui-kit/lib/utils";
 import { IconButton } from "ics-ui-kit/components/button";
-import { Search } from "lucide-react";
+import { Grip } from "lucide-react";
 import { BreadcrumbListComponent } from "./BreadcrumbListComponent";
 import { SIDEBAR_TRIGGER_ATTR } from "../../hooks/useSidebarFloating";
 
@@ -25,34 +19,33 @@ export function MainContent({ isCollapsed }: MainContentProps) {
 				<>
 					<div
 						className={cn(
-							"absolute left-4 top-4 z-20",
-							"pointer-events-auto flex h-9 w-[4.25rem] flex-row gap-1 rounded-lg border-0.5 border-primary-border",
-							"bg-sidebar-bg p-1 shadow-soft-base"
+							"absolute left-2.5 top-2.5 z-20",
+							"pointer-events-auto flex h-auto w-auto flex-row gap-0.5 rounded-full border-0",
+							"bg-[hsl(var(--alpha-50))] py-1 px-1.5 [box-shadow:var(--shadow-glass-sm)]"
 						)}
 					>
 						<Tooltip>
 							<TooltipTrigger asChild>
+								<IconButton
+									icon={Grip}
+									size="sm"
+									variant="ghost"
+									className="shrink-0 rounded-full p-2 hover:!bg-secondary-border"
+									iconClassName="size-4"
+								/>
+							</TooltipTrigger>
+							<TooltipContent focus="high">Главная</TooltipContent>
+						</Tooltip>
+						<Tooltip>
+							<TooltipTrigger asChild>
 								<SidebarTrigger
-									className="size-7 h-auto rounded-md p-1.5"
+									size="sm"
+									iconClassName="size-4"
+									className="shrink-0 rounded-full p-2 hover:!bg-secondary-border"
 									{...sidebarTriggerFloatingProps}
 								/>
 							</TooltipTrigger>
 							<TooltipContent focus="high">Показать боковую панель</TooltipContent>
-						</Tooltip>
-						<Tooltip>
-							<TooltipTrigger asChild>
-								<IconButton
-									icon={Search}
-									size="xs"
-									variant="ghost"
-									className="shrink-0 rounded-md p-1.5"
-									iconClassName="size-4"
-								/>
-							</TooltipTrigger>
-							<TooltipContent focus="high" className="flex flex-row gap-2">
-								<TooltipText>Поиск</TooltipText>
-								<TooltipShortcut>⌘/</TooltipShortcut>
-							</TooltipContent>
 						</Tooltip>
 					</div>
 

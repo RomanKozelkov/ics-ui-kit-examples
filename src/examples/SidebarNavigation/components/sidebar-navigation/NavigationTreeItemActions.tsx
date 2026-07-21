@@ -8,7 +8,7 @@ export function NavigationTreeItemActions() {
 			<Tooltip>
 				<TooltipTrigger asChild>
 					<span
-						className="hover:bg-sidebar-accent group/actions flex size-5 items-center justify-center rounded text-muted-foreground"
+						className="hover:bg-sidebar-accent group/actions flex size-5 items-center justify-center rounded-lg text-muted-foreground"
 						onClick={(e) => e.stopPropagation()}
 					>
 						<Icon icon={MoreHorizontal} className="group-hover/actions:text-primary-fg" />
@@ -19,7 +19,7 @@ export function NavigationTreeItemActions() {
 			<Tooltip>
 				<TooltipTrigger asChild>
 					<span
-						className="hover:bg-sidebar-accent group/add flex size-5 items-center justify-center rounded text-muted-foreground"
+						className="hover:bg-sidebar-accent group/add flex size-5 items-center justify-center rounded-lg text-muted-foreground"
 						onClick={(e) => e.stopPropagation()}
 					>
 						<Icon icon={Plus} className="group-hover/add:text-primary-fg" />

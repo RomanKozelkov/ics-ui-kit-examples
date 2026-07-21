@@ -14,7 +14,7 @@ interface NavigationSectionLabelProps {
 
 export function NavigationSectionLabel({ data, icon = Layers3 }: NavigationSectionLabelProps) {
 	return (
-		<SidebarGroupLabel className="group/nav mb-0.5 h-8 cursor-pointer gap-2 p-2 pr-1.5 text-muted hover:bg-secondary-border hover:text-secondary-fg">
+		<SidebarGroupLabel className="relative group/nav mb-0.5 h-8 cursor-pointer gap-2 p-2 pr-1.5 text-muted hover:bg-secondary-border hover:text-secondary-fg !rounded-lg">
 			<Icon icon={icon} />
 			<TextOverflowTooltip className="flex-1 text-xs font-medium">{data.name}</TextOverflowTooltip>
 			{data.badge != null && <NavigationItemCounter>{data.badge}</NavigationItemCounter>}

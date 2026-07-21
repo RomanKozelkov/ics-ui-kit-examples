@@ -5,7 +5,7 @@ export function InsertionTailLine({ className, style }: { className?: string; st
 	return (
 		<div
 			className={cn(
-				"absolute right-0 top-1/2 h-px -translate-y-1/2 rounded-full opacity-0 [transition:left_160ms_ease-out,opacity_160ms_75ms] group-hover/insertion:opacity-100",
+				"absolute right-0 top-1/2 h-px -translate-y-1/2 rounded-full opacity-0 [transition:left_160ms_ease-out] group-hover/insertion:opacity-100",
 				className
 			)}
 			style={style}

@@ -34,7 +34,7 @@ export function NavigationTreeItem({ id, level }: NavigationTreeItemProps) {
 	} = useItemDndState(id);
 
 	const isFolder = (data?.children?.length ?? 0) > 0;
-	const { minDepth, maxDepth, handleAdd, handleParentHover, showsLine, isAnchor } = useInsertionLineState(
+	const { minDepth, maxDepth, handleAdd, handleParentHover, showsLine, isAnchor, isActive } = useInsertionLineState(
 		id,
 		level,
 		isFolder,
@@ -100,6 +100,7 @@ export function NavigationTreeItem({ id, level }: NavigationTreeItemProps) {
 						level={level}
 						onAdd={handleAdd}
 						onParentHover={handleParentHover}
+						isActive={isActive}
 						className="-bottom-[0.3125rem]"
 					/>
 					{showsHeaderLine && <DragInsertionLine />}
@@ -145,6 +146,7 @@ export function NavigationTreeItem({ id, level }: NavigationTreeItemProps) {
 				level={level}
 				onAdd={handleAdd}
 				onParentHover={handleParentHover}
+				isActive={isActive}
 				className="-bottom-[0.3125rem]"
 			/>
 			{dropMode && <DragInsertionLine className={dropMode === "into" ? "left-3" : undefined} />}

@@ -39,7 +39,10 @@ export function InsertionDepthIcon({
 			<Icon
 				icon={CirclePlus}
 				size="sm"
-				className={cn("absolute text-primary-fg transition-opacity duration-[160ms]", isActive ? "opacity-100" : "opacity-0")}
+				className={cn(
+					"absolute text-primary-fg transition-opacity duration-[160ms]",
+					isActive ? "opacity-100" : "opacity-0"
+				)}
 			/>
 		</div>
 	);

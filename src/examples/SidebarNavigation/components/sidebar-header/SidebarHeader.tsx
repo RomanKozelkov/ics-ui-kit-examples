@@ -16,13 +16,13 @@ export function SidebarHeader({ onCollapse }: SidebarHeaderProps) {
 						icon={Grip}
 						size="sm"
 						variant="ghost"
-						className="shrink-0 rounded-md p-2 hover:!bg-secondary-border"
+						className="shrink-0 rounded-lg p-2 hover:!bg-secondary-border"
 						iconClassName="size-4"
 					/>
 				</TooltipTrigger>
 				<TooltipContent focus="high">Главная</TooltipContent>
 			</Tooltip>
-			<div className="group/team flex min-w-0 flex-1 items-center gap-2 rounded-md p-0.5 pr-2 hover:cursor-pointer hover:bg-secondary-border">
+			<div className="group/team flex min-w-0 flex-1 items-center gap-2 rounded-lg p-0.5 pr-2 hover:cursor-pointer hover:bg-secondary-border">
 				<GramaxIcon className="size-7 shrink-0" />
 				<Tooltip>
 					<TooltipTrigger asChild>
@@ -49,7 +49,7 @@ export function SidebarHeader({ onCollapse }: SidebarHeaderProps) {
 						icon={PanelLeft}
 						size="sm"
 						variant="ghost"
-						className="shrink-0 rounded-md p-2 hover:!bg-secondary-border"
+						className="shrink-0 rounded-lg p-2 hover:!bg-secondary-border"
 						iconClassName="size-4"
 						onClick={onCollapse}
 					/>

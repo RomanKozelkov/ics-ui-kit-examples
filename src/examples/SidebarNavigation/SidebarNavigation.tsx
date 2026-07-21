@@ -10,7 +10,7 @@ import { cn } from "ics-ui-kit/lib/utils";
 import React from "react";
 import { MainContent } from "./components/main-content/MainContent";
 import { NavigationTree } from "./components/sidebar-navigation/NavigationTree";
-import { useSidebarFloating } from "./hooks/useSidebarFloating";
+import { useSidebarFloating, SIDEBAR_TRIGGER_ATTR } from "./hooks/useSidebarFloating";
 import "./styles/theme.css";
 import { SidebarHeader } from "./components/sidebar-header/SidebarHeader";
 
@@ -27,6 +27,12 @@ export function SidebarNavigation() {
 
 	return (
 		<div className="gramax h-full w-full bg-primary-bg">
+			{isCollapsed && (
+				<div
+					{...{ [SIDEBAR_TRIGGER_ATTR]: true }}
+					className="fixed inset-y-0 left-0 z-30 w-[5px] cursor-ew-resize"
+				/>
+			)}
 			<SidebarProvider
 				className="h-full w-full"
 				style={{ "--sidebar-width": "293px" } as React.CSSProperties}
@@ -45,7 +51,7 @@ export function SidebarNavigation() {
 						isSidebarVisible && "sidebar-nav-floating-open"
 					)}
 				>
-					{!isSidebarFloating && <SidebarHeader onCollapse={() => setMode("collapsed")} />}
+					{!isCollapsed && <SidebarHeader onCollapse={() => setMode("collapsed")} />}
 					<SidebarContent>
 						<NavigationTree />
 					</SidebarContent>
