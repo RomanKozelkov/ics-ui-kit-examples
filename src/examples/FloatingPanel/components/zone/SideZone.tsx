@@ -19,6 +19,7 @@ export const SideZone = ({ side, panels, isOver }: SideZoneProps) => {
 	const width = useFloatingPanelStore((state) => state.sideZoneWidths[side]);
 	const setSideZoneWidth = useFloatingPanelStore((state) => state.setSideZoneWidth);
 	const setIsOpen = useFloatingPanelStore((state) => state.setIsOpen);
+	const isEmptyZoneOver = isOver && !panels.length;
 
 	return (
 		<Resizable
@@ -31,10 +32,12 @@ export const SideZone = ({ side, panels, isOver }: SideZoneProps) => {
 			<div
 				className={cn(
 					"relative m-2.5 h-[calc(100%-1rem)] rounded-2xl border border-transparent transition-colors",
-					isOver && "border-dashed border-muted"
+					isEmptyZoneOver && "border-dashed border-muted"
 				)}
 			>
-				{isOver && <div className="bg-alpha-high-90 pointer-events-none absolute inset-0 z-20 rounded-2xl" />}
+				{isEmptyZoneOver && (
+					<div className="pointer-events-none absolute inset-0 z-20 rounded-2xl bg-alpha-high-90" />
+				)}
 				<SortableContext items={panels.map(({ id }) => id)} strategy={verticalListSortingStrategy}>
 					<ResizablePanelGroup
 						direction="vertical"
