@@ -20,7 +20,7 @@ export function MainContent({ isCollapsed }: MainContentProps) {
 					className={cn(
 						"absolute left-2.5 top-2.5 z-20",
 						"pointer-events-auto flex h-auto w-auto flex-row gap-0.5 rounded-full border-0",
-						"shadow-glass-lg bg-alpha-40 px-1.5 py-1"
+						"shadow-glass-sm bg-alpha-50 px-1.5 py-1"
 					)}
 				>
 					<Tooltip>
