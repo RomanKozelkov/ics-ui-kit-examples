@@ -4,7 +4,6 @@ import { PanelBody } from "../common-components/PanelBody";
 import { PanelDragState } from "../../../hooks/usePanelDrag";
 import { useFloatingPanelStore } from "../../../store/useFloatingPanelStore";
 import { DockedAction } from "./DockedAction";
-import { DockedPanelPlaceholder } from "./DockedPanelPlaceholder";
 
 type DockedPanelViewProps = {
 	title: string;
@@ -22,7 +21,6 @@ export const DockedPanelView = ({ title, zIndex, drag, onDragStart, onClose, onU
 
 	return (
 		<>
-			{isFloatingWhileDragging && <DockedPanelPlaceholder title={title} onClose={onClose} onUndock={onUndock} />}
 			<div
 				ref={setNodeRef}
 				className={cn(
