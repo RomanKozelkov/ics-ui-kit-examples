@@ -29,11 +29,11 @@ export const SideZone = ({ side, panels, isOver }: SideZoneProps) => {
 		>
 			<div
 				className={cn(
-					"relative m-2.5 h-[calc(100%-1rem)] rounded-2xl border border-transparent transition-colors",
+					"relative m-2.5 mr-0 h-[calc(100%-1rem)] rounded-2xl border border-transparent transition-colors",
 					isOver && "border-dashed border-muted"
 				)}
 			>
-				{isOver && <div className="bg-alpha-high-90 pointer-events-none absolute inset-0 z-20 rounded-2xl" />}
+				{isOver && <div className="pointer-events-none absolute inset-0 z-20 rounded-2xl bg-alpha-high-90" />}
 				<ResizablePanelGroup
 					direction="vertical"
 					autoSaveId={`side-zone-${side}`}
