@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useMemo } from "react";
 import { useNavigationTreeStore } from "../store/navigationTreeStore";
 import { getParentMap } from "../utils/getParentMap";
 import { getMinInsertionDepth, getParentIdAtDepth } from "../utils/sidebarInsertionLineUtils";
