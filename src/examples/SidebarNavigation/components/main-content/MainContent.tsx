@@ -21,7 +21,7 @@ export function MainContent({ isCollapsed }: MainContentProps) {
 						className={cn(
 							"absolute left-2.5 top-2.5 z-20",
 							"pointer-events-auto flex h-auto w-auto flex-row gap-0.5 rounded-full border-0",
-							"bg-[hsl(var(--alpha-50))] py-1 px-1.5 [box-shadow:var(--shadow-glass-sm)]"
+							"bg-[hsl(var(--alpha-50))] px-1.5 py-1 [box-shadow:var(--shadow-glass-lg)]"
 						)}
 					>
 						<Tooltip>
@@ -58,12 +58,7 @@ export function MainContent({ isCollapsed }: MainContentProps) {
 					<BreadcrumbListComponent />
 				</div>
 			)}
-			<div
-				className={cn(
-					"relative h-full min-h-0 w-full bg-secondary-bg p-4",
-					isCollapsed && "border-0"
-				)}
-			/>
+			<div className={cn("relative h-full min-h-0 w-full bg-secondary-bg p-4", isCollapsed && "border-0")} />
 		</div>
 	);
 }

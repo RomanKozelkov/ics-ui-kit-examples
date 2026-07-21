@@ -10,8 +10,8 @@
 	background-color: hsl(var(--alpha-60)) !important;
 	backdrop-filter: var(--glass-regular) !important;
 	-webkit-backdrop-filter: var(--glass-regular) !important;
-	--tw-shadow: var(--shadow-glass-sm) !important;
-	box-shadow: var(--shadow-glass-sm) !important;
+	--tw-shadow: var(--shadow-glass-lg) !important;
+	box-shadow: var(--shadow-glass-lg) !important;
 	border: none !important;
 }
 
