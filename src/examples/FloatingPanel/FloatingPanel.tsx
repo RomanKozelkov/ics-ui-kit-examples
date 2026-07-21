@@ -1,15 +1,20 @@
 import { useRef } from "react";
-import { DndContext } from "@dnd-kit/core";
+import { DndContext, PointerSensor, useSensor, useSensors } from "@dnd-kit/core";
 import { useFloatingPanelDnd } from "./hooks/useFloatingPanelDnd";
 import { FloatingPanelZones } from "./components/FloatingPanelZones";
 
 export const FloatingPanel = () => {
 	const middleColumnRef = useRef<HTMLDivElement>(null);
 	const { handleDragStart, handleDragEnd } = useFloatingPanelDnd(middleColumnRef);
+	const sensors = useSensors(
+		useSensor(PointerSensor, {
+			activationConstraint: { distance: 5 }
+		})
+	);
 
 	return (
 		<div className="relative flex h-screen w-full overflow-hidden">
-			<DndContext onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
+			<DndContext sensors={sensors} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
 				<FloatingPanelZones middleColumnRef={middleColumnRef} />
 			</DndContext>
 		</div>

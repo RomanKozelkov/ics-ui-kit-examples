@@ -1,11 +1,12 @@
 import { Fragment } from "react";
 import { Resizable } from "re-resizable";
-import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "ics-ui-kit/components/resizable";
+import { ResizablePanel, ResizablePanelGroup } from "ics-ui-kit/components/resizable";
 import { cn } from "ics-ui-kit/lib/utils";
 import { useFloatingPanelStore } from "../../store/useFloatingPanelStore";
 import { PanelConfig, SideZoneSide } from "../../types/FloatingPanelTypes";
 import { SIDE_ZONE_MAX_WIDTH, SIDE_ZONE_MIN_WIDTH } from "../../constants";
 import { Panel } from "../panel/Panel";
+import { PanelResizeHandle } from "./PanelResizeHandle";
 
 type SideZoneProps = {
 	side: SideZoneSide;
@@ -28,16 +29,25 @@ export const SideZone = ({ side, panels, isOver }: SideZoneProps) => {
 		>
 			<div
 				className={cn(
-					"m-2.5 h-[calc(100%-1rem)] overflow-hidden rounded-2xl transition-colors",
-					panels.length > 0 && "border border-secondary-border bg-secondary-bg shadow-lg",
-					isOver && "border border-dashed border-muted bg-secondary-bg-hover"
+					"relative m-2.5 h-[calc(100%-1rem)] rounded-2xl border border-transparent transition-colors",
+					isOver && "border-dashed border-muted"
 				)}
 			>
-				<ResizablePanelGroup direction="vertical" autoSaveId={`side-zone-${side}`}>
+				{isOver && <div className="bg-alpha-high-90 pointer-events-none absolute inset-0 z-20 rounded-2xl" />}
+				<ResizablePanelGroup
+					direction="vertical"
+					autoSaveId={`side-zone-${side}`}
+					style={{ overflow: "visible" }}
+				>
 					{panels.map(({ id, title }, index) => (
 						<Fragment key={id}>
-							{index > 0 && <ResizableHandle />}
-							<ResizablePanel id={id} order={index} minSize={15}>
+							{index > 0 && <PanelResizeHandle />}
+							<ResizablePanel
+								id={id}
+								order={index}
+								minSize={15}
+								style={{ overflow: "visible", minHeight: 0 }}
+							>
 								<Panel id={id} title={title} onClose={() => setIsOpen(id, false)} />
 							</ResizablePanel>
 						</Fragment>
