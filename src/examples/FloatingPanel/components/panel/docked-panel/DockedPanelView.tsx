@@ -1,10 +1,10 @@
 import { CSS } from "@dnd-kit/utilities";
 import { cn } from "ics-ui-kit/lib/utils";
-import { PanelContent } from "../PanelContent";
-import { PanelHeader } from "../PanelHeader";
+import { PanelContent } from "../common-components/PanelContent";
+import { PanelHeader } from "../common-components/PanelHeader";
 import { PanelDragState } from "../../../hooks/usePanelDrag";
 import { useFloatingPanelStore } from "../../../store/useFloatingPanelStore";
-import { UndockAction } from "../actions/UndockAction";
+import { DockedAction } from "./DockedAction";
 import { DockedPanelPlaceholder } from "./DockedPanelPlaceholder";
 
 type DockedPanelViewProps = {
@@ -17,7 +17,7 @@ type DockedPanelViewProps = {
 };
 
 export const DockedPanelView = ({ title, zIndex, drag, onDragStart, onClose, onUndock }: DockedPanelViewProps) => {
-	const { attributes, listeners, setNodeRef, transform, isDragging, dockedDragRect } = drag;
+	const { attributes, listeners, setNodeRef, transform, transition, isDragging, dockedDragRect } = drag;
 	const isResizingDockedPanels = useFloatingPanelStore((state) => state.isResizingDockedPanels);
 	const isFloatingWhileDragging = isDragging && dockedDragRect;
 
@@ -42,7 +42,10 @@ export const DockedPanelView = ({ title, zIndex, drag, onDragStart, onClose, onU
 								zIndex,
 								transform: CSS.Translate.toString(transform)
 							}
-						: undefined
+						: {
+								transform: CSS.Transform.toString(transform),
+								transition
+							}
 				}
 				onMouseDown={onDragStart}
 			>
@@ -53,7 +56,7 @@ export const DockedPanelView = ({ title, zIndex, drag, onDragStart, onClose, onU
 					listeners={listeners}
 					attributes={attributes}
 					isDragging={isDragging}
-					action={<UndockAction onUndock={onUndock} />}
+					action={<DockedAction onUndock={onUndock} />}
 				/>
 				<PanelContent />
 			</div>

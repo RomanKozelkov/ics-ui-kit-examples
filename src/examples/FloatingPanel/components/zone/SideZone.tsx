@@ -1,5 +1,6 @@
 import { Fragment } from "react";
 import { Resizable } from "re-resizable";
+import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
 import { ResizablePanel, ResizablePanelGroup } from "ics-ui-kit/components/resizable";
 import { cn } from "ics-ui-kit/lib/utils";
 import { useFloatingPanelStore } from "../../store/useFloatingPanelStore";
@@ -34,25 +35,27 @@ export const SideZone = ({ side, panels, isOver }: SideZoneProps) => {
 				)}
 			>
 				{isOver && <div className="bg-alpha-high-90 pointer-events-none absolute inset-0 z-20 rounded-2xl" />}
-				<ResizablePanelGroup
-					direction="vertical"
-					autoSaveId={`side-zone-${side}`}
-					style={{ overflow: "visible" }}
-				>
-					{panels.map(({ id, title }, index) => (
-						<Fragment key={id}>
-							{index > 0 && <PanelResizeHandle />}
-							<ResizablePanel
-								id={id}
-								order={index}
-								minSize={15}
-								style={{ overflow: "visible", minHeight: 0 }}
-							>
-								<Panel id={id} title={title} onClose={() => setIsOpen(id, false)} />
-							</ResizablePanel>
-						</Fragment>
-					))}
-				</ResizablePanelGroup>
+				<SortableContext items={panels.map(({ id }) => id)} strategy={verticalListSortingStrategy}>
+					<ResizablePanelGroup
+						direction="vertical"
+						autoSaveId={`side-zone-${side}`}
+						style={{ overflow: "visible" }}
+					>
+						{panels.map(({ id, title }, index) => (
+							<Fragment key={id}>
+								{index > 0 && <PanelResizeHandle />}
+								<ResizablePanel
+									id={id}
+									order={index}
+									minSize={15}
+									style={{ overflow: "visible", minHeight: 0 }}
+								>
+									<Panel id={id} title={title} onClose={() => setIsOpen(id, false)} />
+								</ResizablePanel>
+							</Fragment>
+						))}
+					</ResizablePanelGroup>
+				</SortableContext>
 			</div>
 		</Resizable>
 	);

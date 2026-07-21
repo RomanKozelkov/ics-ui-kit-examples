@@ -19,10 +19,15 @@ export const FloatingPanelZones = ({
 	middleColumnRef: React.RefObject<HTMLDivElement | null>;
 }) => {
 	const panels = useFloatingPanelStore((state) => state.panels);
+	const zoneOrder = useFloatingPanelStore((state) => state.zoneOrder);
 	const activeDropSide = useActiveDropSide();
 
 	const dockedPanels = (side: SideZoneSide) =>
-		PANELS.filter((panel) => panels[panel.id].isOpen && panels[panel.id].dockedSide === side);
+		zoneOrder[side]
+			.map((id) => PANELS.find((panel) => panel.id === id))
+			.filter(
+				(panel): panel is PanelConfig => !!panel && panels[panel.id].isOpen && panels[panel.id].dockedSide === side
+			);
 
 	const openPanelIds = PANELS.filter((panel) => panels[panel.id].isOpen).map((panel) => panel.id);
 

@@ -1,6 +1,6 @@
-import { UndockAction } from "../actions/UndockAction";
-import { PanelContent } from "../PanelContent";
-import { PanelHeader } from "../PanelHeader";
+import { DockedAction } from "./DockedAction";
+import { PanelContent } from "../common-components/PanelContent";
+import { PanelHeader } from "../common-components/PanelHeader";
 
 type DockedPanelPlaceholderProps = {
 	title: string;
@@ -18,7 +18,7 @@ export const DockedPanelPlaceholder = ({ title, onClose, onUndock }: DockedPanel
 				listeners={undefined}
 				attributes={undefined}
 				isDragging={false}
-				action={<UndockAction onUndock={onUndock} />}
+				action={<DockedAction onUndock={onUndock} />}
 			/>
 			<PanelContent />
 		</div>

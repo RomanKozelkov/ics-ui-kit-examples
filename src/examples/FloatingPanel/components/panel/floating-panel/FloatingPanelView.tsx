@@ -3,10 +3,10 @@ import { Resizable } from "re-resizable";
 import { cn } from "ics-ui-kit/lib/utils";
 import { usePanelResize } from "../../../hooks/usePanelResize";
 import { PANEL_MAX_HEIGHT, PANEL_MAX_WIDTH, PANEL_MIN_HEIGHT, PANEL_MIN_WIDTH } from "../../../constants";
-import { ResizeHandle } from "../ResizeHandle";
-import { PanelHeader } from "../PanelHeader";
-import { DockAction } from "../actions/DockAction";
-import { PanelContent } from "../PanelContent";
+import { ResizeHandle } from "./ResizeHandle";
+import { PanelHeader } from "../common-components/PanelHeader";
+import { FloatingAction } from "./FloatingAction";
+import { PanelContent } from "../common-components/PanelContent";
 import { PanelId, Position, SideZoneSide } from "../../../types/FloatingPanelTypes";
 import { PanelDragState } from "../../../hooks/usePanelDrag";
 
@@ -78,7 +78,7 @@ export const FloatingPanelView = ({
 					listeners={listeners}
 					attributes={attributes}
 					isDragging={isDragging}
-					action={<DockAction onDock={onDock} />}
+					action={<FloatingAction onDock={onDock} />}
 				/>
 				<PanelContent />
 			</div>
