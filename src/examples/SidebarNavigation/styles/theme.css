@@ -15,9 +15,6 @@
 	border: none !important;
 }
 
-.sidebar-nav-floating [data-sidebar="menu-button"]:not([data-active="true"]):not(:hover):not([data-highlighted]) {
-	background-color: transparent !important;
-}
 
 .sidebar-nav-mode-floating {
 	margin-top: 0 !important;
