@@ -12,9 +12,10 @@ type SideZoneProps = {
 	side: SideZoneSide;
 	panels: PanelConfig[];
 	isOver: boolean;
+	className?: string;
 };
 
-export const SideZone = ({ side, panels, isOver }: SideZoneProps) => {
+export const SideZone = ({ side, panels, isOver, className }: SideZoneProps) => {
 	const width = useFloatingPanelStore((state) => state.sideZoneWidths[side]);
 	const setSideZoneWidth = useFloatingPanelStore((state) => state.setSideZoneWidth);
 	const setIsOpen = useFloatingPanelStore((state) => state.setIsOpen);
@@ -29,8 +30,9 @@ export const SideZone = ({ side, panels, isOver }: SideZoneProps) => {
 		>
 			<div
 				className={cn(
-					"relative m-2.5 mr-0 h-[calc(100%-1rem)] rounded-2xl border border-transparent transition-colors",
-					isOver && "border-dashed border-muted"
+					"relative m-2.5 h-[calc(100%-1rem)] rounded-2xl border border-transparent transition-colors",
+					isOver && "border-dashed border-muted",
+					className
 				)}
 			>
 				{isOver && <div className="pointer-events-none absolute inset-0 z-20 rounded-2xl bg-alpha-high-90" />}

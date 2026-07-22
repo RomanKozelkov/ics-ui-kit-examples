@@ -2,7 +2,7 @@ import type { ReactNode } from "react";
 import { ArrowRight, Cloud, FileText, LayoutTemplate } from "lucide-react";
 
 const Link = ({ children }: { children: ReactNode }) => (
-	<span className="cursor-default text-blue-600 hover:underline">{children}</span>
+	<span className="cursor-default text-status-info hover:underline">{children}</span>
 );
 
 export const DocumentBackground = () => {

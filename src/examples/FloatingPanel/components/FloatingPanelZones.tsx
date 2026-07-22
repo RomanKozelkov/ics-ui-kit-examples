@@ -41,7 +41,7 @@ export const FloatingPanelZones = ({
 
 	return (
 		<>
-			<SideZone side="left" panels={leftDockedPanels} isOver={activeDropSide === "left"} />
+			<SideZone side="left" panels={leftDockedPanels} isOver={activeDropSide === "left"} className="mr-0" />
 
 			<div ref={middleColumnRef} className="relative h-full flex-1">
 				<DocumentBackground />
@@ -59,7 +59,7 @@ export const FloatingPanelZones = ({
 				</div>
 			</div>
 
-			<SideZone side="right" panels={rightDockedPanels} isOver={activeDropSide === "right"} />
+			<SideZone side="right" panels={rightDockedPanels} isOver={activeDropSide === "right"} className="ml-0" />
 		</>
 	);
 };
