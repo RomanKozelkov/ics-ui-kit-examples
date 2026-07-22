@@ -1,0 +1,91 @@
+.gramax {
+    /** Base **/
+    --primary-accent: 240 6% 10%;
+    --primary-accent-hover: 240 4% 16%;
+    --primary-fg: 240 6% 10%;
+    --primary-border: 240 5% 84%;
+    --primary-bg: 0 0% 99%;
+    --primary-bg-hover: 240 6% 90%;
+    --secondary-accent: 240 6% 10%;
+    --secondary-fg: 240 5% 26%;
+    --secondary-border: 240 6% 90%;
+    --secondary-bg: 0 0% 100%;
+    --secondary-bg-hover: 240 5% 96%;
+    --tertiary-accent: 240 4% 46%;
+    --muted: 240 4% 46%;
+    --sidebar-bg: 0 0% 99%;
+
+    /** Alpha **/
+    --alpha-03: 240 5% 96% / 3%;
+    --alpha-05: 240 5% 96% / 5%;
+    --alpha-08: 240 5% 96% / 8%;
+    --alpha-10: 240 5% 96% / 10%;
+    --alpha-20: 240 5% 96% / 20%;
+    --alpha-30: 240 5% 96% / 30%;
+    --alpha-40: 240 5% 96% / 40%;
+    --alpha-50: 240 5% 96% / 50%;
+    --alpha-60: 240 5% 96% / 60%;
+    --alpha-70: 240 5% 96% / 70%;
+    --alpha-80: 240 5% 96% / 80%;
+    --alpha-90: 240 5% 96% / 90%;
+
+    --alpha-high-03: 240 6% 10% / 3%;
+    --alpha-high-05: 240 6% 10% / 5%;
+    --alpha-high-08: 240 6% 10% / 8%;
+    --alpha-high-10: 240 6% 10% / 10%;
+    --alpha-high-20: 240 6% 10% / 20%;
+    --alpha-high-30: 240 6% 10% / 30%;
+    --alpha-high-40: 240 6% 10% / 40%;
+    --alpha-high-50: 240 6% 10% / 50%;
+    --alpha-high-60: 240 6% 10% / 60%;
+    --alpha-high-70: 240 6% 10% / 70%;
+    --alpha-high-80: 240 6% 10% / 80%;
+    --alpha-high-90: 240 6% 10% / 90%;
+}
+
+.dark {
+    .gramax {
+        /** Base **/
+        --primary-accent: 0 0% 99%;
+        --primary-accent-hover: 240 6% 90%;
+        --primary-fg: 0 0% 99%;
+        --primary-border: 240 5% 34%;
+        --primary-bg: 240 6% 10%;
+        --primary-bg-hover: 240 5% 26%;
+        --secondary-accent: 0 0% 99%;
+        --secondary-fg: 240 6% 90%;
+        --secondary-border: 240 5% 26%;
+        --secondary-bg: 240 10% 4%;
+        --secondary-bg-hover: 240 4% 16%;
+        --tertiary-accent: 240 5% 65%;
+        --muted: 240 5% 65%;
+        --sidebar-bg: 240 10% 4%;
+
+        /** Alpha **/
+        --alpha-03: 240 6% 10% / 3%;
+        --alpha-05: 240 6% 10% / 5%;
+        --alpha-08: 240 6% 10% / 8%;
+        --alpha-10: 240 6% 10% / 10%;
+        --alpha-20: 240 6% 10% / 20%;
+        --alpha-30: 240 6% 10% / 30%;
+        --alpha-40: 240 6% 10% / 40%;
+        --alpha-50: 240 6% 10% / 50%;
+        --alpha-60: 240 6% 10% / 60%;
+        --alpha-70: 240 6% 10% / 70%;
+        --alpha-80: 240 6% 10% / 80%;
+        --alpha-90: 240 6% 10% / 90%;
+
+        --alpha-high-03: 240 5% 96% / 3%;
+        --alpha-high-05: 240 5% 96% / 5%;
+        --alpha-high-08: 240 5% 96% / 8%;
+        --alpha-high-10: 240 5% 96% / 10%;
+        --alpha-high-20: 240 5% 96% / 20%;
+        --alpha-high-30: 240 5% 96% / 30%;
+        --alpha-high-40: 240 5% 96% / 40%;
+        --alpha-high-50: 240 5% 96% / 50%;
+        --alpha-high-60: 240 5% 96% / 60%;
+        --alpha-high-70: 240 5% 96% / 70%;
+        --alpha-high-80: 240 5% 96% / 80%;
+        --alpha-high-90: 240 5% 96% / 90%;
+    }
+}

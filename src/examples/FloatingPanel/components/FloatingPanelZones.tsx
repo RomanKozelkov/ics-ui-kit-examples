@@ -4,6 +4,7 @@ import { GlassToolbar, GlassToolbarToggleGroup } from "ics-ui-kit/components/gla
 import { useActiveDropSide } from "../hooks/useActiveDropSide";
 import { useFloatingPanelStore } from "../store/useFloatingPanelStore";
 import { PanelConfig } from "../types/FloatingPanelTypes";
+import { DocumentBackground } from "./DocumentBackground";
 import { PanelToggleButton } from "./PanelToggleButton";
 import { PanelWindow } from "./PanelWindow";
 import { SideZone } from "./zone/SideZone";
@@ -43,10 +44,11 @@ export const FloatingPanelZones = ({
 			<SideZone side="left" panels={leftDockedPanels} isOver={activeDropSide === "left"} />
 
 			<div ref={middleColumnRef} className="relative h-full flex-1">
+				<DocumentBackground />
 				{PANELS.map((panel) => (
 					<PanelWindow key={panel.id} {...panel} />
 				))}
-				<div className="absolute bottom-20 right-0">
+				<div className="absolute bottom-20 right-0 z-10">
 					<GlassToolbar>
 						<GlassToolbarToggleGroup type="multiple" value={openPanelIds}>
 							{PANELS.map((panel) => (
