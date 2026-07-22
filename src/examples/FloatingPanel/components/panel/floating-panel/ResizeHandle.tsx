@@ -11,7 +11,7 @@ export const ResizeHandle = () => {
 			<path
 				d="M10.4517 0.738281C9.64307 2.85547 8.59048 4.66724 6.65088 6.54297C5.08973 8.05271 2.94628 9.35933 0.73877 10.009"
 				stroke="currentColor"
-				strokeWidth="1.47692"
+				strokeWidth="1"
 				strokeLinecap="round"
 				strokeLinejoin="round"
 			/>
