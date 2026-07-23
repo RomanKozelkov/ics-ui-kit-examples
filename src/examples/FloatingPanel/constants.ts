@@ -16,3 +16,4 @@ export const SIDE_ZONE_DROP_THRESHOLD = 128;
 export const SIDE_ZONE_PANEL_MIN_SIZE = 15;
 
 export const MIN_VISIBLE = 48;
+export const MAXIMIZED_PANEL_Z_INDEX = 9999;
