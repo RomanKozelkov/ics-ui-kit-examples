@@ -3,11 +3,11 @@ import { Resizable } from "re-resizable";
 import { cn } from "ics-ui-kit/lib/utils";
 import { usePanelResize } from "../../../hooks/usePanelResize";
 import { PANEL_MAX_HEIGHT, PANEL_MAX_WIDTH, PANEL_MIN_HEIGHT, PANEL_MIN_WIDTH } from "../../../constants";
-import { PanelBody } from "../common-components/PanelBody";
 import { PanelId, Position, SideZoneSide } from "../../../types/FloatingPanelTypes";
 import { PanelDragState } from "../../../hooks/usePanelDrag";
-import { FloatingAction } from "./FloatingAction";
 import { ResizableCornerIcon } from "ics-ui-kit/components/resizable";
+import { PanelBody } from "../common-components/PanelBody";
+import { FloatingAction } from "./FloatingAction";
 
 type FloatingPanelViewProps = {
 	id: PanelId;

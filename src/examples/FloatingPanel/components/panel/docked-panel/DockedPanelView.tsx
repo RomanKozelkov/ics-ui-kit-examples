@@ -15,7 +15,7 @@ type DockedPanelViewProps = {
 };
 
 export const DockedPanelView = ({ title, zIndex, drag, onDragStart, onClose, onUndock }: DockedPanelViewProps) => {
-	const { attributes, listeners, setNodeRef, transform, isDragging, dockedDragRect } = drag;
+	const { attributes, listeners, setNodeRef, transform, transition, isDragging, dockedDragRect } = drag;
 	const isResizingDockedPanels = useFloatingPanelStore((state) => state.isResizingDockedPanels);
 	const isFloatingWhileDragging = isDragging && dockedDragRect;
 
@@ -39,7 +39,10 @@ export const DockedPanelView = ({ title, zIndex, drag, onDragStart, onClose, onU
 								zIndex,
 								transform: CSS.Translate.toString(transform)
 							}
-						: undefined
+						: {
+								transform: CSS.Transform.toString(transform),
+								transition
+							}
 				}
 				onMouseDown={onDragStart}
 			>

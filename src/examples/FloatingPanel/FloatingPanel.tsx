@@ -1,5 +1,5 @@
 import { useRef } from "react";
-import { DndContext, PointerSensor, useSensor, useSensors } from "@dnd-kit/core";
+import { closestCenter, DndContext, PointerSensor, useSensor, useSensors } from "@dnd-kit/core";
 import { useFloatingPanelDnd } from "./hooks/useFloatingPanelDnd";
 import { FloatingPanelZones } from "./components/FloatingPanelZones";
 import "./styles/theme.css";
@@ -15,7 +15,12 @@ export const FloatingPanel = () => {
 
 	return (
 		<div className="gramax relative flex h-screen w-full overflow-hidden">
-			<DndContext sensors={sensors} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
+			<DndContext
+				sensors={sensors}
+				collisionDetection={closestCenter}
+				onDragStart={handleDragStart}
+				onDragEnd={handleDragEnd}
+			>
 				<FloatingPanelZones middleColumnRef={middleColumnRef} />
 			</DndContext>
 		</div>

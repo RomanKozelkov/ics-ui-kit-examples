@@ -8,10 +8,12 @@ import { PanelId } from "../types/FloatingPanelTypes";
 
 export const useFloatingPanelDnd = (middleColumnRef: RefObject<HTMLDivElement | null>) => {
 	const panels = useFloatingPanelStore((state) => state.panels);
+	const zoneOrder = useFloatingPanelStore((state) => state.zoneOrder);
 	const setPosition = useFloatingPanelStore((state) => state.setPosition);
 	const bringToFront = useFloatingPanelStore((state) => state.bringToFront);
 	const dockPanel = useFloatingPanelStore((state) => state.dockPanel);
 	const undockPanel = useFloatingPanelStore((state) => state.undockPanel);
+	const reorderZone = useFloatingPanelStore((state) => state.reorderZone);
 
 	const handleDragStart = (event: DragStartEvent) => {
 		bringToFront(event.active.id as PanelId);
@@ -19,6 +21,14 @@ export const useFloatingPanelDnd = (middleColumnRef: RefObject<HTMLDivElement | 
 
 	const handleDragEnd = (event: DragEndEvent) => {
 		const id = event.active.id as PanelId;
+		const dockedSide = panels[id].dockedSide;
+		const overId = event.over?.id as PanelId | undefined;
+
+		if (dockedSide && overId && overId !== id && zoneOrder[dockedSide].includes(overId)) {
+			reorderZone(dockedSide, id, overId);
+			return;
+		}
+
 		const rect = event.active.rect.current.translated;
 		const dropSide = rect && getEdgeDropSide(rect, window.innerWidth);
 

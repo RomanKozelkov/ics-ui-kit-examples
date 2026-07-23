@@ -21,6 +21,7 @@ export const FloatingPanelZones = ({
 	middleColumnRef: React.RefObject<HTMLDivElement | null>;
 }) => {
 	const panels = useFloatingPanelStore((state) => state.panels);
+	const zoneOrder = useFloatingPanelStore((state) => state.zoneOrder);
 	const activeDropSide = useActiveDropSide();
 
 	const { leftDockedPanels, rightDockedPanels, openPanelIds } = useMemo(() => {

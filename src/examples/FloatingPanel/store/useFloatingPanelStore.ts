@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
+import { arrayMove } from "@dnd-kit/sortable";
 import { PANEL_DEFAULT_HEIGHT, PANEL_DEFAULT_WIDTH, SIDE_ZONE_DEFAULT_WIDTH } from "../constants";
 import { PanelId, Position, SideZoneSide, Size } from "../types/FloatingPanelTypes";
 
@@ -17,6 +18,7 @@ type FloatingPanelState = {
 	panels: Record<PanelId, PanelState>;
 	nextZIndex: number;
 	sideZoneWidths: Record<SideZoneSide, number>;
+	zoneOrder: Record<SideZoneSide, PanelId[]>;
 	isResizingDockedPanels: boolean;
 	setPosition: (id: PanelId, position: Position) => void;
 	setSizeAndPosition: (id: PanelId, size: Size, position: Position) => void;
@@ -25,6 +27,7 @@ type FloatingPanelState = {
 	setSideZoneWidth: (side: SideZoneSide, width: number) => void;
 	dockPanel: (id: PanelId, side: SideZoneSide) => void;
 	undockPanel: (id: PanelId, position: Position) => void;
+	reorderZone: (side: SideZoneSide, activeId: PanelId, overId: PanelId) => void;
 	setIsResizingDockedPanels: (isResizing: boolean) => void;
 };
 
@@ -46,6 +49,7 @@ export const useFloatingPanelStore = create<FloatingPanelState>()(
 			},
 			nextZIndex: INITIAL_Z_INDEX + 1,
 			sideZoneWidths: { left: SIDE_ZONE_DEFAULT_WIDTH, right: SIDE_ZONE_DEFAULT_WIDTH },
+			zoneOrder: { left: [], right: [] },
 			isResizingDockedPanels: false,
 			setPosition: (id, position) =>
 				set((state) => ({
@@ -69,13 +73,30 @@ export const useFloatingPanelStore = create<FloatingPanelState>()(
 					sideZoneWidths: { ...state.sideZoneWidths, [side]: width }
 				})),
 			dockPanel: (id, side) =>
-				set((state) => ({
-					panels: { ...state.panels, [id]: { ...state.panels[id], dockedSide: side } }
-				})),
+				set((state) => {
+					const left = state.zoneOrder.left.filter((panelId) => panelId !== id);
+					const right = state.zoneOrder.right.filter((panelId) => panelId !== id);
+					return {
+						panels: { ...state.panels, [id]: { ...state.panels[id], dockedSide: side } },
+						zoneOrder: { left, right, [side]: [...(side === "left" ? left : right), id] }
+					};
+				}),
 			undockPanel: (id, position) =>
 				set((state) => ({
-					panels: { ...state.panels, [id]: { ...state.panels[id], dockedSide: null, position } }
+					panels: { ...state.panels, [id]: { ...state.panels[id], dockedSide: null, position } },
+					zoneOrder: {
+						left: state.zoneOrder.left.filter((panelId) => panelId !== id),
+						right: state.zoneOrder.right.filter((panelId) => panelId !== id)
+					}
 				})),
+			reorderZone: (side, activeId, overId) =>
+				set((state) => {
+					const order = state.zoneOrder[side];
+					const fromIndex = order.indexOf(activeId);
+					const toIndex = order.indexOf(overId);
+					if (fromIndex === -1 || toIndex === -1) return {};
+					return { zoneOrder: { ...state.zoneOrder, [side]: arrayMove(order, fromIndex, toIndex) } };
+				}),
 			setIsResizingDockedPanels: (isResizing) => set({ isResizingDockedPanels: isResizing })
 		}),
 		{ name: "floating-panel-state" }
