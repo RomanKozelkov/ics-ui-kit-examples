@@ -1,24 +1,28 @@
 import { IconButton } from "ics-ui-kit/components/button";
-import { Tooltip, TooltipContent, TooltipShortcut, TooltipText, TooltipTrigger } from "ics-ui-kit/components/tooltip";
-import { Ellipsis, Grip, Search } from "lucide-react";
+import { Tooltip, TooltipContent, TooltipTrigger } from "ics-ui-kit/components/tooltip";
+import { Ellipsis, Grip, PanelLeft } from "lucide-react";
 import { GramaxIcon } from "./GramaxIcon";
 
-export function SidebarHeader() {
+interface SidebarHeaderProps {
+	onCollapse: () => void;
+}
+
+export function SidebarHeader({ onCollapse }: SidebarHeaderProps) {
 	return (
-		<div className="flex items-center gap-1 px-2 py-3 pr-4">
+		<div className="flex h-[52px] items-center gap-1 p-2.5">
 			<Tooltip>
 				<TooltipTrigger asChild>
 					<IconButton
 						icon={Grip}
 						size="sm"
 						variant="ghost"
-						className="shrink-0 rounded-md p-2"
+						className="shrink-0 rounded-lg p-2 hover:!bg-secondary-border"
 						iconClassName="size-4"
 					/>
 				</TooltipTrigger>
 				<TooltipContent focus="high">Главная</TooltipContent>
 			</Tooltip>
-			<div className="group/team flex min-w-0 flex-1 items-center gap-2 rounded-md p-0.5 pr-2 hover:cursor-pointer hover:bg-secondary-bg-hover">
+			<div className="group/team flex min-w-0 flex-1 items-center gap-2 rounded-lg p-0.5 pr-2 hover:cursor-pointer hover:bg-secondary-border">
 				<GramaxIcon className="size-7 shrink-0" />
 				<Tooltip>
 					<TooltipTrigger asChild>
@@ -42,17 +46,15 @@ export function SidebarHeader() {
 			<Tooltip>
 				<TooltipTrigger asChild>
 					<IconButton
-						icon={Search}
+						icon={PanelLeft}
 						size="sm"
 						variant="ghost"
-						className="shrink-0 rounded-md p-2"
+						className="shrink-0 rounded-lg p-2 hover:!bg-secondary-border"
 						iconClassName="size-4"
+						onClick={onCollapse}
 					/>
 				</TooltipTrigger>
-				<TooltipContent focus="high" className="flex flex-row gap-2">
-					<TooltipText>Поиск</TooltipText>
-					<TooltipShortcut>⌘/</TooltipShortcut>
-				</TooltipContent>
+				<TooltipContent focus="high">Свернуть панель</TooltipContent>
 			</Tooltip>
 		</div>
 	);

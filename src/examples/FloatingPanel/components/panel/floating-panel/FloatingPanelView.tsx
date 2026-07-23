@@ -3,12 +3,11 @@ import { Resizable } from "re-resizable";
 import { cn } from "ics-ui-kit/lib/utils";
 import { usePanelResize } from "../../../hooks/usePanelResize";
 import { PANEL_MAX_HEIGHT, PANEL_MAX_WIDTH, PANEL_MIN_HEIGHT, PANEL_MIN_WIDTH } from "../../../constants";
-import { ResizeHandle } from "./ResizeHandle";
-import { PanelHeader } from "../common-components/PanelHeader";
-import { FloatingAction } from "./FloatingAction";
-import { PanelContent } from "../common-components/PanelContent";
 import { PanelId, Position, SideZoneSide } from "../../../types/FloatingPanelTypes";
 import { PanelDragState } from "../../../hooks/usePanelDrag";
+import { ResizableCornerIcon } from "ics-ui-kit/components/resizable";
+import { PanelBody } from "../common-components/PanelBody";
+import { FloatingAction } from "./FloatingAction";
 
 type FloatingPanelViewProps = {
 	id: PanelId;
@@ -41,7 +40,7 @@ export const FloatingPanelView = ({
 		<Resizable
 			ref={resizableRef}
 			className={cn(
-				"shadow-glass-md flex flex-col overflow-hidden rounded-2xl border border-secondary-bg bg-alpha-40",
+				"flex flex-col overflow-hidden rounded-2xl border border-secondary-bg bg-alpha-40 shadow-glass-md",
 				(isDragging || isResizing) && "border-muted"
 			)}
 			style={{
@@ -67,20 +66,16 @@ export const FloatingPanelView = ({
 				bottomLeft: { cursor: "nesw-resize" }
 			}}
 			handleComponent={{
-				bottomRight: <ResizeHandle />
+				bottomRight: <ResizableCornerIcon className="absolute bottom-[11px] right-[11px]" />
 			}}
 		>
 			<div className="absolute inset-0 flex flex-col overflow-hidden rounded-2xl" onMouseDown={onDragStart}>
-				<div className="backdrop-glass-regular pointer-events-none absolute inset-0 -z-10" />
-				<PanelHeader
+				<PanelBody
 					title={title}
 					onClose={onClose}
-					listeners={listeners}
-					attributes={attributes}
-					isDragging={isDragging}
+					drag={{ listeners, attributes, isDragging }}
 					action={<FloatingAction onDock={onDock} />}
 				/>
-				<PanelContent />
 			</div>
 		</Resizable>
 	);

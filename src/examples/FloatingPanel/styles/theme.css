@@ -1,29 +1,3 @@
-.sidebar-nav-floating {
-	padding: 10px !important;
-	margin-top: 3.125rem !important;
-	height: calc(100% - 3.125rem) !important;
-}
-
-.sidebar-nav-floating [data-sidebar="sidebar"] {
-	border-radius: 20px !important;
-	overflow: hidden !important;
-	background-color: hsl(var(--alpha-60)) !important;
-	backdrop-filter: var(--glass-regular) !important;
-	-webkit-backdrop-filter: var(--glass-regular) !important;
-	--tw-shadow: var(--shadow-glass-lg) !important;
-	box-shadow: var(--shadow-glass-lg) !important;
-	border: none !important;
-}
-
-.sidebar-nav-visible {
-	margin-top: 0 !important;
-	height: 100% !important;
-}
-
-.sidebar-nav-floating-open {
-	left: 0 !important;
-}
-
 .gramax {
     /** Base **/
     --primary-accent: 240 6% 10%;

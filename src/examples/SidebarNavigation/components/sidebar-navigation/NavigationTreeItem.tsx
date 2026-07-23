@@ -109,7 +109,7 @@ export function NavigationTreeItem({ id, level }: NavigationTreeItemProps) {
 					onAnimationStart={() => setAnimating(true)}
 					onAnimationEnd={() => setAnimating(false)}
 				>
-					<div className="relative ml-6 pt-0.5">
+					<div className="relative ml-4 pt-0.5">
 						<SidebarMenuSub className="ml-0 gap-0 border-none p-0 [&>*:not(:first-child)]:pt-0.5">
 							{childIds.map((childId) => (
 								<NavigationTreeItem key={childId} id={childId} level={level + 1} />
@@ -147,7 +147,7 @@ export function NavigationTreeItem({ id, level }: NavigationTreeItemProps) {
 				onParentHover={handleParentHover}
 				className="-bottom-[0.3125rem]"
 			/>
-			{dropMode && <DragInsertionLine className={dropMode === "into" ? "left-6" : undefined} />}
+			{dropMode && <DragInsertionLine className={dropMode === "into" ? "left-3" : undefined} />}
 		</div>
 	);
 }

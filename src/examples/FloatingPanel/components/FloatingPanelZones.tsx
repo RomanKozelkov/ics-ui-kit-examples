@@ -1,8 +1,10 @@
+import { useMemo } from "react";
 import { Bell, MessageSquare, History } from "lucide-react";
 import { GlassToolbar, GlassToolbarToggleGroup } from "ics-ui-kit/components/glass-toolbar";
 import { useActiveDropSide } from "../hooks/useActiveDropSide";
 import { useFloatingPanelStore } from "../store/useFloatingPanelStore";
-import { PanelConfig, SideZoneSide } from "../types/FloatingPanelTypes";
+import { PanelConfig } from "../types/FloatingPanelTypes";
+import { DocumentBackground } from "./DocumentBackground";
 import { PanelToggleButton } from "./PanelToggleButton";
 import { PanelWindow } from "./PanelWindow";
 import { SideZone } from "./zone/SideZone";
@@ -22,24 +24,32 @@ export const FloatingPanelZones = ({
 	const zoneOrder = useFloatingPanelStore((state) => state.zoneOrder);
 	const activeDropSide = useActiveDropSide();
 
-	const dockedPanels = (side: SideZoneSide) =>
-		zoneOrder[side]
-			.map((id) => PANELS.find((panel) => panel.id === id))
-			.filter(
-				(panel): panel is PanelConfig => !!panel && panels[panel.id].isOpen && panels[panel.id].dockedSide === side
-			);
+	const { leftDockedPanels, rightDockedPanels, openPanelIds } = useMemo(() => {
+		const leftDockedPanels: PanelConfig[] = [];
+		const rightDockedPanels: PanelConfig[] = [];
+		const openPanelIds: PanelConfig["id"][] = [];
 
-	const openPanelIds = PANELS.filter((panel) => panels[panel.id].isOpen).map((panel) => panel.id);
+		PANELS.forEach((panel) => {
+			const panelState = panels[panel.id];
+			if (!panelState.isOpen) return;
+			openPanelIds.push(panel.id);
+			if (panelState.dockedSide === "left") leftDockedPanels.push(panel);
+			if (panelState.dockedSide === "right") rightDockedPanels.push(panel);
+		});
+
+		return { leftDockedPanels, rightDockedPanels, openPanelIds };
+	}, [panels]);
 
 	return (
 		<>
-			<SideZone side="left" panels={dockedPanels("left")} isOver={activeDropSide === "left"} />
+			<SideZone side="left" panels={leftDockedPanels} isOver={activeDropSide === "left"} className="mr-0" />
 
 			<div ref={middleColumnRef} className="relative h-full flex-1">
+				<DocumentBackground />
 				{PANELS.map((panel) => (
 					<PanelWindow key={panel.id} {...panel} />
 				))}
-				<div className="absolute bottom-20 right-0">
+				<div className="absolute bottom-20 right-0 z-10">
 					<GlassToolbar>
 						<GlassToolbarToggleGroup type="multiple" value={openPanelIds}>
 							{PANELS.map((panel) => (
@@ -50,7 +60,7 @@ export const FloatingPanelZones = ({
 				</div>
 			</div>
 
-			<SideZone side="right" panels={dockedPanels("right")} isOver={activeDropSide === "right"} />
+			<SideZone side="right" panels={rightDockedPanels} isOver={activeDropSide === "right"} className="ml-0" />
 		</>
 	);
 };

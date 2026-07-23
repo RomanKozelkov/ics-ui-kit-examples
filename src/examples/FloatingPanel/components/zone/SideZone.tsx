@@ -5,7 +5,7 @@ import { ResizablePanel, ResizablePanelGroup } from "ics-ui-kit/components/resiz
 import { cn } from "ics-ui-kit/lib/utils";
 import { useFloatingPanelStore } from "../../store/useFloatingPanelStore";
 import { PanelConfig, SideZoneSide } from "../../types/FloatingPanelTypes";
-import { SIDE_ZONE_MAX_WIDTH, SIDE_ZONE_MIN_WIDTH } from "../../constants";
+import { SIDE_ZONE_MAX_WIDTH, SIDE_ZONE_MIN_WIDTH, SIDE_ZONE_PANEL_MIN_SIZE } from "../../constants";
 import { Panel } from "../panel/Panel";
 import { PanelResizeHandle } from "./PanelResizeHandle";
 
@@ -13,9 +13,10 @@ type SideZoneProps = {
 	side: SideZoneSide;
 	panels: PanelConfig[];
 	isOver: boolean;
+	className?: string;
 };
 
-export const SideZone = ({ side, panels, isOver }: SideZoneProps) => {
+export const SideZone = ({ side, panels, isOver, className }: SideZoneProps) => {
 	const width = useFloatingPanelStore((state) => state.sideZoneWidths[side]);
 	const setSideZoneWidth = useFloatingPanelStore((state) => state.setSideZoneWidth);
 	const setIsOpen = useFloatingPanelStore((state) => state.setIsOpen);
