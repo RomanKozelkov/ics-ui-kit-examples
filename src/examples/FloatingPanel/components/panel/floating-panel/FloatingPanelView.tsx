@@ -3,11 +3,11 @@ import { Resizable } from "re-resizable";
 import { cn } from "ics-ui-kit/lib/utils";
 import { usePanelResize } from "../../../hooks/usePanelResize";
 import { PANEL_MAX_HEIGHT, PANEL_MAX_WIDTH, PANEL_MIN_HEIGHT, PANEL_MIN_WIDTH } from "../../../constants";
-import { ResizeHandle } from "./ResizeHandle";
 import { PanelBody } from "../common-components/PanelBody";
 import { PanelId, Position, SideZoneSide } from "../../../types/FloatingPanelTypes";
 import { PanelDragState } from "../../../hooks/usePanelDrag";
 import { FloatingAction } from "./FloatingAction";
+import { ResizableCornerIcon } from "ics-ui-kit/components/resizable";
 
 type FloatingPanelViewProps = {
 	id: PanelId;
@@ -40,7 +40,7 @@ export const FloatingPanelView = ({
 		<Resizable
 			ref={resizableRef}
 			className={cn(
-				"shadow-glass-md flex flex-col overflow-hidden rounded-2xl border border-secondary-bg bg-alpha-40",
+				"flex flex-col overflow-hidden rounded-2xl border border-secondary-bg bg-alpha-40 shadow-glass-md",
 				(isDragging || isResizing) && "border-muted"
 			)}
 			style={{
@@ -66,7 +66,7 @@ export const FloatingPanelView = ({
 				bottomLeft: { cursor: "nesw-resize" }
 			}}
 			handleComponent={{
-				bottomRight: <ResizeHandle />
+				bottomRight: <ResizableCornerIcon className="absolute bottom-[11px] right-[11px]" />
 			}}
 		>
 			<div className="absolute inset-0 flex flex-col overflow-hidden rounded-2xl" onMouseDown={onDragStart}>
