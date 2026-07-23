@@ -14,7 +14,7 @@ export const FloatingPanel = () => {
 	);
 
 	return (
-		<div className="gramax relative flex h-screen w-full overflow-hidden">
+		<div className="gramax relative flex h-screen w-full overflow-hidden bg-secondary-bg">
 			<DndContext sensors={sensors} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
 				<FloatingPanelZones middleColumnRef={middleColumnRef} />
 			</DndContext>

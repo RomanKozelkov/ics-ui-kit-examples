@@ -52,8 +52,8 @@ export const FloatingPanelView = ({
 		<Resizable
 			ref={resizableRef}
 			className={cn(
-				"flex flex-col rounded-2xl border border-secondary-bg bg-alpha-40 shadow-glass-md",
-				(isDragging || isResizing) && "border-muted",
+				"flex flex-col rounded-2xl bg-alpha-40 shadow-glass-md",
+				(isDragging || isResizing) && "border border-muted",
 				isMaximized && "rounded-none"
 			)}
 			style={
