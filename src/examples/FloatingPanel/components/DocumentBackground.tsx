@@ -15,13 +15,6 @@ export const DocumentBackground = () => {
 					What &ldquo;Invisible&rdquo; Means
 				</h1>
 
-				<blockquote className="flex gap-3 rounded-xl bg-secondary-bg px-4 py-3 text-sm leading-relaxed text-primary-fg">
-					<span className="shrink-0 text-2xl leading-none text-muted" aria-hidden>
-						&rdquo;&rdquo;
-					</span>
-					<p>Про принципы и философию «незаметного» дизайна</p>
-				</blockquote>
-
 				<p className="text-sm leading-relaxed text-primary-fg">
 					If you need more than 2 minutes to process the email, you can postpone it. My trick is to
 					&ldquo;Star&rdquo; an email so it shows up in my Starred folder, then once a day I process the
