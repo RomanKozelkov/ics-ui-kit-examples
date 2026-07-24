@@ -24,7 +24,7 @@ export const DockedPanelView = ({ title, zIndex, drag, onDragStart, onClose, onU
 			<div
 				ref={setNodeRef}
 				className={cn(
-					"flex flex-col overflow-hidden rounded-2xl border border-transparent bg-alpha-40 shadow-glass-lg",
+					"backdrop-glass-regular flex flex-col overflow-hidden rounded-2xl border border-transparent bg-alpha-40 shadow-glass-lg",
 					isFloatingWhileDragging ? "bg-alpha-40" : "relative h-full w-full",
 					(isDragging || isResizingDockedPanels) && "border-muted"
 				)}

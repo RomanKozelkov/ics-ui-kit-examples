@@ -52,7 +52,7 @@ export const FloatingPanelView = ({
 		<Resizable
 			ref={resizableRef}
 			className={cn(
-				"flex flex-col rounded-2xl bg-alpha-40 shadow-glass-md",
+				"backdrop-glass-regular flex flex-col rounded-2xl bg-alpha-40 shadow-glass-md",
 				(isDragging || isResizing) && "shadow-focus",
 				isMaximized && "rounded-none"
 			)}

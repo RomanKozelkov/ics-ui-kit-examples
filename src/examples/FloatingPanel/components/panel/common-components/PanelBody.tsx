@@ -11,9 +11,9 @@ type PanelBodyProps = {
 export const PanelBody = ({ title, onClose, drag, action }: PanelBodyProps) => {
 	return (
 		<>
-			<div className="backdrop-glass-regular pointer-events-none absolute inset-0 -z-10" />
-			<PanelHeader title={title} onClose={onClose} drag={drag} action={action} />
+			<div className="h-11 shrink-0" />
 			<PanelContent />
+			<PanelHeader title={title} onClose={onClose} drag={drag} action={action} />
 		</>
 	);
 };
