@@ -2,6 +2,7 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { PANEL_DEFAULT_HEIGHT, PANEL_DEFAULT_WIDTH, SIDE_ZONE_DEFAULT_WIDTH } from "../constants";
 import { PanelId, Position, SideZoneSide, Size } from "../types/FloatingPanelTypes";
+import { clampPosition } from "../utils/clampPosition";
 
 const INITIAL_Z_INDEX = 10;
 
@@ -60,9 +61,16 @@ export const useFloatingPanelStore = create<FloatingPanelState>()(
 					panels: { ...state.panels, [id]: { ...state.panels[id], size, position } }
 				})),
 			setIsOpen: (id, isOpen) =>
-				set((state) => ({
-					panels: { ...state.panels, [id]: { ...state.panels[id], isOpen } }
-				})),
+				set((state) => {
+					const panel = state.panels[id];
+					const position =
+						isOpen && !panel.position && !panel.dockedSide
+							? clampPosition({ x: 0, y: 0 }, panel.size.width)
+							: panel.position;
+					return {
+						panels: { ...state.panels, [id]: { ...panel, isOpen, position } }
+					};
+				}),
 			bringToFront: (id) =>
 				set((state) => ({
 					panels: { ...state.panels, [id]: { ...state.panels[id], zIndex: state.nextZIndex } },
@@ -90,6 +98,13 @@ export const useFloatingPanelStore = create<FloatingPanelState>()(
 					panels: { ...state.panels, [id]: { ...state.panels[id], isMaximized: false } }
 				}))
 		}),
-		{ name: "floating-panel-state" }
+		{
+			name: "floating-panel-state",
+			partialize: (state) => ({
+				panels: state.panels,
+				nextZIndex: state.nextZIndex,
+				sideZoneWidths: state.sideZoneWidths
+			})
+		}
 	)
 );

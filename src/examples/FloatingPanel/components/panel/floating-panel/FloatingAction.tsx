@@ -9,6 +9,7 @@ import { Maximize2, PanelLeft, PanelRight, PictureInPicture, PictureInPicture2 }
 import { SideZoneSide } from "../../../types/FloatingPanelTypes";
 import { Icon } from "ics-ui-kit/components/icon";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "ics-ui-kit/components/tooltip";
+import { MAXIMIZED_PANEL_Z_INDEX } from "../../../constants";
 
 type FloatingActionProps = {
 	onDock: (side: SideZoneSide) => void;
@@ -25,7 +26,7 @@ export const FloatingAction = ({ onDock, isMaximized, onMaximize, onRestore }: F
 					<TooltipTrigger asChild>
 						<IconButton icon={PictureInPicture} size="sm" variant="text" onClick={onRestore} />
 					</TooltipTrigger>
-					<TooltipContent side="bottom" className="z-[9999]">
+					<TooltipContent side="bottom" style={{ zIndex: MAXIMIZED_PANEL_Z_INDEX }}>
 						Свернуть
 					</TooltipContent>
 				</Tooltip>
@@ -37,7 +38,7 @@ export const FloatingAction = ({ onDock, isMaximized, onMaximize, onRestore }: F
 			<DropdownMenuTrigger asChild>
 				<IconButton icon={Maximize2} size="sm" variant="text" />
 			</DropdownMenuTrigger>
-			<DropdownMenuContent align="start" className="z-[9999]">
+			<DropdownMenuContent align="start" style={{ zIndex: MAXIMIZED_PANEL_Z_INDEX }}>
 				<DropdownMenuItem onSelect={() => onDock("left")}>
 					<Icon icon={PanelLeft} />
 					Поместить в панель слева

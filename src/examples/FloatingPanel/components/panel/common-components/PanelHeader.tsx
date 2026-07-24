@@ -31,6 +31,7 @@ export const PanelHeader = ({ title, onClose, drag, action }: PanelHeaderProps) 
 			}}
 			onPointerUp={() => setIsPressed(false)}
 			onPointerCancel={() => setIsPressed(false)}
+			onLostPointerCapture={() => setIsPressed(false)}
 			className={cn(
 				"backdrop-glass-regular absolute left-0 right-0 top-0 z-10 flex select-none items-center justify-between gap-4 p-2 pl-4 pt-2 focus-visible:outline-none",
 				drag?.isDragging || isPressed ? "cursor-grabbing" : "cursor-grab"
