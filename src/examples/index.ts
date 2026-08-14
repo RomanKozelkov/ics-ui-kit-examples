@@ -10,3 +10,4 @@ export { PromoCalendar } from "./PromoCalendar/PromoCalendar";
 export { FloatingPanel } from "./FloatingPanel/FloatingPanel";
 export { VisitReport } from "./VisitReport/VisitReport";
 export { ResizableTable } from "./ResizableTable/ResizableTable";
+export { ActionBar } from "./ActionBar/ActionBar";
