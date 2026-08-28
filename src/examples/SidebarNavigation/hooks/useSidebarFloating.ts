@@ -42,8 +42,8 @@ const isPortalOwnedBySidebar = (target: Node, sidebarEl: HTMLElement): boolean =
 
 export const SIDEBAR_TRIGGER_ATTR = "data-sidebar-trigger";
 
-export const useSidebarFloating = (ref: React.RefObject<HTMLDivElement>, isCollapsed: boolean) => {
-	const [isHoverActive, setIsHoverActive] = React.useState(false);
+export const useSidebarFloating = (ref: React.RefObject<HTMLDivElement>, isFloatingMode: boolean) => {
+	const [isSidebarFloating, setIsSidebarFloating] = React.useState(false);
 
 	const timerRef = React.useRef<ReturnType<typeof setTimeout> | null>(null);
 	const isOverRef = React.useRef(false);
@@ -56,7 +56,7 @@ export const useSidebarFloating = (ref: React.RefObject<HTMLDivElement>, isColla
 	}, []);
 
 	React.useEffect(() => {
-		if (!isCollapsed) return;
+		if (!isFloatingMode) return;
 
 		const handleMouseOver = (event: MouseEvent) => {
 			const sidebarEl = ref.current;
@@ -73,10 +73,10 @@ export const useSidebarFloating = (ref: React.RefObject<HTMLDivElement>, isColla
 
 			if (isOverSidebar) {
 				clearTimer();
-				setIsHoverActive(true);
+				setIsSidebarFloating(true);
 			} else {
 				timerRef.current = setTimeout(() => {
-					setIsHoverActive(false);
+					setIsSidebarFloating(false);
 					timerRef.current = null;
 				}, 300);
 			}
@@ -89,16 +89,16 @@ export const useSidebarFloating = (ref: React.RefObject<HTMLDivElement>, isColla
 			clearTimer();
 			isOverRef.current = false;
 		};
-	}, [isCollapsed, ref, setIsHoverActive, clearTimer]);
+	}, [isFloatingMode, ref, setIsSidebarFloating, clearTimer]);
 
 	React.useEffect(() => {
-		if (!isCollapsed) {
+		if (!isFloatingMode) {
 			clearTimer();
-			setIsHoverActive(false);
+			setIsSidebarFloating(false);
 		}
-	}, [isCollapsed, clearTimer, setIsHoverActive]);
+	}, [isFloatingMode, clearTimer, setIsSidebarFloating]);
 
 	return {
-		isHoverActive
+		isSidebarFloating
 	};
 };

@@ -12,15 +12,10 @@ import { useNavigationDnd } from "../../hooks/useNavigationDnd";
 import { useHoverBelowContainer } from "../../hooks/useHoverBelowContainer";
 import { AfterContainerInsertionLine } from "./sidebar-insertion-line/AfterContainerInsertionLine";
 import { useRef } from "react";
-import { cn } from "ics-ui-kit/lib/utils";
 
 const groupIcons = [Layers2, Layers3, Layers];
 
-type NavigationTreeProps = {
-	isCollapsed: boolean;
-};
-
-export function NavigationTree({ isCollapsed }: NavigationTreeProps) {
+export function NavigationTree() {
 	const items = useNavigationTreeStore((s) => s.items);
 	const draggingId = useNavigationTreeStore((s) => s.draggingId);
 	const groupIds = items[ROOT_ID]?.children ?? [];
@@ -39,10 +34,7 @@ export function NavigationTree({ isCollapsed }: NavigationTreeProps) {
 			onDragEnd={onDragEnd}
 			onDragCancel={onDragCancel}
 		>
-			<div
-				ref={containerRef}
-				className={cn("relative flex flex-col gap-3", isCollapsed ? "mt-3.5" : "mt-3")}
-			>
+			<div ref={containerRef} className="relative mt-4 flex flex-col gap-3">
 				{groupIds.map((groupId, index) => {
 					const groupData = items[groupId];
 					if (!groupData) return null;

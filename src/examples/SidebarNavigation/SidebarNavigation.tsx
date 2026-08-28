@@ -1,71 +1,93 @@
-import { Sidebar, SidebarContent, SidebarInset, SidebarProvider, SidebarRail } from "ics-ui-kit/components/sidebar";
+import {
+	Sidebar,
+	SidebarContent,
+	SidebarFooter,
+	SidebarInset,
+	SidebarProvider,
+	SidebarRail,
+	SidebarSeparator
+} from "ics-ui-kit/components/sidebar";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "ics-ui-kit/components/tooltip";
 import { cn } from "ics-ui-kit/lib/utils";
 import React from "react";
 import { MainContent } from "./components/main-content/MainContent";
 import { NavigationTree } from "./components/sidebar-navigation/NavigationTree";
-import { useSidebarFloating, SIDEBAR_TRIGGER_ATTR } from "./hooks/useSidebarFloating";
+import { SidebarFooter as SidebarFooterContent } from "./components/sidebar-footer/SidebarFooter";
+import { useSidebarFloating } from "./hooks/useSidebarFloating";
 import "./styles/theme.css";
 import { SidebarHeader } from "./components/sidebar-header/SidebarHeader";
 
-type SidebarMode = "floating" | "collapsed";
-
 export function SidebarNavigation() {
-	const [mode, setMode] = React.useState<SidebarMode>("floating");
+	const [open, setOpen] = React.useState(true);
 	const sidebarRef = React.useRef<HTMLDivElement>(null);
+	const prevOpenRef = React.useRef(open);
 
-	const isCollapsed = mode === "collapsed";
-	const { isHoverActive } = useSidebarFloating(sidebarRef as React.RefObject<HTMLDivElement>, isCollapsed);
+	const [visualVariant, setVisualVariant] = React.useState<"sidebar" | "floating">(() =>
+		open ? "sidebar" : "floating"
+	);
 
-	const isSidebarVisible = !isCollapsed || isHoverActive;
+	const isFloatingMode = visualVariant === "floating";
+	const sidebarWidth = isFloatingMode ? "284px" : "300px";
+	const { isSidebarFloating } = useSidebarFloating(sidebarRef as React.RefObject<HTMLDivElement>, isFloatingMode);
+
+	React.useEffect(() => {
+		if (prevOpenRef.current === open) return;
+		setVisualVariant("sidebar");
+		prevOpenRef.current = open;
+	}, [open]);
+
+	const onSidebarTransitionEnd = React.useCallback(
+		(event: React.TransitionEvent<HTMLDivElement>) => {
+			if (event.target !== event.currentTarget) return;
+			if (!["left", "right", "width"].includes(event.propertyName)) return;
+			if (!open) {
+				setVisualVariant("floating");
+			}
+		},
+		[open]
+	);
 
 	return (
 		<div className="gramax h-full w-full bg-primary-bg">
-			{isCollapsed && (
-				<div
-					{...{ [SIDEBAR_TRIGGER_ATTR]: true }}
-					className="fixed inset-y-0 left-0 z-30 w-[5px] cursor-ew-resize"
-				/>
-			)}
 			<SidebarProvider
 				className="h-full w-full"
-				style={{ "--sidebar-width": "293px" } as React.CSSProperties}
-				open={false}
-				onOpenChange={(open) => {
-					if (open) setMode("floating");
-				}}
+				style={{ "--sidebar-width": sidebarWidth } as React.CSSProperties}
+				open={open}
+				onOpenChange={setOpen}
 			>
 				<Sidebar
 					ref={sidebarRef}
 					side="left"
-					variant="floating"
+					variant={visualVariant}
 					collapsible="offcanvas"
+					onTransitionEnd={onSidebarTransitionEnd}
 					className={cn(
 						"pl-2 pt-2 group-data-[side=left]:border-none",
-						"sidebar-nav-floating",
-						!isCollapsed && "sidebar-nav-visible",
-						isSidebarVisible && "sidebar-nav-floating-open"
+						visualVariant === "floating" && "sidebar-nav-floating",
+						isSidebarFloating && "sidebar-nav-floating-open"
 					)}
 				>
-					{!isCollapsed && <SidebarHeader onCollapse={() => setMode("collapsed")} />}
+					{!isSidebarFloating && <SidebarHeader />}
 					<SidebarContent>
-						<NavigationTree isCollapsed={isCollapsed} />
+						<NavigationTree />
 					</SidebarContent>
-					{isCollapsed && (
-						<TooltipProvider delayDuration={700}>
-							<Tooltip>
-								<TooltipTrigger asChild>
-									<SidebarRail />
-								</TooltipTrigger>
-								<TooltipContent side="right" focus="high">
-									Раскрыть боковую панель
-								</TooltipContent>
-							</Tooltip>
-						</TooltipProvider>
-					)}
+					<SidebarSeparator />
+					<SidebarFooter>
+						<SidebarFooterContent />
+					</SidebarFooter>
+					<TooltipProvider delayDuration={700}>
+						<Tooltip>
+							<TooltipTrigger asChild>
+								<SidebarRail className="[[data-state=expanded]_&]:hidden" />
+							</TooltipTrigger>
+							<TooltipContent side="right" focus="high">
+								Раскрыть боковую панель
+							</TooltipContent>
+						</Tooltip>
+					</TooltipProvider>
 				</Sidebar>
 				<SidebarInset>
-					<MainContent isCollapsed={isCollapsed} />
+					<MainContent />
 				</SidebarInset>
 			</SidebarProvider>
 		</div>

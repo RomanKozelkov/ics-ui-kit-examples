@@ -48,14 +48,13 @@ export function SideMenuItemContent({
 				onClick={onSelect}
 				isActive={isSelected}
 				className={cn(
-					"group/nav h-7 gap-1 rounded-lg bg-transparent py-1.5 pr-1.5 data-[active=true]:font-medium",
-					"hover:bg-secondary-border data-[active=true]:bg-primary-border data-[active=true]:hover:bg-primary-border",
-					isHighlighted && "bg-secondary-border"
+					"group/nav h-7 gap-1 py-1.5 pr-1.5 data-[active=true]:font-medium",
+					isHighlighted && "bg-secondary-bg-hover"
 				)}
 				{...dragListeners}
 				{...dragAttributes}
 			>
-				<span className="flex min-w-0 flex-1 items-center gap-2 group-hover/nav:pr-12">
+				<span className="flex min-w-0 flex-1 items-center gap-2">
 					<OverflowTooltip className="inline-block min-w-0 truncate" focus="high">
 						{data.name}
 					</OverflowTooltip>
