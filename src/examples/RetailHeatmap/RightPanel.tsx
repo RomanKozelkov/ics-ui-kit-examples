@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { Fragment, useEffect, useRef, useState } from "react";
 import {
 	ArrowLeft,
 	ChevronRight,
@@ -11,6 +11,13 @@ import {
 } from "lucide-react";
 import { Divider } from "ics-ui-kit/components/divider";
 import { Badge } from "ics-ui-kit/components/badge";
+import {
+	Breadcrumb,
+	BreadcrumbItem,
+	BreadcrumbLink,
+	BreadcrumbList,
+	BreadcrumbSeparator
+} from "ics-ui-kit/components/breadcrumb";
 import { Toggle } from "ics-ui-kit/components/toggle";
 import {
 	DropdownMenu,
@@ -39,11 +46,27 @@ import { hasActiveFilters, type FilterDimension, type FilterState } from "./filt
 import type { Stats } from "./stats";
 import { POINT_TYPE_MAP, TERRITORY_KIND_LABEL, type Territory, type TradePoint } from "./types";
 
-/** Что выбрано на карте: ничего, территория (округ, район или брик) или точка (треб. 5.1). */
-export type Selection =
-	| { kind: "territory"; id: string }
-	| { kind: "point"; point: TradePoint }
-	| null;
+/**
+ * Что выбрано на карте (треб. 5.1).
+ *
+ * Территория и точка не исключают друг друга: точка внутри выбранной территории открывается
+ * *внутри* неё, не сбрасывая выбор. Иначе клик по точке возвращал карту ко всем точкам города,
+ * и, чтобы вернуться к разбору территории, её приходилось выбирать заново.
+ */
+export type Selection = {
+	/** Округ, район или брик — область разбора; ею же ограничены точки на карте. */
+	territoryId: string | null;
+	/** Точка, открытая в карточке; лежит внутри `territoryId`, если он задан. */
+	point: TradePoint | null;
+};
+
+export const EMPTY_SELECTION: Selection = { territoryId: null, point: null };
+
+/** Шаг пути над заголовком: город, округ, район или брик. Сам выбранный объект в путь не входит. */
+export type Crumb = { id: string; label: string };
+
+/** Корень пути — вся рабочая область; выбор сбрасывается целиком. */
+export const ROOT_CRUMB_ID = "root";
 
 /** Строка списка территорий (треб. 5.2.1, пункт 7). */
 export type TerritoryListRow = {
@@ -213,6 +236,39 @@ function TerritoryList({
 }
 
 /* ---------- шапка ---------- */
+
+/**
+ * Путь над заголовком: город → округ → район, у брика — город → брик.
+ *
+ * Показывает, внутри чего идёт разбор, и возвращает на любой уровень одним кликом: без этого
+ * из карточки точки был один выход — «Назад», и уровень территории терялся.
+ */
+function PanelBreadcrumbs({ crumbs, onSelect }: { crumbs: Crumb[]; onSelect: (id: string) => void }) {
+	return (
+		<Breadcrumb className="mb-1">
+			<BreadcrumbList className="gap-1 text-[11px] leading-none sm:gap-1">
+				{crumbs.map((crumb, index) => (
+					<Fragment key={crumb.id}>
+						<BreadcrumbItem className="min-w-0">
+							<BreadcrumbLink asChild>
+								<button
+									type="button"
+									onClick={() => onSelect(crumb.id)}
+									className="max-w-[150px] truncate text-[11px] text-slate-400 hover:text-slate-900"
+								>
+									{crumb.label}
+								</button>
+							</BreadcrumbLink>
+						</BreadcrumbItem>
+						{index < crumbs.length - 1 && (
+							<BreadcrumbSeparator className="text-slate-300 [&>svg]:size-3" />
+						)}
+					</Fragment>
+				))}
+			</BreadcrumbList>
+		</Breadcrumb>
+	);
+}
 
 function BackButton({ onClick }: { onClick: () => void }) {
 	return (
@@ -430,6 +486,8 @@ type RightPanelProps = {
 	/** true, когда фильтр действует только в границах территории (треб. 5.5.2). */
 	scopeIsLocal: boolean;
 	territory: Territory | null;
+	/** Путь к выбранному объекту; пустой, когда ничего не выбрано. */
+	crumbs: Crumb[];
 	/** Черновик брика во время рисования — перекрывает обычное состояние панели. */
 	draft: DraftTerritory | null;
 	territoryRows: TerritoryListRow[];
@@ -437,6 +495,8 @@ type RightPanelProps = {
 	onToggleFilter: (dimension: FilterDimension, value: string) => void;
 	onResetScopeFilters: () => void;
 	onClose: () => void;
+	/** Переход по пути: идентификатор территории либо `ROOT_CRUMB_ID` — вся рабочая область. */
+	onSelectCrumb: (id: string) => void;
 	onSelectTerritory: (id: string) => void;
 	onRenameBrick: (id: string, name: string) => void;
 	onDeleteBrick: (id: string) => void;
@@ -451,19 +511,21 @@ export function RightPanel({
 	scopeFilters,
 	scopeIsLocal,
 	territory,
+	crumbs,
 	draft,
 	territoryRows,
 	editing,
 	onToggleFilter,
 	onResetScopeFilters,
 	onClose,
+	onSelectCrumb,
 	onSelectTerritory,
 	onRenameBrick,
 	onDeleteBrick,
 	onToggleEdit,
 	onFocus
 }: RightPanelProps) {
-	const point = selection?.kind === "point" ? selection.point : null;
+	const point = selection.point;
 	const localFilterActive = scopeIsLocal && hasActiveFilters(scopeFilters);
 	const [renaming, setRenaming] = useState(false);
 	// Переключились на другую территорию — незавершённое переименование закрывается.
@@ -472,6 +534,7 @@ export function RightPanel({
 	return (
 		<div className="flex h-full flex-col bg-white">
 			<div className="px-5 pb-3.5 pt-[18px]">
+				{!draft && crumbs.length > 0 && <PanelBreadcrumbs crumbs={crumbs} onSelect={onSelectCrumb} />}
 				{draft ? (
 					<div className="flex items-center gap-2.5">
 						<div className="min-w-0 flex-1 truncate text-[20px] font-bold leading-tight tracking-[-.01em] text-slate-900">

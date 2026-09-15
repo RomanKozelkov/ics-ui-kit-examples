@@ -4,9 +4,18 @@ import { draftDemography, fetchCityDemography, fetchTerritoryDemography } from "
 import { FiltersBar } from "./FiltersBar";
 import { Legend } from "./Legend";
 import { MapView, type FocusRequest, type MapLayer } from "./MapView";
-import { RightPanel, type DraftTerritory, type Selection, type TerritoryListRow } from "./RightPanel";
+import {
+	EMPTY_SELECTION,
+	ROOT_CRUMB_ID,
+	RightPanel,
+	type Crumb,
+	type DraftTerritory,
+	type Selection,
+	type TerritoryListRow
+} from "./RightPanel";
 import type { Tool } from "./MapToolbar";
 import { TRADE_POINTS } from "./mockData";
+import { MOSCOW } from "./moscowGeo";
 import {
 	applyFilters,
 	createDefaultFilters,
@@ -42,7 +51,7 @@ export function RetailHeatmap() {
 	const [history, setHistory] = useState<Territory[][]>([]);
 	const [filters, setFilters] = useState<FilterState>(createDefaultFilters);
 	const [localFilters, setLocalFilters] = useState<FilterState>(createDefaultFilters);
-	const [selection, setSelection] = useState<Selection>(null);
+	const [selection, setSelection] = useState<Selection>(EMPTY_SELECTION);
 	const [editing, setEditing] = useState(false);
 	const [tool, setTool] = useState<Tool>("cursor");
 	const [metric, setMetric] = useState<ColorMetric>("count");
@@ -54,7 +63,7 @@ export function RetailHeatmap() {
 	const [notice, setNotice] = useState<string | null>(null);
 	const noticeTimer = useRef(0);
 
-	const selectedTerritoryId = selection?.kind === "territory" ? selection.id : null;
+	const selectedTerritoryId = selection.territoryId;
 
 	const model = useMemo(() => buildModel(bricks), [bricks]);
 
@@ -177,6 +186,49 @@ export function RetailHeatmap() {
 		[visible, colors, statsByTerritory]
 	);
 
+	/**
+	 * Путь над заголовком панели: город → округ → район, у брика — город → брик. Сам выбранный
+	 * объект в путь не входит — он и так в заголовке, а каждый шаг пути кликабелен.
+	 *
+	 * Брик начинается прямо от города: он нарезается поверх базового слоя и может не совпадать
+	 * с границами района, поэтому подставлять его «родителя» в путь было бы неверно.
+	 */
+	const crumbs: Crumb[] = useMemo(() => {
+		if (!selectedTerritory && !selection.point) return [];
+		const list: Crumb[] = [{ id: ROOT_CRUMB_ID, label: MOSCOW.name }];
+		if (selectedTerritory) {
+			const parent = selectedTerritory.parentId ? model.byId[selectedTerritory.parentId] : undefined;
+			if (parent && selectedTerritory.kind === "rayon") list.push({ id: parent.id, label: parent.name });
+			// Территория попадает в путь, только когда открыта точка внутри неё.
+			if (selection.point) list.push({ id: selectedTerritory.id, label: selectedTerritory.name });
+		}
+		return list;
+	}, [model, selectedTerritory, selection.point]);
+
+	/** Точка входит в выбранную территорию: у округа — через его районы. */
+	const pointInSelection = (point: TradePoint): boolean => {
+		if (!selectedTerritoryId) return false;
+		const leafId = model.pointTerritoryId[point.code];
+		if (!leafId) return false;
+		return leafId === selectedTerritoryId || (model.childRayons[selectedTerritoryId]?.includes(leafId) ?? false);
+	};
+
+	/**
+	 * Выбор точки. Точка внутри выбранной территории открывается внутри неё — территория
+	 * остаётся выбранной, карта не «разворачивается» обратно ко всем точкам города.
+	 */
+	const handleSelectPoint = (point: TradePoint) =>
+		setSelection((prev) => ({ territoryId: pointInSelection(point) ? prev.territoryId : null, point }));
+
+	/** «Назад»: из карточки точки — к её территории, с территории — ко всей рабочей области. */
+	const handleBack = () =>
+		setSelection((prev) =>
+			prev.point && prev.territoryId ? { territoryId: prev.territoryId, point: null } : EMPTY_SELECTION
+		);
+
+	const handleSelectCrumb = (id: string) =>
+		setSelection(id === ROOT_CRUMB_ID ? EMPTY_SELECTION : { territoryId: id, point: null });
+
 	/* ---------- операции нарезки ---------- */
 
 	/** Короткое сообщение поверх карты — когда операция нарезки ничего не изменила. */
@@ -197,7 +249,7 @@ export function RetailHeatmap() {
 		if (!history.length) return;
 		setBricks(history[history.length - 1]);
 		setHistory(history.slice(0, -1));
-		setSelection(null);
+		setSelection(EMPTY_SELECTION);
 	};
 
 	const handleCreateBrick = (geometry: MultiPoly) => {
@@ -207,7 +259,7 @@ export function RetailHeatmap() {
 			return;
 		}
 		commit(next);
-		setSelection({ kind: "territory", id: next[next.length - 1].id });
+		setSelection({ territoryId: next[next.length - 1].id, point: null });
 	};
 
 	const handleSplit = (targetId: string, corridor: MultiPoly) => {
@@ -218,7 +270,7 @@ export function RetailHeatmap() {
 			return;
 		}
 		commit(next);
-		setSelection(null);
+		setSelection(EMPTY_SELECTION);
 	};
 
 	const handleMerge = (ids: string[]) => {
@@ -228,7 +280,7 @@ export function RetailHeatmap() {
 			return;
 		}
 		commit(next);
-		setSelection({ kind: "territory", id: next[next.length - 1].id });
+		setSelection({ territoryId: next[next.length - 1].id, point: null });
 	};
 
 	const handleUpdateBrick = (id: string, geometry: MultiPoly) =>
@@ -238,7 +290,7 @@ export function RetailHeatmap() {
 
 	const handleDeleteBrick = (id: string) => {
 		commit(deleteBrick(bricks, id));
-		setSelection(null);
+		setSelection(EMPTY_SELECTION);
 	};
 
 	/* ---------- фильтры из блоков статистики (треб. 5.5) ---------- */
@@ -257,10 +309,10 @@ export function RetailHeatmap() {
 	const handleFocus = () => {
 		setFocusRequest((prev) => {
 			const nonce = (prev?.nonce ?? 0) + 1;
-			if (selection?.kind === "point") {
+			if (selection.point) {
 				return { nonce, kind: "point", lat: selection.point.lat, lng: selection.point.lng };
 			}
-			if (selection?.kind === "territory") return { nonce, kind: "territory", id: selection.id };
+			if (selection.territoryId) return { nonce, kind: "territory", id: selection.territoryId };
 			return prev;
 		});
 	};
@@ -291,7 +343,7 @@ export function RetailHeatmap() {
 						colors={colors}
 						points={mapPoints}
 						selectedTerritoryId={selectedTerritoryId}
-						selectedPointCode={selection?.kind === "point" ? selection.point.code : null}
+						selectedPointCode={selection.point?.code ?? null}
 						editing={editing}
 						opacity={opacity}
 						tool={tool}
@@ -300,8 +352,8 @@ export function RetailHeatmap() {
 						notice={notice}
 						onToolChange={setTool}
 						onUndo={handleUndo}
-						onSelectPoint={(point) => setSelection({ kind: "point", point })}
-						onSelectTerritory={(id) => setSelection({ kind: "territory", id })}
+						onSelectPoint={handleSelectPoint}
+						onSelectTerritory={(id) => setSelection({ territoryId: id, point: null })}
 						onCreateBrick={handleCreateBrick}
 						onSplitTerritory={handleSplit}
 						onMergeTerritories={handleMerge}
@@ -328,13 +380,15 @@ export function RetailHeatmap() {
 						scopeFilters={selectedTerritoryId ? localFilters : filters}
 						scopeIsLocal={Boolean(selectedTerritoryId)}
 						territory={selectedTerritory}
+						crumbs={crumbs}
 						draft={draft}
 						territoryRows={territoryRows}
 						editing={editing}
 						onToggleFilter={handleToggleFilter}
 						onResetScopeFilters={handleResetScopeFilters}
-						onClose={() => setSelection(null)}
-						onSelectTerritory={(id) => setSelection({ kind: "territory", id })}
+						onClose={handleBack}
+						onSelectCrumb={handleSelectCrumb}
+						onSelectTerritory={(id) => setSelection({ territoryId: id, point: null })}
 						onRenameBrick={handleRenameBrick}
 						onDeleteBrick={handleDeleteBrick}
 						onToggleEdit={() => setEditing((v) => !v)}
