@@ -187,20 +187,22 @@ export function RetailHeatmap() {
 	);
 
 	/**
-	 * Путь над заголовком панели: город → округ → район, у брика — город → брик. Сам выбранный
-	 * объект в путь не входит — он и так в заголовке, а каждый шаг пути кликабелен.
+	 * Путь над заголовком панели. У выбранной точки он ведёт к её собственной территории:
+	 * брик, если точка попала в брик, иначе округ → район. Сама выбранная территория в путь
+	 * не входит, когда точка не выбрана, — она и так в заголовке строкой ниже.
 	 *
 	 * Брик начинается прямо от города: он нарезается поверх базового слоя и может не совпадать
 	 * с границами района, поэтому подставлять его «родителя» в путь было бы неверно.
 	 */
 	const crumbs: Crumb[] = useMemo(() => {
-		if (!selectedTerritory && !selection.point) return [];
+		const point = selection.point;
+		const anchor = point ? model.byId[model.pointTerritoryId[point.code] ?? ""] : selectedTerritory;
+		if (!anchor && !point) return [];
 		const list: Crumb[] = [{ id: ROOT_CRUMB_ID, label: MOSCOW.name }];
-		if (selectedTerritory) {
-			const parent = selectedTerritory.parentId ? model.byId[selectedTerritory.parentId] : undefined;
-			if (parent && selectedTerritory.kind === "rayon") list.push({ id: parent.id, label: parent.name });
-			// Территория попадает в путь, только когда открыта точка внутри неё.
-			if (selection.point) list.push({ id: selectedTerritory.id, label: selectedTerritory.name });
+		if (anchor) {
+			const parent = anchor.parentId ? model.byId[anchor.parentId] : undefined;
+			if (parent && anchor.kind === "rayon") list.push({ id: parent.id, label: parent.name });
+			if (point) list.push({ id: anchor.id, label: anchor.name });
 		}
 		return list;
 	}, [model, selectedTerritory, selection.point]);
@@ -214,11 +216,24 @@ export function RetailHeatmap() {
 	};
 
 	/**
-	 * Выбор точки. Точка внутри выбранной территории открывается внутри неё — территория
-	 * остаётся выбранной, карта не «разворачивается» обратно ко всем точкам города.
+	 * Выбор точки. Если точка внутри выбранной территории — область разбора сохраняется, карта
+	 * не «разворачивается» обратно ко всем точкам города. Иначе областью становится территория
+	 * самой точки: брик, если точка в брике, иначе её район.
 	 */
 	const handleSelectPoint = (point: TradePoint) =>
-		setSelection((prev) => ({ territoryId: pointInSelection(point) ? prev.territoryId : null, point }));
+		setSelection((prev) => ({
+			territoryId: pointInSelection(point) ? prev.territoryId : model.pointTerritoryId[point.code] ?? null,
+			point
+		}));
+
+	/**
+	 * Смена инструмента. Начало нарезки сбрасывает выбор: рисовать брик нужно по всем точкам
+	 * рабочей области, а выбранная территория оставляет на карте только свои.
+	 */
+	const handleToolChange = (next: Tool) => {
+		setTool(next);
+		if (next !== "cursor") setSelection(EMPTY_SELECTION);
+	};
 
 	/** «Назад»: из карточки точки — к её территории, с территории — ко всей рабочей области. */
 	const handleBack = () =>
@@ -226,8 +241,20 @@ export function RetailHeatmap() {
 			prev.point && prev.territoryId ? { territoryId: prev.territoryId, point: null } : EMPTY_SELECTION
 		);
 
-	const handleSelectCrumb = (id: string) =>
-		setSelection(id === ROOT_CRUMB_ID ? EMPTY_SELECTION : { territoryId: id, point: null });
+	/**
+	 * Переход по пути. Вместе с территорией переключается и слой карты: выбранный по пути округ
+	 * или район иначе остался бы неотрисованным, если на карте показан другой уровень. Брики
+	 * видны при любом слое, поэтому переход к брику слой не трогает.
+	 */
+	const handleSelectCrumb = (id: string) => {
+		if (id === ROOT_CRUMB_ID) {
+			setSelection(EMPTY_SELECTION);
+			return;
+		}
+		setSelection({ territoryId: id, point: null });
+		const kind = model.byId[id]?.kind;
+		if (kind === "okrug" || kind === "rayon") setMapLayer(kind);
+	};
 
 	/* ---------- операции нарезки ---------- */
 
@@ -350,7 +377,7 @@ export function RetailHeatmap() {
 						focusRequest={focusRequest}
 						canUndo={history.length > 0}
 						notice={notice}
-						onToolChange={setTool}
+						onToolChange={handleToolChange}
 						onUndo={handleUndo}
 						onSelectPoint={handleSelectPoint}
 						onSelectTerritory={(id) => setSelection({ territoryId: id, point: null })}
