@@ -28,6 +28,7 @@
 		"leaflet": "^1.9.4",
 		"leaflet.markercluster": "^1.5.3",
 		"lucide-react": "^1.7.0",
+		"polygon-clipping": "^0.15.7",
 		"prettier-plugin-tailwindcss": "^0.7.2",
 		"prism-react-renderer": "^2.4.1",
 		"re-resizable": "^6.11.2",

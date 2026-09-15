@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useRef, useState } from "react";
+import { useCallback, useMemo, useRef, useState, type ReactNode } from "react";
 import { Popover, PopoverTrigger } from "ics-ui-kit/components/popover";
 import { Command, CommandList } from "ics-ui-kit/components/command";
 import {
@@ -37,6 +37,13 @@ export interface MultiSelectControlledProps<T extends SearchSelectOption = Searc
 	disabled?: boolean;
 	invalid?: boolean;
 	className?: string;
+	/**
+	 * Что показать на триггере вместо «Выбрано: N» — например, сами названия выбранных
+	 * значений, когда их немного и они информативнее счётчика.
+	 */
+	renderValue?: (value: T[]) => ReactNode;
+	/** Показывать ли крестик очистки выбора. По умолчанию показывается. */
+	clearable?: boolean;
 }
 
 /**
@@ -69,7 +76,9 @@ export function MultiSelectControlled<T extends SearchSelectOption = SearchSelec
 		errorText = "Ошибка загрузки",
 		disabled,
 		invalid,
-		className
+		className,
+		renderValue,
+		clearable = true
 	} = props;
 
 	const [searchQuery, setSearchQuery] = useState("");
@@ -122,15 +131,17 @@ export function MultiSelectControlled<T extends SearchSelectOption = SearchSelec
 						open={open}
 						placeholder={placeholder}
 						invalid={invalid}
-						onClear={value.length > 0 ? () => onChange([]) : undefined}
+						onClear={clearable && value.length > 0 ? () => onChange([]) : undefined}
 					>
 						{value.length > 0 ? (
-							<div className="flex h-6 items-center gap-1 pl-1.5 text-sm">
-								<span>Выбрано:</span>
-								<Counter variant="secondary" status="default" className="rounded-full tabular-nums">
-									{value.length}
-								</Counter>
-							</div>
+							(renderValue?.(value) ?? (
+								<div className="flex h-6 items-center gap-1 pl-1.5 text-sm">
+									<span>Выбрано:</span>
+									<Counter variant="secondary" status="default" className="rounded-full tabular-nums">
+										{value.length}
+									</Counter>
+								</div>
+							))
 						) : undefined}
 					</SearchSelectTrigger>
 				</PopoverTrigger>

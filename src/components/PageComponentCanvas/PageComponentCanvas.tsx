@@ -8,6 +8,7 @@ import { ComponentHeader } from "../ComponentHeader/ComponentHeader";
 import { cn } from "ics-ui-kit/lib/utils";
 import { Button, IconButton } from "ics-ui-kit/components/button";
 import { useTheme } from "../../lib/useTheme";
+import { useBottomPanel } from "../../lib/useBottomPanel";
 
 type PageComponentCanvasProps = UiComponent & {
 	embed?: boolean;
@@ -16,7 +17,7 @@ type PageComponentCanvasProps = UiComponent & {
 
 export function PageComponentCanvas(props: PageComponentCanvasProps) {
 	const [tab, setTab] = useState<"preview" | "code">("preview");
-	const [panelOpen, setPanelOpen] = useState(true);
+	const [panelOpen, setPanelOpen] = useBottomPanel();
 	const [theme, setTheme] = useTheme();
 	const Component = UiComponents[props.component];
 	const { embed, forcedTheme } = props;

@@ -1,0 +1,34 @@
+/*
+ * Подложка карты приглушается, чтобы не спорить с заливкой территорий: стандартные тайлы
+ * OpenStreetMap цветные, а тепловая карта требует нейтрального фона. Фильтр применяется
+ * только к слою тайлов — полигоны, маркеры и подписи Leaflet лежат в других панелях.
+ */
+.rh-map .leaflet-tile-pane {
+	filter: grayscale(0.92) brightness(1.06) contrast(0.92);
+}
+
+/*
+ * Подпись брика на карте: без подложки и рамки, приглушённая, с белым ореолом, чтобы
+ * читаться поверх заливки территории и не перетягивать внимание с точек.
+ */
+.rh-brick-label.leaflet-tooltip {
+	padding: 0;
+	border: 0;
+	border-radius: 0;
+	background: none;
+	box-shadow: none;
+	color: #0f172a;
+	font-size: 11px;
+	font-weight: 600;
+	letter-spacing: -0.01em;
+	opacity: 0.62;
+	white-space: nowrap;
+	text-shadow:
+		0 1px 2px rgba(255, 255, 255, 0.95),
+		0 0 6px rgba(255, 255, 255, 0.85);
+}
+
+/* Хвостик тултипа подписи не нужен. */
+.rh-brick-label.leaflet-tooltip::before {
+	display: none;
+}
