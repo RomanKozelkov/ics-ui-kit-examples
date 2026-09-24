@@ -1,17 +1,20 @@
 import { useRef, useState } from "react";
 import { Combine, Info, Scissors, Undo2 } from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "ics-ui-kit/components/popover";
-import { CursorIcon, LassoIcon, PolygonIcon, SquareIcon } from "./toolIcons";
+import { CursorIcon } from "./toolIcons";
 import { SelectionTips } from "./SelectionTips";
 
-/** Инструменты карты: выбор, три способа нарисовать брик, разрез и объединение (треб. 2.3). */
-export type Tool = "cursor" | "square" | "lasso" | "polygon" | "cut" | "merge";
+/**
+ * Инструменты карты: выбор, разрез и объединение (треб. 2.3).
+ *
+ * Прямоугольник, лассо и полигон убраны по итогам показа прототипа: брик не рисуется с нуля,
+ * а получается из существующих территорий — разрезом или объединением — и дальше правится
+ * по вершинам.
+ */
+export type Tool = "cursor" | "cut" | "merge";
 
 const TOOLS: { key: Tool; title: string; icon: React.ReactNode }[] = [
 	{ key: "cursor", title: "Курсор — выбор территории и точки", icon: <CursorIcon size={18} /> },
-	{ key: "square", title: "Прямоугольник — растянуть область", icon: <SquareIcon size={18} /> },
-	{ key: "lasso", title: "Лассо — обвести область", icon: <LassoIcon size={18} /> },
-	{ key: "polygon", title: "Полигон — клики по карте", icon: <PolygonIcon size={18} /> },
 	{ key: "cut", title: "Разрез — разделить территорию линией", icon: <Scissors size={18} /> },
 	{ key: "merge", title: "Объединение — собрать брик из территорий", icon: <Combine size={18} /> }
 ];

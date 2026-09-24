@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import { formatMetric } from "../../shared/bi-dashboard/format";
-import { POINT_TYPE_MAP, catColor, type PointType, type TradePoint } from "./types";
+import { POINT_TYPE_MAP, TOP_LABEL, catColor, type PointType, type TradePoint } from "./types";
 import { NETWORK_TYPES } from "./types";
 
 /**
@@ -62,10 +62,10 @@ export function PointRows({ point }: { point: TradePoint }) {
 			)
 		},
 		{
-			label: "ТОП-50 %",
+			label: TOP_LABEL,
 			value: (
 				<span className={point.top50 ? "font-semibold text-slate-900" : "font-semibold text-slate-500"}>
-					{point.top50 ? "ТОП-50 %" : "не ТОП-50 %"}
+					{point.top50 ? "Топ" : "Не топ"}
 				</span>
 			)
 		},

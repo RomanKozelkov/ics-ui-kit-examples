@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "ics-ui-kit/components/resizable";
-import { draftDemography, fetchCityDemography, fetchTerritoryDemography } from "./api";
+import { fetchCityDemography, fetchTerritoryDemography } from "./api";
 import { FiltersBar } from "./FiltersBar";
 import { Legend } from "./Legend";
 import { MapView, type FocusRequest, type MapLayer } from "./MapView";
@@ -27,12 +27,10 @@ import {
 import { computeStats, heatColor, metricValue, type Stats } from "./stats";
 import {
 	buildModel,
-	createBrick,
 	createInitialBricks,
 	deleteBrick,
 	mergeTerritories,
 	renameBrick,
-	pointsInGeometry,
 	splitTerritory,
 	updateBrickGeometry,
 	visibleTerritories
@@ -58,8 +56,6 @@ export function RetailHeatmap() {
 	const [mapLayer, setMapLayer] = useState<MapLayer>("rayon");
 	const [opacity, setOpacity] = useState(0.55);
 	const [focusRequest, setFocusRequest] = useState<FocusRequest | null>(null);
-	/** Контур, который рисуется прямо сейчас, — источник черновика в правой панели. */
-	const [draftGeometry, setDraftGeometry] = useState<MultiPoly | null>(null);
 	const [notice, setNotice] = useState<string | null>(null);
 	const noticeTimer = useRef(0);
 
@@ -125,11 +121,14 @@ export function RetailHeatmap() {
 	 * Точки на карте. Когда территория выбрана, на карте остаются только её точки — карта
 	 * показывает ровно то, что разобрано в правой панели. Фильтр в границах территории при
 	 * этом действует только на них и не меняет данные остальных территорий (треб. 5.5.2).
+	 *
+	 * Исключение — правка границ брика: двигая ребро, нужно видеть точки соседних территорий,
+	 * которые брик может забрать или отдать, поэтому на это время карта показывает все точки.
 	 */
 	const mapPoints = useMemo(() => {
-		if (!selectedTerritoryId) return globalPoints;
+		if (!selectedTerritoryId || editing) return globalPoints;
 		return applyFilters(pointsByTerritory[selectedTerritoryId] ?? [], localFilters);
-	}, [globalPoints, selectedTerritoryId, pointsByTerritory, localFilters]);
+	}, [globalPoints, selectedTerritoryId, editing, pointsByTerritory, localFilters]);
 
 	const panelStats = useMemo(() => {
 		if (!selectedTerritoryId) return computeStats(globalPoints);
@@ -142,31 +141,16 @@ export function RetailHeatmap() {
 	);
 
 	/**
-	 * Черновик брика: пока инструмент активен, панель показывает не выбранное, а то, что
-	 * получится. Прямоугольник и полигон дают замкнутый контур — по нему считается статистика;
-	 * у лассо до отпускания кнопки и у разреза контура ещё нет, остаётся одно название.
+	 * Черновик в правой панели на время разреза: будущие брики появятся только после того, как
+	 * линия пройдёт через территорию насквозь, считать до этого нечего — выводится название.
 	 */
-	const draft: DraftTerritory | null = useMemo(() => {
-		if (tool === "cursor" || tool === "merge") return null;
-		const closed = tool === "square" || tool === "polygon";
-		if (!closed || !draftGeometry?.length) {
-			return {
-				title: tool === "cut" ? "Разрез территории" : "Новый брик",
-				stats: null,
-				demography: null,
-				hint:
-					tool === "cut"
-						? "Территория ещё не разделена: проведите линию через неё насквозь, и части станут бриками."
-						: "Брик ещё не собран: закончите контур, и здесь появится его статистика."
-			};
-		}
-		return {
-			title: "Новый брик",
-			stats: computeStats(pointsInGeometry(draftGeometry, globalPoints)),
-			demography: draftDemography(draftGeometry),
-			hint: "Брик ещё не создан — показаны данные нарисованной области."
-		};
-	}, [tool, draftGeometry, globalPoints]);
+	const draft: DraftTerritory | null =
+		tool === "cut"
+			? {
+					title: "Разрез территории",
+					hint: "Территория ещё не разделена: проведите линию через неё насквозь, и части станут бриками."
+				}
+			: null;
 
 	const territoryRows: TerritoryListRow[] = useMemo(
 		() =>
@@ -279,16 +263,6 @@ export function RetailHeatmap() {
 		setSelection(EMPTY_SELECTION);
 	};
 
-	const handleCreateBrick = (geometry: MultiPoly) => {
-		const next = createBrick(bricks, geometry);
-		if (next === bricks) {
-			showNotice("Брик не создан: область не пересекается с территорией города");
-			return;
-		}
-		commit(next);
-		setSelection({ territoryId: next[next.length - 1].id, point: null });
-	};
-
 	const handleSplit = (targetId: string, corridor: MultiPoly) => {
 		const next = splitTerritory(model, targetId, corridor);
 		// Линия, не пересёкшая территорию насквозь, ничего не делит — говорим об этом явно.
@@ -310,8 +284,16 @@ export function RetailHeatmap() {
 		setSelection({ territoryId: next[next.length - 1].id, point: null });
 	};
 
-	const handleUpdateBrick = (id: string, geometry: MultiPoly) =>
-		commit(updateBrickGeometry(bricks, id, geometry));
+	/** Правка границы брика; возвращает, принята ли она, — карта откатывает отклонённую. */
+	const handleUpdateBrick = (id: string, geometry: MultiPoly): boolean => {
+		const next = updateBrickGeometry(bricks, id, geometry);
+		if (next === bricks) {
+			showNotice("Граница не изменена: брик должен оставаться в пределах города и не исчезать под соседними бриками");
+			return false;
+		}
+		commit(next);
+		return true;
+	};
 
 	const handleRenameBrick = (id: string, name: string) => commit(renameBrick(bricks, id, name));
 
@@ -381,11 +363,10 @@ export function RetailHeatmap() {
 						onUndo={handleUndo}
 						onSelectPoint={handleSelectPoint}
 						onSelectTerritory={(id) => setSelection({ territoryId: id, point: null })}
-						onCreateBrick={handleCreateBrick}
+						onClearSelection={() => setSelection(EMPTY_SELECTION)}
 						onSplitTerritory={handleSplit}
 						onMergeTerritories={handleMerge}
 						onUpdateBrick={handleUpdateBrick}
-						onDraftChange={setDraftGeometry}
 					>
 						<Legend
 							metric={metric}

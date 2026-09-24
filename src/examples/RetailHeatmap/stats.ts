@@ -4,12 +4,19 @@ import {
 	POINT_TYPES,
 	type CategoryCode,
 	type ColorMetric,
-	type EmployeeRole,
 	type NetworkType,
 	type PointType,
 	type Top50Key,
 	type TradePoint
 } from "./types";
+
+/** Объём продаж группы точек — для блоков, где рядом с количеством нужен и объём. */
+export interface Volume {
+	/** Σ mAVG offtake, RUB. */
+	offtake: number;
+	/** Σ mAVG turnover, RUB. */
+	turnover: number;
+}
 
 /**
  * Агрегаты по набору торговых точек. Набор всегда приходит уже отфильтрованным, поэтому
@@ -23,7 +30,11 @@ export interface Stats {
 	turnover: number;
 	byType: Record<PointType, number>;
 	byCategory: Record<CategoryCode, number>;
+	/** Объёмы по категориям — показываются рядом с количеством (замечание по итогам показа). */
+	categoryVolume: Record<CategoryCode, Volume>;
 	byTop50: Record<Top50Key, number>;
+	/** Объёмы топ / не топ точек. */
+	top50Volume: Record<Top50Key, Volume>;
 	byNetwork: Record<NetworkType, number>;
 	/** Количество точек по сотруднику любого уровня: ключ — id сотрудника. */
 	byEmployee: Record<string, number>;
@@ -37,6 +48,11 @@ export function computeStats(points: TradePoint[]): Stats {
 	>;
 	const byCategory: Record<CategoryCode, number> = {};
 	const byTop50: Record<Top50Key, number> = { top: 0, rest: 0 };
+	const categoryVolume: Record<CategoryCode, Volume> = {};
+	const top50Volume: Record<Top50Key, Volume> = {
+		top: { offtake: 0, turnover: 0 },
+		rest: { offtake: 0, turnover: 0 }
+	};
 	const byEmployee: Record<string, number> = {};
 	let offtake = 0;
 	let turnover = 0;
@@ -45,14 +61,31 @@ export function computeStats(points: TradePoint[]): Stats {
 		byType[point.type]++;
 		byNetwork[point.network]++;
 		byCategory[point.category] = (byCategory[point.category] ?? 0) + 1;
-		byTop50[point.top50 ? "top" : "rest"]++;
+		const topKey: Top50Key = point.top50 ? "top" : "rest";
+		byTop50[topKey]++;
+		top50Volume[topKey].offtake += point.offtake;
+		top50Volume[topKey].turnover += point.turnover;
+		const volume = (categoryVolume[point.category] ??= { offtake: 0, turnover: 0 });
+		volume.offtake += point.offtake;
+		volume.turnover += point.turnover;
 		// Точка учитывается своему MR и всем его руководителям.
 		for (const id of employeeChain(point.mrId)) byEmployee[id] = (byEmployee[id] ?? 0) + 1;
 		offtake += point.offtake;
 		turnover += point.turnover;
 	}
 
-	return { count: points.length, offtake, turnover, byType, byCategory, byTop50, byNetwork, byEmployee };
+	return {
+		count: points.length,
+		offtake,
+		turnover,
+		byType,
+		byCategory,
+		categoryVolume,
+		byTop50,
+		top50Volume,
+		byNetwork,
+		byEmployee
+	};
 }
 
 export const EMPTY_STATS: Stats = computeStats([]);
@@ -63,9 +96,6 @@ export function metricValue(stats: Stats, metric: ColorMetric): number {
 	if (metric === "turnover") return stats.turnover;
 	return stats.count;
 }
-
-/** Порядок уровней в блоке «Сотрудники». */
-export const ROLE_ORDER: EmployeeRole[] = ["MR", "DSM", "ASM"];
 
 /* ---------- тепловая шкала ---------- */
 

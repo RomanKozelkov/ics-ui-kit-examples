@@ -32,3 +32,32 @@
 .rh-brick-label.leaflet-tooltip::before {
 	display: none;
 }
+
+/*
+ * Вершины правки брика — как в линейке Яндекс Карт: белые кружки с тёмной обводкой,
+ * середины рёбер мельче и бледнее, пока на них не навели.
+ */
+.rh-map .marker-icon {
+	width: 12px !important;
+	height: 12px !important;
+	margin-left: -6px !important;
+	margin-top: -6px !important;
+	border: 2px solid #0f172a;
+	border-radius: 50%;
+	background: #fff;
+	box-shadow: 0 1px 3px rgba(15, 23, 42, 0.35);
+	cursor: grab;
+}
+
+.rh-map .marker-icon.marker-icon-middle {
+	width: 8px !important;
+	height: 8px !important;
+	margin-left: -4px !important;
+	margin-top: -4px !important;
+	border-width: 1.5px;
+	opacity: 0.55;
+}
+
+.rh-map .marker-icon.marker-icon-middle:hover {
+	opacity: 1;
+}

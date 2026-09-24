@@ -15,8 +15,7 @@ import type { MultiPoly, Territory } from "./types";
 export type DemographySource =
 	| "base" // территория базового слоя, значение известно напрямую
 	| "aggregated" // брик собран из целых районов, значение просуммировано
-	| "unavailable" // брик нарезан внутри района, детализации ниже района нет
-	| "pending"; // черновик брика: значение считается после создания
+	| "unavailable"; // брик нарезан внутри района, детализации ниже района нет
 
 export interface TerritoryDemography {
 	/** Население (строка 11); `null` — значение недоступно для этой геометрии. */
@@ -108,14 +107,3 @@ export function fetchCityDemography(cityId: string = MOSCOW.id): TerritoryDemogr
 /** Пояснение к недоступному населению — показывается вместо значения (треб. 5.3.3). */
 export const POPULATION_UNAVAILABLE_HINT =
 	"Население доступно на уровне города, округа и района. Для брика, нарезанного внутри района, значение не рассчитывается.";
-
-/**
- * Пояснение к населению черновика. Разложение по районам — самый дорогой расчёт территории,
- * и на каждое движение мыши его не выполняют: значение появляется, когда брик создан.
- */
-export const POPULATION_PENDING_HINT = "Население рассчитывается после создания брика.";
-
-/** Демография черновика брика: точки и больницы считаются сразу, население — после создания. */
-export function draftDemography(geometry: MultiPoly): TerritoryDemography {
-	return { population: null, hospitals: countHospitals(geometry), source: "pending" };
-}

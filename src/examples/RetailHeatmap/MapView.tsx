@@ -6,9 +6,8 @@ import "leaflet/dist/leaflet.css";
 import "leaflet.markercluster/dist/MarkerCluster.css";
 import "@geoman-io/leaflet-geoman-free/dist/leaflet-geoman.css";
 import "./RetailHeatmap.css";
-import { area, fromLatLngs, intersection, lineCorridor, rectangle, toLatLngs } from "./geo";
+import { area, intersection, lineCorridor, toLatLngs } from "./geo";
 import { CITY_BBOX } from "./moscowGeo";
-import { pointsInGeometry } from "./territories";
 import { POINT_TYPE_MAP, type MultiPoly, type Pair, type Territory, type TradePoint } from "./types";
 import { HoverCard } from "./HoverCard";
 import { MapToolbar, type Tool } from "./MapToolbar";
@@ -23,6 +22,23 @@ import { MapToolbar, type Tool } from "./MapToolbar";
 const TILE_URL = "https://tile.openstreetmap.org/{z}/{x}/{y}.png";
 const TILE_ATTRIBUTION = '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>';
 const DRAW_STYLE = { color: "#0f172a", weight: 2, dashArray: "5 4" };
+/**
+ * Правка границ брика — по образцу линейки Яндекс Карт: вершину тянут, середину ребра тянут,
+ * чтобы добавить вершину, клик по вершине её удаляет. Вершины прилипают к границам соседних
+ * территорий, чтобы брик можно было довести ровно до района, не оставив щели.
+ */
+const EDIT_OPTIONS = {
+	allowSelfIntersection: false,
+	removeVertexOn: "click",
+	removeLayerBelowMinVertexCount: false,
+	draggable: false,
+	snappable: true,
+	snapDistance: 12
+} as const;
+
+/** Панель маркеров точек: ниже вершин правки, чтобы булавки не перекрывали их. */
+const POINTS_PANE = "rhPoints";
+
 /** Ширина полосы разреза в градусах (≈ 30 м). */
 const CUT_WIDTH = 0.0003;
 
@@ -122,12 +138,12 @@ type MapViewProps = {
 	onUndo: () => void;
 	onSelectPoint: (point: TradePoint) => void;
 	onSelectTerritory: (id: string) => void;
-	onCreateBrick: (geometry: MultiPoly) => void;
+	/** Клик по пустому месту карты — снять выбор. */
+	onClearSelection: () => void;
 	onSplitTerritory: (targetId: string, corridor: MultiPoly) => void;
 	onMergeTerritories: (ids: string[]) => void;
-	onUpdateBrick: (id: string, geometry: MultiPoly) => void;
-	/** Контур, который пользователь сейчас рисует, — по нему панель показывает черновик брика. */
-	onDraftChange: (geometry: MultiPoly | null) => void;
+	/** Новая граница брика; `false` — правка отклонена и контур нужно вернуть. */
+	onUpdateBrick: (id: string, geometry: MultiPoly) => boolean;
 	children?: React.ReactNode;
 };
 
@@ -152,18 +168,16 @@ export function MapView({
 	onUndo,
 	onSelectPoint,
 	onSelectTerritory,
-	onCreateBrick,
+	onClearSelection,
 	onSplitTerritory,
 	onMergeTerritories,
 	onUpdateBrick,
-	onDraftChange,
 	children
 }: MapViewProps) {
 	const containerRef = useRef<HTMLDivElement>(null);
 	const mapRef = useRef<L.Map | null>(null);
 	const layersRef = useRef<Record<string, L.Polygon>>({});
 	const clusterRef = useRef<L.MarkerClusterGroup | null>(null);
-	const previewRef = useRef<L.LayerGroup | null>(null);
 	const cancelDrawRef = useRef<() => void>(() => {});
 	// Обработчики наведения создаются вместе с картой и переиспользуются при пересоздании маркеров.
 	const markerHandlersRef = useRef<{
@@ -171,7 +185,6 @@ export function MapView({
 		hideHover: (marker?: L.Marker) => void;
 	} | null>(null);
 	const [hover, setHover] = useState<Hover | null>(null);
-	const [previewCount, setPreviewCount] = useState<number | null>(null);
 	const [mergeIds, setMergeIds] = useState<string[]>([]);
 	// Число уже поставленных вершин — по нему включается кнопка «Готово».
 	const [vertexCount, setVertexCount] = useState(0);
@@ -188,25 +201,21 @@ export function MapView({
 	visibleRef.current = visible;
 	const effectiveRef = useRef(effective);
 	effectiveRef.current = effective;
-	const pointsRef = useRef(points);
-	pointsRef.current = points;
 	const callbacks = useRef({
 		onSelectPoint,
 		onSelectTerritory,
-		onCreateBrick,
+		onClearSelection,
 		onSplitTerritory,
 		onUpdateBrick,
-		onToolChange,
-		onDraftChange
+		onToolChange
 	});
 	callbacks.current = {
 		onSelectPoint,
 		onSelectTerritory,
-		onCreateBrick,
+		onClearSelection,
 		onSplitTerritory,
 		onUpdateBrick,
-		onToolChange,
-		onDraftChange
+		onToolChange
 	};
 
 	/* ---------- инициализация карты и инструментов ---------- */
@@ -247,36 +256,10 @@ export function MapView({
 		mapRef.current = map;
 		L.tileLayer(TILE_URL, { attribution: TILE_ATTRIBUTION, maxZoom: 19 }).addTo(map);
 		L.control.zoom({ position: "bottomright" }).addTo(map);
-		const preview = L.layerGroup().addTo(map);
-		previewRef.current = preview;
-
-		// ---------- подсветка точек будущего брика (треб. 2.4) ----------
-		const showPreview = (geometry: MultiPoly) => {
-			preview.clearLayers();
-			callbacks.current.onDraftChange(geometry.length ? geometry : null);
-			if (!geometry.length) {
-				setPreviewCount(null);
-				return;
-			}
-			const inside = pointsInGeometry(geometry, pointsRef.current);
-			for (const p of inside) {
-				L.circleMarker([p.lat, p.lng], {
-					radius: 6,
-					color: "#0f172a",
-					weight: 2,
-					fillColor: "#fff",
-					fillOpacity: 1,
-					interactive: false
-				}).addTo(preview);
-			}
-			setPreviewCount(inside.length);
-		};
-		const clearPreview = () => {
-			preview.clearLayers();
-			setPreviewCount(null);
-			callbacks.current.onDraftChange(null);
-		};
-
+		// Своя панель для точек: её можно сделать некликабельной на время разреза и правки,
+		// не трогая `markerPane`, где живут вершины редактирования Geoman.
+		const pointsPane = map.createPane(POINTS_PANE);
+		pointsPane.style.zIndex = "590";
 		// ---------- hover точки ----------
 		let highlighted: L.Marker | null = null;
 		const showHover = (point: TradePoint, marker: L.Marker) => {
@@ -295,64 +278,31 @@ export function MapView({
 		};
 		markerHandlersRef.current = { showHover, hideHover };
 
-		// ---------- рисование ----------
-		let lassoActive = false;
-		let lassoPoints: [number, number][] = [];
-		let lassoLine: L.Polyline | null = null;
-		let rectActive = false;
-		let rectStart: L.LatLng | null = null;
-		let rectLayer: L.Rectangle | null = null;
-		let polyVerts: [number, number][] = [];
+		// ---------- разрез ----------
+		// Новые брики не рисуются с нуля (решение по итогам показа прототипа): брик получается
+		// разрезом или объединением существующих территорий и дальше правится по вершинам.
 		let cutVerts: [number, number][] = [];
 		let tmpLine: L.Polyline | null = null;
 		let tmpMarkers: L.CircleMarker[] = [];
 
 		const cancelDraw = () => {
-			lassoActive = false;
-			if (lassoLine) map.removeLayer(lassoLine);
-			lassoLine = null;
-			lassoPoints = [];
-			rectActive = false;
-			if (rectLayer) map.removeLayer(rectLayer);
-			rectLayer = null;
-			rectStart = null;
 			if (tmpLine) map.removeLayer(tmpLine);
 			tmpLine = null;
 			tmpMarkers.forEach((m) => map.removeLayer(m));
 			tmpMarkers = [];
-			polyVerts = [];
 			cutVerts = [];
 			setVertexCount(0);
-			clearPreview();
-			map.dragging.enable();
 		};
 		cancelDrawRef.current = cancelDraw;
 
-		const finishBrick = (geometry: MultiPoly) => {
-			cancelDraw();
-			if (geometry.length) callbacks.current.onCreateBrick(geometry);
-			callbacks.current.onToolChange("cursor");
-		};
-
-		/** Прореживание freehand-контура, чтобы у брика было немного вершин. */
-		const simplifyLasso = (pts: [number, number][]): [number, number][] => {
-			if (pts.length <= 4) return pts;
-			const projected = pts.map(([lat, lng]) => map.latLngToLayerPoint(L.latLng(lat, lng)));
-			return L.LineUtil.simplify(projected, 6).map((pt) => {
-				const ll = map.layerPointToLatLng(pt);
-				return [ll.lat, ll.lng] as [number, number];
-			});
-		};
-
-		const drawTmpLine = (verts: [number, number][], closed: boolean) => {
+		const drawTmpLine = (verts: [number, number][]) => {
 			if (tmpLine) map.removeLayer(tmpLine);
 			tmpLine = null;
 			tmpMarkers.forEach((m) => map.removeLayer(m));
 			tmpMarkers = [];
 			setVertexCount(verts.length);
 			if (!verts.length) return;
-			const ring = closed && verts.length > 2 ? verts.concat([verts[0]]) : verts;
-			tmpLine = L.polyline(ring, DRAW_STYLE).addTo(map);
+			tmpLine = L.polyline(verts, DRAW_STYLE).addTo(map);
 			verts.forEach((v, i) => {
 				tmpMarkers.push(
 					L.circleMarker(v, {
@@ -393,89 +343,21 @@ export function MapView({
 			callbacks.current.onToolChange("cursor");
 		};
 
-		const finishPolygon = () => {
-			if (polyVerts.length < 3) return;
-			finishBrick(fromLatLngs(polyVerts));
-		};
-
-		const onDown = (e: L.LeafletMouseEvent) => {
+		const onClick = () => {
 			const current = toolRef.current;
-			if (current === "lasso") {
-				lassoActive = true;
-				hideHover();
-				map.dragging.disable();
-				lassoPoints = [[e.latlng.lat, e.latlng.lng]];
-				lassoLine = L.polyline(lassoPoints, DRAW_STYLE).addTo(map);
-			} else if (current === "square") {
-				rectActive = true;
-				hideHover();
-				map.dragging.disable();
-				rectStart = e.latlng;
-				rectLayer = L.rectangle(L.latLngBounds(e.latlng, e.latlng), {
-					...DRAW_STYLE,
-					fillColor: "#0f172a",
-					fillOpacity: 0.08
-				}).addTo(map);
-			}
+			// Клик по территории или точке останавливает событие в их обработчиках, поэтому сюда
+			// доходит только клик по пустому месту карты — он снимает выбор.
+			if (current === "cursor") callbacks.current.onClearSelection();
 		};
 
-		const onMove = (e: L.LeafletMouseEvent) => {
-			if (lassoActive && lassoLine) {
-				lassoPoints.push([e.latlng.lat, e.latlng.lng]);
-				lassoLine.setLatLngs(lassoPoints);
-				if (lassoPoints.length % 6 === 0) showPreview(fromLatLngs(lassoPoints));
-			} else if (rectActive && rectLayer && rectStart) {
-				rectLayer.setBounds(L.latLngBounds(rectStart, e.latlng));
-				showPreview(
-					rectangle([rectStart.lng, rectStart.lat], [e.latlng.lng, e.latlng.lat])
-				);
-			} else if (toolRef.current === "polygon" && polyVerts.length >= 2) {
-				showPreview(fromLatLngs(polyVerts.concat([[e.latlng.lat, e.latlng.lng]])));
-			}
-		};
-
-		const onUp = (e: L.LeafletMouseEvent) => {
-			if (lassoActive) {
-				lassoActive = false;
-				map.dragging.enable();
-				const pts = lassoPoints;
-				if (pts.length >= 3) finishBrick(fromLatLngs(simplifyLasso(pts)));
-				else cancelDraw();
-			} else if (rectActive) {
-				rectActive = false;
-				map.dragging.enable();
-				const start = rectStart;
-				if (start && start.distanceTo(e.latlng) > 30) {
-					finishBrick(rectangle([start.lng, start.lat], [e.latlng.lng, e.latlng.lat]));
-				} else cancelDraw();
-			}
-		};
-
-		const onClick = (e: L.LeafletMouseEvent) => {
-			const current = toolRef.current;
-			if (current === "polygon") {
-				if (polyVerts.length >= 3) {
-					const first = map.latLngToContainerPoint(L.latLng(polyVerts[0]));
-					const cp = map.latLngToContainerPoint(e.latlng);
-					if (Math.hypot(first.x - cp.x, first.y - cp.y) < 14) {
-						finishPolygon();
-						return;
-					}
-				}
-				polyVerts.push([e.latlng.lat, e.latlng.lng]);
-				drawTmpLine(polyVerts, true);
-				showPreview(fromLatLngs(polyVerts));
-			} else if (current === "cut") {
-				cutVerts.push([e.latlng.lat, e.latlng.lng]);
-				drawTmpLine(cutVerts, false);
-			}
+		const onCutClick = (e: L.LeafletMouseEvent) => {
+			if (toolRef.current !== "cut") return;
+			cutVerts.push([e.latlng.lat, e.latlng.lng]);
+			drawTmpLine(cutVerts);
 		};
 
 		const onDbl = (e: L.LeafletMouseEvent) => {
-			if (toolRef.current === "polygon" && polyVerts.length >= 3) {
-				L.DomEvent.stop(e);
-				finishPolygon();
-			} else if (toolRef.current === "cut" && cutVerts.length >= 2) {
+			if (toolRef.current === "cut" && cutVerts.length >= 2) {
 				L.DomEvent.stop(e);
 				finishCut();
 			}
@@ -483,8 +365,7 @@ export function MapView({
 
 		drawApiRef.current = {
 			finish: () => {
-				if (toolRef.current === "polygon") finishPolygon();
-				else if (toolRef.current === "cut") finishCut();
+				if (toolRef.current === "cut") finishCut();
 			},
 			cancel: () => {
 				cancelDraw();
@@ -492,10 +373,8 @@ export function MapView({
 			}
 		};
 
-		map.on("mousedown", onDown);
-		map.on("mousemove", onMove);
-		map.on("mouseup", onUp);
 		map.on("click", onClick);
+		map.on("click", onCutClick);
 		map.on("dblclick", onDbl);
 		map.on("movestart zoomstart", () => hideHover());
 
@@ -519,7 +398,6 @@ export function MapView({
 			mapRef.current = null;
 			layersRef.current = {};
 			clusterRef.current = null;
-			previewRef.current = null;
 		};
 	}, []);
 
@@ -545,6 +423,13 @@ export function MapView({
 			const existing = layers[territory.id];
 			if (existing) {
 				existing.setLatLngs(latlngs);
+				// Geoman не следит за внешней заменой контура: его вершины остались бы на старой
+				// геометрии, и следующая правка шла бы по ней. Пересобираем их по новому контуру —
+				// после отсечения по городу и соседним брикам он отличается от того, что тянули.
+				if (existing.pm.enabled()) {
+					existing.pm.disable();
+					existing.pm.enable(EDIT_OPTIONS);
+				}
 				// Подпись привязана к центру контура — после правки границ её нужно подвинуть.
 				const tooltip = existing.getTooltip();
 				if (tooltip) {
@@ -617,11 +502,12 @@ export function MapView({
 			showCoverageOnHover: false,
 			spiderfyOnMaxZoom: true,
 			chunkedLoading: true,
-			iconCreateFunction: clusterIcon
+			iconCreateFunction: clusterIcon,
+			clusterPane: POINTS_PANE
 		});
 		cluster.addLayers(
 			points.map((point) => {
-				const marker = L.marker([point.lat, point.lng], { icon: pinDivIcon(point) });
+				const marker = L.marker([point.lat, point.lng], { icon: pinDivIcon(point), pane: POINTS_PANE });
 				marker.on("mouseover", () => handlers.showHover(point, marker));
 				marker.on("mouseout", () => handlers.hideHover(marker));
 				marker.on("click", (e) => {
@@ -645,13 +531,17 @@ export function MapView({
 		const map = mapRef.current;
 		if (!map) return;
 		map.getContainer().style.cursor = tool === "cursor" ? "" : "crosshair";
-		// Пока рисуем, маркеры точек не должны перехватывать клики — иначе по плотной карте
-		// не поставить вершину: клик попадает в булавку, а не в карту.
-		const markerPane = map.getPane("markerPane");
-		if (markerPane) markerPane.style.pointerEvents = tool === "cursor" ? "" : "none";
-		if (tool === "polygon" || tool === "cut") map.doubleClickZoom.disable();
+		if (tool === "cut") map.doubleClickZoom.disable();
 		else map.doubleClickZoom.enable();
 	}, [tool]);
+
+	// Во время разреза, объединения и правки границ точки не должны перехватывать клики: по
+	// плотной карте иначе не поставить вершину и не взять её — клик попадает в булавку.
+	useEffect(() => {
+		const pane = mapRef.current?.getPane(POINTS_PANE);
+		if (pane) pane.style.pointerEvents = tool === "cursor" && !editing ? "" : "none";
+		if (editing) markerHandlersRef.current?.hideHover();
+	}, [tool, editing]);
 
 	/* ---------- центрирование по запросу ---------- */
 
@@ -678,21 +568,26 @@ export function MapView({
 		if (!editing || !selectedTerritoryId) return;
 		const poly = layersRef.current[selectedTerritoryId];
 		if (!poly) return;
-		if (!poly.pm.enabled()) {
-			poly.pm.enable({ allowSelfIntersection: false, removeVertexOn: "contextmenu" });
-		}
+		if (!poly.pm.enabled()) poly.pm.enable(EDIT_OPTIONS);
 
+		// `pm:edit` приходит один раз на завершённое действие — перетаскивание вершины, новую
+		// вершину из середины ребра, удаление. Раньше слушались три события, и добавление вершины
+		// давало две записи в историю отмены.
 		const sync = () => {
 			const geometry = latLngsToMultiPoly(poly.getLatLngs());
-			if (geometry.length) callbacks.current.onUpdateBrick(selectedTerritoryId, geometry);
+			const applied = geometry.length > 0 && callbacks.current.onUpdateBrick(selectedTerritoryId, geometry);
+			if (applied) return;
+			// Правку отклонили (брик вышел за город или исчез под соседями) — модель не изменилась,
+			// и контур на карте нужно вернуть к ней, иначе карта и данные разойдутся.
+			const previous = effectiveRef.current[selectedTerritoryId];
+			if (!previous?.length) return;
+			poly.pm.disable();
+			poly.setLatLngs(toLatLngs(previous));
+			poly.pm.enable(EDIT_OPTIONS);
 		};
-		poly.on("pm:markerdragend", sync);
-		poly.on("pm:vertexadded", sync);
-		poly.on("pm:vertexremoved", sync);
+		poly.on("pm:edit", sync);
 		return () => {
-			poly.off("pm:markerdragend", sync);
-			poly.off("pm:vertexadded", sync);
-			poly.off("pm:vertexremoved", sync);
+			poly.off("pm:edit", sync);
 		};
 	}, [editing, selectedTerritoryId]);
 
@@ -701,19 +596,7 @@ export function MapView({
 		if (selectedPointCode) setHover(null);
 	}, [selectedPointCode]);
 
-	const drawingHint =
-		tool === "square"
-			? "Зажмите и растяните прямоугольник"
-			: tool === "lasso"
-				? "Зажмите и обведите область"
-				: tool === "polygon"
-					? "Кликами задайте вершины контура"
-					: tool === "cut"
-						? "Проведите линию через территорию насквозь"
-						: null;
-	// Полигон и разрез строятся кликами — им нужно явное завершение.
-	const needsExplicitFinish = tool === "polygon" || tool === "cut";
-	const minVertices = tool === "polygon" ? 3 : 2;
+	const drawingHint = tool === "cut" ? "Проведите линию через территорию насквозь" : null;
 
 	return (
 		// `isolate` держит слои Leaflet (z-index до 700) внутри собственного контекста наложения —
@@ -757,30 +640,21 @@ export function MapView({
 						) : (
 							<>
 								<span>{drawingHint}</span>
-								{previewCount !== null && (
-									<span className="rounded bg-slate-100 px-1.5 font-semibold tabular-nums">
-										{previewCount} тт
-									</span>
-								)}
-								{needsExplicitFinish && (
-									<>
-										<button
-											type="button"
-											disabled={vertexCount < minVertices}
-											onClick={() => drawApiRef.current.finish()}
-											className="rounded-md bg-slate-900 px-2.5 py-1 font-medium text-white disabled:pointer-events-none disabled:opacity-40"
-										>
-											Готово
-										</button>
-										<button
-											type="button"
-											onClick={() => drawApiRef.current.cancel()}
-											className="rounded-md px-2 py-1 font-medium text-slate-500 hover:text-slate-900"
-										>
-											Отмена
-										</button>
-									</>
-								)}
+								<button
+									type="button"
+									disabled={vertexCount < 2}
+									onClick={() => drawApiRef.current.finish()}
+									className="rounded-md bg-slate-900 px-2.5 py-1 font-medium text-white disabled:pointer-events-none disabled:opacity-40"
+								>
+									Готово
+								</button>
+								<button
+									type="button"
+									onClick={() => drawApiRef.current.cancel()}
+									className="rounded-md px-2 py-1 font-medium text-slate-500 hover:text-slate-900"
+								>
+									Отмена
+								</button>
 							</>
 						)}
 					</div>

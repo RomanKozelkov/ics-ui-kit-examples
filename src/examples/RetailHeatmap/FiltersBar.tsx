@@ -17,7 +17,7 @@ import {
 	type FilterDimension,
 	type FilterState
 } from "./filters";
-import { CATEGORIES, NETWORK_TYPES, POINT_TYPES, TOP50_VALUES } from "./types";
+import { CATEGORIES, NETWORK_TYPES, POINT_TYPES, TOP50_VALUES, TOP_LABEL } from "./types";
 
 /**
  * Панель фильтров (раздел 3) — горизонтальная область над картой и правой панелью,
@@ -62,7 +62,7 @@ const FILTER_SPECS: FilterSpec[] = [
 		label: "Категория торговой точки",
 		options: CATEGORIES.map((c) => ({ value: c, label: c }))
 	},
-	{ dimension: "top50", label: "ТОП-50 %", options: TOP50_VALUES.map((t) => ({ value: t.key, label: t.label })) },
+	{ dimension: "top50", label: TOP_LABEL, options: TOP50_VALUES.map((t) => ({ value: t.key, label: t.label })) },
 	{
 		dimension: "networks",
 		label: "Тип сети точки",

@@ -111,13 +111,19 @@ const CAT_COLOR_MAP: Record<string, string> = {
 /** Цвет категории; для значения вне известного списка — нейтральный. */
 export const catColor = (code: CategoryCode) => CAT_COLOR_MAP[code] ?? "#94a3b8";
 
-/* ---------- ТОП-50 % (строка 8) ---------- */
+/* ---------- Топ точки (строка 8) ---------- */
+
+/**
+ * В требованиях поле называется «ТОП-50 %», но по итогам показа прототипа переименовано
+ * в «Топ точки»: смысл признака у заказчика шире доли в 50 %. Ключи оставлены прежними.
+ */
+export const TOP_LABEL = "Топ точки";
 
 export type Top50Key = "top" | "rest";
 
 export const TOP50_VALUES: DictItem<Top50Key>[] = [
-	{ key: "top", label: "ТОП-50 %" },
-	{ key: "rest", label: "не ТОП-50 %" }
+	{ key: "top", label: "Топ" },
+	{ key: "rest", label: "Не топ" }
 ];
 
 /* ---------- Тип сети точки (строка 9) ---------- */
@@ -169,7 +175,7 @@ export interface TradePoint {
 	subtype: string;
 	/** Категория торговой точки (строка 7). */
 	category: CategoryCode;
-	/** ТОП-50 % / не ТОП-50 % (строка 8). */
+	/** Топ / не топ точка (строка 8, в требованиях — «ТОП-50 %»). */
 	top50: boolean;
 	/** Тип сети точки (строка 9). */
 	network: NetworkType;

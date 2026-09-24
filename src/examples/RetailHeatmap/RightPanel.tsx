@@ -27,24 +27,20 @@ import {
 	DropdownMenuTrigger
 } from "ics-ui-kit/components/dropdown";
 import { formatMetric } from "../../shared/bi-dashboard/format";
-import {
-	POPULATION_PENDING_HINT,
-	POPULATION_UNAVAILABLE_HINT,
-	type TerritoryDemography
-} from "./api";
+import { POPULATION_UNAVAILABLE_HINT, type TerritoryDemography } from "./api";
 import { PointRows, PointTypeGlyph } from "./PointCard";
 import {
+	EmployeeStats,
 	StatRows,
-	StatTiles,
+	StatVolumeRows,
 	categoryItems,
-	employeeItems,
 	networkItems,
 	top50Items,
 	typeItems
 } from "./StatBlocks";
 import { hasActiveFilters, type FilterDimension, type FilterState } from "./filters";
 import type { Stats } from "./stats";
-import { POINT_TYPE_MAP, TERRITORY_KIND_LABEL, type Territory, type TradePoint } from "./types";
+import { POINT_TYPE_MAP, TERRITORY_KIND_LABEL, TOP_LABEL, type Territory, type TradePoint } from "./types";
 
 /**
  * Что выбрано на карте (треб. 5.1).
@@ -101,9 +97,6 @@ function Kpi({ label, value, hint, big }: { label: string; value: string; hint?:
 /** Пять показателей территории или всей рабочей области (треб. 5.2.1 и 5.3.2, пункт 1). */
 function KpiCards({ stats, demography }: { stats: Stats; demography: TerritoryDemography }) {
 	const populationKnown = demography.population !== null;
-	// Почему населения нет: у черновика оно ещё не считалось, у нарезанного брика — неизвестно.
-	const populationNote =
-		demography.source === "pending" ? POPULATION_PENDING_HINT : POPULATION_UNAVAILABLE_HINT;
 	return (
 		<div className="flex flex-col gap-[9px]">
 			{/* Плитки переносятся на вторую строку, когда панель сужена до минимальных 24 %. */}
@@ -121,7 +114,7 @@ function KpiCards({ stats, demography }: { stats: Stats; demography: TerritoryDe
 					hint={
 						populationKnown
 							? formatMetric(demography.population as number, "Units", "full")
-							: populationNote
+							: POPULATION_UNAVAILABLE_HINT
 					}
 					big
 				/>
@@ -132,7 +125,7 @@ function KpiCards({ stats, demography }: { stats: Stats; demography: TerritoryDe
 			</div>
 			{!populationKnown && (
 				<div className="rounded-[10px] border border-slate-200 bg-slate-50 px-3 py-2 text-[11px] leading-snug text-slate-600">
-					{populationNote}
+					{POPULATION_UNAVAILABLE_HINT}
 				</div>
 			)}
 		</div>
@@ -147,7 +140,7 @@ type StatSectionProps = {
 	onToggleFilter: (dimension: FilterDimension, value: string) => void;
 };
 
-/** Блоки 2–6: состав по типам, категории, ТОП-50 %, типы сети, сотрудники. */
+/** Блоки 2–6: состав по типам, категории, топ точки, типы сети, сотрудники. */
 function StatSections({ stats, filters, onToggleFilter }: StatSectionProps) {
 	return (
 		<>
@@ -158,15 +151,15 @@ function StatSections({ stats, filters, onToggleFilter }: StatSectionProps) {
 				filters={filters}
 				onToggle={onToggleFilter}
 			/>
-			<StatTiles
+			<StatVolumeRows
 				title="Категории точек"
 				dimension="categories"
 				items={categoryItems(stats)}
 				filters={filters}
 				onToggle={onToggleFilter}
 			/>
-			<StatTiles
-				title="ТОП-50 %"
+			<StatVolumeRows
+				title={TOP_LABEL}
 				dimension="top50"
 				items={top50Items(stats)}
 				filters={filters}
@@ -179,14 +172,7 @@ function StatSections({ stats, filters, onToggleFilter }: StatSectionProps) {
 				filters={filters}
 				onToggle={onToggleFilter}
 			/>
-			<StatRows
-				title="Сотрудники"
-				dimension="employees"
-				items={employeeItems(stats)}
-				filters={filters}
-				onToggle={onToggleFilter}
-				collapseAfter={8}
-			/>
+			<EmployeeStats stats={stats} filters={filters} onToggle={onToggleFilter} />
 		</>
 	);
 }
@@ -461,16 +447,11 @@ function TerritoryTitle({
 /* ---------- черновик брика ---------- */
 
 /**
- * Состояние панели во время рисования (треб. 5.1 — четвёртое состояние сверх трёх основных).
- *
- * Пока инструмент активен, панель показывает не выбранную территорию, а ту, что получится.
- * `stats` есть только у замкнутой области: у лассо до отпускания кнопки и у разреза контур
- * ещё не собран, считать по нему нечего — тогда выводится одно название.
+ * Состояние панели во время разреза (четвёртое сверх трёх из треб. 5.1): вместо выбранной
+ * территории — название будущей операции и подсказка, чего не хватает.
  */
 export type DraftTerritory = {
 	title: string;
-	stats: Stats | null;
-	demography: TerritoryDemography | null;
 	hint: string;
 };
 
@@ -600,16 +581,6 @@ export function RightPanel({
 						<div className="rounded-[10px] border border-slate-200 bg-slate-50 px-3.5 py-2.5 text-[12px] leading-snug text-slate-600">
 							{draft.hint}
 						</div>
-						{draft.stats && draft.demography && (
-							<>
-								<KpiCards stats={draft.stats} demography={draft.demography} />
-								<StatSections
-									stats={draft.stats}
-									filters={scopeFilters}
-									onToggleFilter={onToggleFilter}
-								/>
-							</>
-						)}
 					</div>
 				) : point ? (
 					<PointRows point={point} />
@@ -618,7 +589,7 @@ export function RightPanel({
 						{editing && territory?.kind === "brick" && (
 							<div className="rounded-[10px] border border-slate-200 bg-slate-50 px-3.5 py-2.5 text-[12px] text-slate-600">
 								Перетаскивайте точки на границе брика, чтобы изменить форму. Клик по средней точке
-								добавляет вершину, правый клик по вершине удаляет её.
+								добавляет вершину, клик по вершине удаляет её. Пока правите, на карте видны точки соседних территорий.
 							</div>
 						)}
 						{localFilterActive && (

@@ -1,13 +1,14 @@
-import { Combine, Scissors } from "lucide-react";
-import { CursorIcon, LassoIcon, PolygonIcon, SquareIcon } from "./toolIcons";
+import { Combine, Pencil, Scissors } from "lucide-react";
+import { CursorIcon } from "./toolIcons";
 
 const TIPS = [
-	{ icon: <CursorIcon />, text: "Курсор — клик по территории или точке" },
-	{ icon: <SquareIcon />, text: "Прямоугольник — зажмите и растяните область" },
-	{ icon: <LassoIcon />, text: "Лассо — зажмите и обведите область" },
-	{ icon: <PolygonIcon />, text: "Полигон — клики по карте, клик по первой точке завершает" },
+	{ icon: <CursorIcon />, text: "Курсор — клик по территории или точке, клик по пустому месту снимает выбор" },
 	{ icon: <Scissors size={14} />, text: "Разрез — проведите линию через территорию, части станут бриками" },
-	{ icon: <Combine size={14} />, text: "Объединение — выберите территории и подтвердите" }
+	{ icon: <Combine size={14} />, text: "Объединение — выберите территории и подтвердите" },
+	{
+		icon: <Pencil size={14} />,
+		text: "Границы брика — карандаш в карточке брика: тяните вершину, тяните середину ребра, чтобы добавить вершину, клик по вершине её удаляет"
+	}
 ];
 
 /** Подсказка «Как нарезать территорию» — в поповере info-кнопки тулбара. */
@@ -26,7 +27,7 @@ export function SelectionTips() {
 				))}
 			</div>
 			<div className="mt-[11px] border-t border-slate-100 pt-2 text-[11px] leading-snug text-slate-500">
-				Область нового брика вырезается из территории, в которой он нарисован: брики не
+				Брик получается из существующих территорий — разрезом или объединением. Брики не
 				перекрываются, а удаление брика возвращает территорию в исходное состояние.
 			</div>
 		</div>
