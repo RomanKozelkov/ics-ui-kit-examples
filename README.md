@@ -1,6 +1,6 @@
 # ICS UI Kit Examples
 
-Галерея примеров ICS UI Kit на React 19, TanStack Start и Vite 8. Ветка `codex/tailwind4-migration` проверяет переход на **`ics-ui-kit@1.0.0-alpha.4` и Tailwind CSS 4**. Пакет устанавливается из npm, без локального `link` на исходники кита.
+Галерея примеров ICS UI Kit на React 19, TanStack Start и Vite 8. Приложение использует стабильный **`ics-ui-kit@1.0.0` и Tailwind CSS 4**. Пакет устанавливается из npm, без локального `link` на исходники кита.
 
 ## Запуск
 
@@ -32,7 +32,7 @@ CSS импортируется в `src/routes/__root.tsx`. Путь `@source` с
 import { Button } from "ics-ui-kit/components/button";
 ```
 
-JS-пресет, конфигурация Tailwind 3 и старый PostCSS-пайплайн удалены. Полная инструкция по подключению и миграции находится в [репозитории UI Kit](https://gitlab.ics-it.ru/ics/ui-kit/-/blob/version/1.0.0/src/docs/tailwind-integration.mdx).
+JS-пресет, конфигурация Tailwind 3 и старый PostCSS-пайплайн удалены. Полная инструкция по подключению и миграции находится в [репозитории UI Kit](https://gitlab.ics-it.ru/ics/ui-kit/-/blob/master/src/docs/tailwind-integration.mdx).
 
 ## Проверка сборки
 
@@ -62,6 +62,17 @@ GITHUB_PAGES=true pnpm exec vite preview --host 127.0.0.1 --port 4173
 
 Этот режим использует базовый путь `/ics-ui-kit-examples/` и пререндеринг. Переменная должна быть установлена и при сборке, и при запуске preview, чтобы базовый путь совпадал. Проверяйте главную страницу по этому пути и прямое открытие страниц примеров. Push в `master` запускает публикацию через `.github/workflows/deploy.yml`.
 
-## Переход на стабильный релиз
+## Проверка стабильного 1.0.0
 
-После публикации UI Kit 1.0 замените alpha-зависимость на конкретную стабильную версию, обновите lock-файл, повторите dev, обычную production-сборку и сборку GitHub Pages. После проверки ветка готова к слиянию в `master`.
+29 октября 2026 года приложение проверено с опубликованным npm-пакетом `ics-ui-kit@1.0.0`:
+
+- Установка `pnpm install --frozen-lockfile` проходит без изменения lock-файла.
+- В dev в Chrome проверены Select, диалог добавления промо, редактирование поля, оформление и анимация.
+- Обычная production-сборка клиента и SSR проходит; в preview отображаются обе реализации ResizableTable. Все 12 маршрутов отвечают HTTP 200.
+- Сборка GitHub Pages пререндерит главную и 11 страниц примеров. Все страницы и подключённые из HTML ресурсы доступны в preview; в Chrome проверены Sidebar и тёмная тема по базовому пути `/ics-ui-kit-examples/`.
+
+Сборка предупреждает о крупных JS-чанках. В dev при открытии диалога промо Radix предупреждает об отсутствующем `Description` / `aria-describedby`. Это предупреждения, проверки выше завершаются успешно.
+
+## Обновление UI Kit
+
+Версия `1.0.0` закреплена в манифесте и lock-файле. При следующих обновлениях устанавливайте выбранную опубликованную версию через `pnpm add --save-exact ics-ui-kit@<version>`, коммитьте обновлённый lock-файл и повторяйте проверку dev, обычной production-сборки и сборки GitHub Pages до слияния в `master`.
