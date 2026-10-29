@@ -80,7 +80,7 @@ export function GlassBackground({ children }: { children: React.ReactNode }) {
 							<BgSection image={s.image}>
 								<div className="absolute inset-0 bg-black/10" />
 								<div className="absolute bottom-4 left-6 flex flex-col gap-1">
-									<span className="w-fit rounded-full bg-white/20 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-widest text-white/90 backdrop-blur-sm">
+									<span className="w-fit rounded-full bg-white/20 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-widest text-white/90 backdrop-blur-xs">
 										{s.tag}
 									</span>
 									<p className="text-base font-bold text-white drop-shadow">{s.title}</p>

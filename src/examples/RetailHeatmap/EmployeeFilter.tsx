@@ -237,7 +237,7 @@ export function EmployeeFilter({
 						onChange={(event) => setQuery(event.target.value)}
 						placeholder="Найти"
 						aria-label="Поиск сотрудника"
-						className="min-w-0 flex-1 bg-transparent text-sm text-slate-900 outline-none placeholder:text-slate-400"
+						className="min-w-0 flex-1 bg-transparent text-sm text-slate-900 outline-hidden placeholder:text-slate-400"
 					/>
 				</div>
 				<div className="max-h-[320px] overflow-y-auto p-1">

@@ -2,7 +2,6 @@
 /// <reference types="vite/client" />
 import { createRootRoute, HeadContent, Outlet, Scripts } from "@tanstack/react-router";
 import { TooltipProvider } from "ics-ui-kit/components/tooltip";
-import "ics-ui-kit/theme.css";
 import type { ReactNode } from "react";
 import "../index.css";
 import "@fontsource-variable/inter";

@@ -24,7 +24,7 @@ export function PrimarySalesDashboard() {
 	return (
 		<QueryClientProvider client={queryClient}>
 			<div className="flex h-full w-full flex-col overflow-auto bg-primary-bg pb-2 pt-8">
-				<div className="container mx-auto flex flex-shrink-0 items-center gap-4 pb-4">
+				<div className="container mx-auto flex shrink-0 items-center gap-4 pb-4">
 					<DashboardHeader>Primary Sales</DashboardHeader>
 					<Filters />
 				</div>

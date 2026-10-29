@@ -423,7 +423,7 @@ function TerritoryTitle({
 			defaultValue={territory.name}
 			aria-label="Название брика"
 			maxLength={60}
-			className={`${titleClass} rounded-md border border-slate-300 bg-white px-1.5 py-0.5 outline-none focus:border-slate-900`}
+			className={`${titleClass} rounded-md border border-slate-300 bg-white px-1.5 py-0.5 outline-hidden focus:border-slate-900`}
 			onKeyDown={(event) => {
 				if (event.key === "Enter") {
 					skipBlur.current = true;

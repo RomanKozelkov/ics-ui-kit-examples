@@ -1,16 +1,3 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
-@layer base {
-  * {
-    @apply border-border;
-  }
-  body {
-    @apply bg-background font-sans text-foreground;
-  }
-  * {
-    scrollbar-width: thin;
-    scrollbar-color: hsl(var(--secondary-border)) transparent;
-  }
-}
+@import "tailwindcss";
+@import "ics-ui-kit/tailwind.css";
+@source "../node_modules/ics-ui-kit/dist";

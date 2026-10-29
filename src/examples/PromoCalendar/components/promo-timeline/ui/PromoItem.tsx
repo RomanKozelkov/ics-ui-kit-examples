@@ -66,7 +66,7 @@ export const PromoItem = memo(function PromoItem({ item }: { item: PreparedPromo
 			onPointerLeave={onPointerLeave}
 			onPointerDown={onPointerDown}
 			onClick={() => openEdit(toPromo(item))}
-			className={cn("outline-none transition-[filter] duration-150", getItemShadow(isDragging, isResizing))}
+			className={cn("outline-hidden transition-[filter] duration-150", getItemShadow(isDragging, isResizing))}
 			style={style}
 		>
 			<div style={itemContentStyle}>

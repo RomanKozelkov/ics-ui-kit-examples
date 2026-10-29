@@ -32,7 +32,7 @@ export function MainContent() {
 					<div
 						className={cn(
 							"absolute left-4 top-4 z-20",
-							"pointer-events-auto flex h-9 w-[4.25rem] flex-row gap-1 rounded-lg border-0.5 border-primary-border",
+							"pointer-events-auto flex h-9 w-[4.25rem] flex-row gap-1 rounded-lg border-[0.5px] border-primary-border",
 							"bg-sidebar-bg p-1 shadow-soft-base"
 						)}
 					>
